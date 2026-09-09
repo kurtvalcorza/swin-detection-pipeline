@@ -47,8 +47,8 @@ def main() -> int:
         errors.append(f"missing blockers: {missing}")
 
     source = provenance.get("architectureSourceOfRecord", {})
-    if not HEX40.fullmatch(source.get("sourceRevision", "")):
-        errors.append("source revision is not an immutable 40-hex commit")
+    if not HEX40.fullmatch(source.get("referenceImplementationRevision", "")):
+        errors.append("reference implementation revision is not an immutable 40-hex commit")
 
     model = provenance.get("canonicalV1", {})
     if not HEX40.fullmatch(model.get("configBlobSha", "")):
@@ -64,6 +64,8 @@ def main() -> int:
         errors.append("runtime network fetch must be denied")
     if policy.get("instanceMaskOutputInV1Contract") is not False:
         errors.append("instance mask output must remain outside the v1 contract")
+    if policy.get("releaseAssetPublishesSourceCommitBinding") is not False:
+        errors.append("release/source commit binding must not be claimed unless upstream publishes one")
 
     if errors:
         for error in errors:
