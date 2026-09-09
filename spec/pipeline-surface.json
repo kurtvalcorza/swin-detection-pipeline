@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0",
+  "pipelineId": "org.valcorza.swin-detection",
+  "repository": "kurtvalcorza/swin-detection-pipeline",
+  "status": "BLOCKED_PENDING_REPRESENTATION_AND_WORKERS",
+  "upstream": {
+    "task": "Object Detection",
+    "benchmark": "COCO 2017",
+    "referenceArchitecture": "Swin-T + Mask R-CNN"
+  },
+  "contract": {
+    "reviewedBranch": "build/dimer-v1-freeze",
+    "taskProfile": "core.task.vision.object-detection",
+    "taskProfileStatus": "PRESENT_ON_REVIEWED_BRANCH",
+    "canonicalDatasetEncoding": "COCO JSON",
+    "datasetRepresentationProfile": null,
+    "datasetRepresentationStatus": "NOT_PRESENT_ON_REVIEWED_BRANCH",
+    "trainingMethod": "core.training.supervised-finetuning"
+  },
+  "taskBoundary": {
+    "input": "image",
+    "target": "class-labelled bounding boxes",
+    "instanceSegmentation": "OUT_OF_SCOPE_FOR_V1"
+  },
+  "metrics": [
+    "COCO AP@[0.50:0.95]",
+    "AP50",
+    "AP75"
+  ],
+  "model": {
+    "catalogMode": "ALLOWLISTED_DIGEST_PINNED",
+    "canonicalV1": "swin-tiny-mask-rcnn-coco-1x",
+    "runtimeNetworkFetch": "DENY",
+    "offCatalogSelection": "REFUSE"
+  },
+  "expectedComponents": {
+    "validator": "kurtvalcorza/swin-detection-dataset-validator",
+    "finetuner": "kurtvalcorza/swin-detection-finetuner"
+  },
+  "composition": {
+    "manifestStatus": "NOT_EMITTED",
+    "releaseStatus": "NOT_EMITTED",
+    "reason": "A contract-valid pipeline manifest must not be emitted until a canonical detection representation profile and exact validator/finetuner worker releases exist."
+  },
+  "blockers": [
+    "CONTRACT_COCO_DETECTION_REPRESENTATION_MISSING",
+    "VALIDATOR_WORKER_RELEASE_MISSING",
+    "FINETUNER_WORKER_RELEASE_MISSING",
+    "CHECKPOINT_SHA256_PENDING",
+    "ACCELERATOR_QUALIFICATION_PENDING"
+  ]
+}
