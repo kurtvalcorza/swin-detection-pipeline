@@ -5,7 +5,8 @@
   "architectureSourceOfRecord": {
     "repository": "microsoft/Swin-Transformer",
     "officialTaskRepository": "SwinTransformer/Swin-Transformer-Object-Detection",
-    "sourceRevision": "c7b20110addde0f74b1fbf812b403d16a59a87a9",
+    "referenceImplementationRevision": "7810b893902326d88068037477c848b551e2bd4e",
+    "referenceRevisionRole": "official task-repo snapshot containing the finalized canonical 1x Swin-T Mask R-CNN config; the release asset does not publish a cryptographic source-commit binding",
     "benchmark": "COCO 2017"
   },
   "canonicalV1": {
@@ -25,10 +26,11 @@
       "boxMAP": 43.7,
       "maskMAPSupplementary": 39.8
     },
-    "status": "SOURCE_PINNED_DIGEST_PENDING"
+    "status": "REFERENCE_CONFIG_PINNED_DIGEST_PENDING"
   },
   "policy": {
     "officialReleaseIsSourceOfRecord": true,
+    "releaseAssetPublishesSourceCommitBinding": false,
     "convenienceMirrorMayReplaceSourceOfRecord": false,
     "instanceMaskOutputInV1Contract": false,
     "runtimeNetworkFetch": "DENY",
