@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Fail-closed verifier for the object-detection pipeline scaffold."""
+
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+HEX40 = re.compile(r"^[0-9a-f]{40}$")
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def load(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def main() -> int:
+    surface = load(ROOT / "spec" / "pipeline-surface.json")
+    provenance = load(ROOT / "provenance" / "open-weights.json")
+    errors: list[str] = []
+
+    if surface.get("pipelineId") != provenance.get("pipelineId"):
+        errors.append("pipelineId mismatch")
+    if surface.get("status") != "BLOCKED_PENDING_REPRESENTATION_AND_WORKERS":
+        errors.append("scaffold must remain blocked until representation and workers exist")
+
+    contract = surface.get("contract", {})
+    if contract.get("taskProfile") != "core.task.vision.object-detection":
+        errors.append("unexpected object-detection task profile id")
+    if contract.get("taskProfileStatus") != "PRESENT_ON_REVIEWED_BRANCH":
+        errors.append("object-detection task profile must be recorded as present")
+    if contract.get("datasetRepresentationStatus") != "NOT_PRESENT_ON_REVIEWED_BRANCH":
+        errors.append("dataset representation status must fail closed")
+
+    blockers = set(surface.get("blockers", []))
+    required_blockers = {
+        "CONTRACT_COCO_DETECTION_REPRESENTATION_MISSING",
+        "VALIDATOR_WORKER_RELEASE_MISSING",
+        "FINETUNER_WORKER_RELEASE_MISSING",
+        "CHECKPOINT_SHA256_PENDING",
+    }
+    missing = sorted(required_blockers - blockers)
+    if missing:
+        errors.append(f"missing blockers: {missing}")
+
+    source = provenance.get("architectureSourceOfRecord", {})
+    if not HEX40.fullmatch(source.get("referenceImplementationRevision", "")):
+        errors.append("reference implementation revision is not an immutable 40-hex commit")
+
+    model = provenance.get("canonicalV1", {})
+    if not HEX40.fullmatch(model.get("configBlobSha", "")):
+        errors.append("config blob sha is not a 40-hex git object id")
+    digest = model.get("checkpointSha256")
+    if digest is not None and not HEX64.fullmatch(digest):
+        errors.append("checkpointSha256 must be null or 64 lowercase hex characters")
+    if digest is None and model.get("status") == "QUALIFIED":
+        errors.append("checkpoint cannot be QUALIFIED without SHA-256")
+
+    policy = provenance.get("policy", {})
+    if policy.get("runtimeNetworkFetch") != "DENY":
+        errors.append("runtime network fetch must be denied")
+    if policy.get("instanceMaskOutputInV1Contract") is not False:
+        errors.append("instance mask output must remain outside the v1 contract")
+    if policy.get("releaseAssetPublishesSourceCommitBinding") is not False:
+        errors.append("release/source commit binding must not be claimed unless upstream publishes one")
+
+    if errors:
+        for error in errors:
+            print(f"FAIL  {error}")
+        return 1
+
+    print("PASS  detection scaffold is internally consistent and fail-closed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

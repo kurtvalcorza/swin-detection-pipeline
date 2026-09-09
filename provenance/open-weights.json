@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0",
+  "pipelineId": "org.valcorza.swin-detection",
+  "task": "object-detection",
+  "architectureSourceOfRecord": {
+    "repository": "microsoft/Swin-Transformer",
+    "officialTaskRepository": "SwinTransformer/Swin-Transformer-Object-Detection",
+    "referenceImplementationRevision": "7810b893902326d88068037477c848b551e2bd4e",
+    "referenceRevisionRole": "official task-repo snapshot containing the finalized canonical 1x Swin-T Mask R-CNN config; the release asset does not publish a cryptographic source-commit binding",
+    "benchmark": "COCO 2017"
+  },
+  "canonicalV1": {
+    "catalogKey": "swin-tiny-mask-rcnn-coco-1x",
+    "backbone": "Swin-T",
+    "head": "Mask R-CNN",
+    "configPath": "configs/swin/mask_rcnn_swin_tiny_patch4_window7_mstrain_480-800_adamw_1x_coco.py",
+    "configBlobSha": "dd42cba7ca95c008218e966aca6becb2a2dabc8d",
+    "releaseRepository": "SwinTransformer/storage",
+    "releaseTag": "v1.0.3",
+    "releaseAssetId": 36780486,
+    "checkpointFile": "mask_rcnn_swin_tiny_patch4_window7_1x.pth",
+    "checkpointSizeBytes": 191487694,
+    "checkpointSha256": null,
+    "checkpointDigestStatus": "PENDING_LOCAL_HASH_OF_OFFICIAL_RELEASE_ASSET",
+    "reportedMetrics": {
+      "boxMAP": 43.7,
+      "maskMAPSupplementary": 39.8
+    },
+    "status": "REFERENCE_CONFIG_PINNED_DIGEST_PENDING"
+  },
+  "policy": {
+    "officialReleaseIsSourceOfRecord": true,
+    "releaseAssetPublishesSourceCommitBinding": false,
+    "convenienceMirrorMayReplaceSourceOfRecord": false,
+    "instanceMaskOutputInV1Contract": false,
+    "runtimeNetworkFetch": "DENY",
+    "offCatalogSelection": "REFUSE",
+    "requireCheckpointSha256BeforeQualification": true
+  }
+}
