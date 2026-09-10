@@ -36,6 +36,17 @@ python scripts/verify_scaffold.py
 
 A passing scaffold check means the **specification is internally consistent**; it does not mean the detector is runtime-qualified or releasable.
 
+## Cloud verification & open-weights digest (Kaggle)
+
+The scaffold and official upstream weights were verified in an isolated Kaggle cloud container:
+
+- **Kernel:** [`kurtvalcorza/swin-detection-verify`](https://www.kaggle.com/code/kurtvalcorza/swin-detection-verify)
+- **Status:** `KernelWorkerStatus.COMPLETE` (Exit Code 0)
+- **Scaffold Verifier (`scripts/verify_scaffold.py`):** `PASS` (internally consistent and fail-closed, 0.13s)
+- **Official Checkpoint Asset:** `mask_rcnn_swin_tiny_patch4_window7_1x.pth` (191,487,694 bytes in 7.09s) from official release `SwinTransformer/storage@v1.0.3` (asset ID `36780486`)
+- **Authoritative SHA-256:** `b67f9d6cd62a4d723c78faec1b49cbf548faa22437264defb00f2f6e54d21b78` (recorded in `provenance/open-weights.json`)
+- **Deserialized State Dict Inspection:** 231 parameter tensors, 47,823,414 parameters (189 backbone, 16 neck, 6 RPN, 20 ROI)
+
 ## Canonical Swin family
 
 1. **Image Classification** → `swin-classification-pipeline`

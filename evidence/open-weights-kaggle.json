@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0",
+  "pipelineId": "org.valcorza.swin-detection",
+  "task": "object-detection",
+  "verificationTarget": {
+    "repository": "kurtvalcorza/swin-detection-pipeline",
+    "targetCommit": "5aa3c5ed462b062c65fc413cde52da8c65c690e0",
+    "targetBranch": "main"
+  },
+  "executionEnvironment": {
+    "platform": "kaggle-cloud",
+    "kernelSlug": "kurtvalcorza/swin-detection-verify",
+    "kernelUrl": "https://www.kaggle.com/code/kurtvalcorza/swin-detection-verify",
+    "os": "Linux-6.12.90+-x86_64",
+    "python": "3.12.13",
+    "cpu": "Intel Xeon",
+    "vCPUs": 4,
+    "memoryGB": 30,
+    "executedAt": "2026-09-10T04:22:25Z"
+  },
+  "releaseAsset": {
+    "repository": "SwinTransformer/storage",
+    "tag": "v1.0.3",
+    "assetId": 36780486,
+    "url": "https://github.com/SwinTransformer/storage/releases/download/v1.0.3/mask_rcnn_swin_tiny_patch4_window7_1x.pth",
+    "filename": "mask_rcnn_swin_tiny_patch4_window7_1x.pth",
+    "expectedSizeBytes": 191487694,
+    "observedSizeBytes": 191487694,
+    "sizeMatch": true,
+    "sha256": "b67f9d6cd62a4d723c78faec1b49cbf548faa22437264defb00f2f6e54d21b78",
+    "downloadTimeSeconds": 7.09
+  },
+  "deserializationSummary": {
+    "loader": "torch.load(map_location='cpu')",
+    "deserializationOk": true,
+    "totalTensors": 231,
+    "totalParameters": 47823414,
+    "backboneTensors": 189,
+    "neckTensors": 16,
+    "rpnTensors": 6,
+    "roiTensors": 20,
+    "inspectionTimeSeconds": 0.2
+  },
+  "scaffoldVerification": {
+    "command": "python scripts/verify_scaffold.py",
+    "exitCode": 0,
+    "output": "PASS  detection scaffold is internally consistent and fail-closed",
+    "wallSeconds": 0.13
+  },
+  "overallStatus": "PASSED"
+}
