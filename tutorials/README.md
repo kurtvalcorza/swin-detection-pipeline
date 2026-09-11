@@ -2,24 +2,31 @@
 
 Notebook specification: **DIMER Notebook Specification 1.0**
 
-| Notebook | Profile | Capability | Default runtime | Release status |
-|---|---|---|---|---|
-| `swin_detection_scaffold_smoke_colab.ipynb` | `SMOKE` | Scaffold lifecycle, model-card, blocker, and open-weight provenance verification | CPU / Python 3.11+ | **Engineering-only** — clean execution is CI-gated, but this does not satisfy the primary release-grade tutorial requirement |
+| Notebook | Profile | Capability | Default runtime | BYOD | Release status |
+|---|---|---|---|---|---|
+| `swin_detection_task_inference.ipynb` | `TASK-INFERENCE` | Verified pretrained Swin-T + Mask R-CNN object detection; COCO-style tutorial evaluation; machine-readable outputs/provenance | CPU / CPython 3.10 Jupyter | Optional image, gated off by default | **Candidate** — real task runtime implemented; promote only after exact-revision clean notebook execution passes |
+| `swin_detection_scaffold_smoke_colab.ipynb` | `SMOKE` | Scaffold lifecycle/model-card/provenance checks | CPU / Python 3.11+ | — | **Engineering-only** |
 
-## Why this remains a smoke notebook
+## Supported user-facing capability
 
-The repository lifecycle is explicitly `scaffold` and the current surface is `BLOCKED_PENDING_REPRESENTATION_AND_WORKERS`. The canonical COCO detection representation is absent, validator/finetuner releases do not exist, accelerator qualification is pending, no composition/release is emitted, and DIMER hosting of the upstream checkpoint is blocked while its redistribution status remains `unknown`.
+The repository now exposes a narrow public task-inference API, `dimer_swin_detection.DimerSwinDetector`, plus the `dimer-swin-detect` CLI. It wraps the pinned OpenMMLab MMDetection 3.3.0 Swin-T + Mask R-CNN inference path, verifies the exact checkpoint size and SHA-256 before `.pth` deserialization, validates image inputs, returns only the v1 DIMER object-detection surface (boxes/classes/scores), and exports provenance. Instance-mask output remains outside the v1 contract.
 
-Publishing an `E2E` or `TASK-INFERENCE` notebook before a real object-detection runtime exists would misrepresent the implementation. This notebook therefore limits itself to the repository-owned verifier plus lifecycle/model-card/provenance assertions. It does not download or deserialize the upstream `.pth` checkpoint.
+This does **not** remove the existing gradient-adaptation blockers. The canonical DIMER COCO representation, validator/finetuner workers, artifact-serving composition, and accelerator qualification for training are still future work. The release-grade tutorial therefore uses `TASK-INFERENCE`, not `E2E`, and makes no fine-tuning claim.
 
-The notebook is anchored to the stacked lifecycle + model-card revision used by PRs #5/#6. PR #4 should merge only after those prerequisite changes land (or after the anchor is repointed to their final `main` commit).
+## Model identity and source distinction
 
-## Clean-runtime verification
+The task-inference runtime uses the official OpenMMLab `mask-rcnn_swin-t-p4-w7_fpn_1x_coco` distribution associated with MMDetection 3.3.0: checkpoint size 191,461,353 bytes and SHA-256 `9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291`. This is deliberately recorded separately from the Microsoft/SwinTransformer release asset already frozen in `provenance/open-weights.json` for the future adaptation lineage; the tutorial does not claim those two files are byte-identical.
 
-`.github/workflows/verify-smoke-notebook.yml` executes the committed notebook top-to-bottom on Python 3.12 in a fresh GitHub-hosted Ubuntu/Jupyter environment whenever the notebook, registry, verifier, lifecycle/provenance files, model card, or workflow changes. A green run is execution evidence for the `SMOKE` profile only; it is not object-detection task-runtime evidence and does not make this repository tutorial-ready for end users.
+The upstream `.pth` format is code-capable serialization. Digest verification proves that the bytes match the pinned distribution; it does not prove sender authenticity or make an otherwise untrusted checkpoint safe.
 
-The previous Kaggle execution record targeted the pre-lifecycle scaffold revision and is intentionally not carried forward as evidence for this notebook revision.
+## Tutorial evidence and limits
 
-## Upgrade gate
+The default labelled sample is COCO8, a very small public COCO 2017-derived tutorial subset. The notebook preserves its validation membership and reports COCO AP@[0.50:0.95], AP50, and AP75 as **sample/tutorial metrics only**. It also records the trivial empty-detector AP=0 baseline. The upstream full-COCO AP is displayed only as upstream-reported context and is not represented as notebook-measured performance.
 
-A release-grade replacement requires the canonical detection representation and task workers, accelerator qualification, the real production-facing DIMER API, COCO-style input validation, COCO AP@[0.50:0.95]/AP50/AP75 evaluation, machine-readable detections and provenance, and clean-runtime execution evidence for the exact release revision.
+The notebook writes `detections.json`, `detections.csv`, `metrics.json`, and `provenance.json`. BYOD inference is optional and disabled by default. Scores are explicitly described as uncalibrated; the caller owns deployment threshold calibration.
+
+## Release verification
+
+`.github/workflows/verify-task-tutorial.yml` is the promotion gate for `swin_detection_task_inference.ipynb`. It must execute the **committed notebook** top-to-bottom from a fresh Python 3.10 Jupyter environment, exercise the repository API, download and verify the model, evaluate the default sample, and assert the four machine-readable outputs. Static JSON/compile checks are kept separate from execution evidence.
+
+The older `verify-smoke-notebook.yml` remains useful engineering coverage but is not evidence for the task tutorial.
