@@ -18,12 +18,12 @@ The upstream architecture also produces instance masks, but this repository's DI
 
 ## Public pretrained task-inference runtime
 
-The repository now exposes a real, public, CPU-capable pretrained inference path:
+The repository exposes a real, public, CPU-capable pretrained inference path:
 
 - **Python API:** `dimer_swin_detection.DimerSwinDetector`
 - **CLI:** `dimer-swin-detect`
 - **Package:** `dimer-swin-detection` 0.1.0
-- **Runtime:** CPython 3.10; torch 2.1.2; MMDetection 3.3.0; MMCV 2.1.0; MMEngine 0.10.7; NumPy 1.26.4; OpenCV 4.10.0.84
+- **Qualified runtime:** CPython 3.10; torch 2.1.2; MMDetection 3.3.0; MMCV 2.1.0; MMEngine 0.10.7; NumPy 1.26.4; OpenCV 4.10.0.84
 - **Model distribution:** OpenMMLab `mask-rcnn_swin-t-p4-w7_fpn_1x_coco`
 - **Checkpoint:** 191,461,353 bytes; SHA-256 `9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291`
 - **Input validation:** readable image, positive dimensions, maximum 64,000,000 pixels
@@ -33,6 +33,12 @@ The repository now exposes a real, public, CPU-capable pretrained inference path
 The `.pth` format is code-capable PyTorch serialization. Digest verification proves byte identity against the pinned distribution; it does not prove publisher authenticity or make an otherwise untrusted checkpoint safe.
 
 Machine-readable capability metadata is in [`spec/task-inference-surface.json`](spec/task-inference-surface.json).
+
+### Supported installation contract
+
+The OpenMMLab stack includes binary wheels selected from the OpenMMLab/PyTorch indexes, so **`pip install .` by itself is not a qualified runtime installation**. `pyproject.toml` intentionally packages the DIMER wrapper and CLI without pretending that standard PyPI dependency resolution can reproduce the tested binary stack.
+
+The supported public installation/bootstrap path is the release-grade notebook [`tutorials/swin_detection_task_inference.ipynb`](tutorials/swin_detection_task_inference.ipynb), which installs the exact qualified Python 3.10 CPU dependency graph before installing this repository package with `--no-deps`. A standalone caller may reproduce those same pinned commands, but changing Python, torch, MMCV, MMEngine or MMDetection versions is outside the qualified runtime until revalidated. The API itself also checks the OpenMMLab package versions at startup and fails closed on drift.
 
 ### Release-grade tutorial
 
@@ -46,11 +52,11 @@ The separate DIMER **gradient-adaptation** design remains a scaffold. The review
 
 **Lifecycle for that composed-worker surface (DIMER Pipeline Specification 1.0):** `scaffold` — declared machine-readably in `spec/pipeline-surface.json` with intended `implementation_topology: COMPOSED-WORKERS` and `capability_modes: [GRADIENT-ADAPTATION]`. The canonical Microsoft/SwinTransformer checkpoint recorded for that future adaptation lineage carries `redistribution_status: unknown` in `provenance/open-weights.json`, so DIMER hosting remains **BLOCKED** until an authoritative weight-licence determination is recorded.
 
-`scripts/verify_scaffold.py` continues to refuse any lifecycle above `scaffold` while adaptation blockers exist, any declared adaptation components/release, and any non-blocked DIMER hosting for an `unknown`/`prohibited` weight status. The new pretrained `TASK-INFERENCE` capability does **not** satisfy or remove those adaptation blockers.
+`scripts/verify_scaffold.py` continues to refuse any lifecycle above `scaffold` while adaptation blockers exist, any declared adaptation components/release, and any non-blocked DIMER hosting for an `unknown`/`prohibited` weight status. The pretrained `TASK-INFERENCE` capability does **not** satisfy or remove those adaptation blockers.
 
-`MODEL_CARD.md` is currently a **scaffold-lifecycle card for the gradient-adaptation design** and predates the implemented pretrained task-inference surface. It should not be read as saying that the `DimerSwinDetector` runtime does not exist; the task-inference surface, exact checkpoint identity, execution evidence, and limitations are currently documented in `spec/task-inference-surface.json`, `tutorials/README.md`, and the runtime `MODEL_SPEC`. Updating the model card to distinguish these two capability surfaces is tracked as follow-up work.
+`MODEL_CARD.md` distinguishes the implemented pretrained inference surface from the still-scaffolded gradient-adaptation design. The inference runtime uses the separately pinned OpenMMLab distribution recorded in `spec/task-inference-surface.json`; the adaptation lineage remains governed by `spec/pipeline-surface.json` and `provenance/open-weights.json`.
 
-Repository-owned artifacts now include:
+Repository-owned artifacts include:
 
 - `spec/task-inference-surface.json` — implemented pretrained inference capability, runtime/model/output/evaluation contract;
 - `src/dimer_swin_detection/` — public inference API and CLI;
