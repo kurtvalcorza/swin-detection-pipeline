@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0",
+  "pipelineId": "org.valcorza.swin-detection",
+  "capabilityProfile": "TASK-INFERENCE",
+  "capabilityStatus": "IMPLEMENTED",
+  "trainingOrAdaptation": "NONE",
+  "runtime": {
+    "package": "dimer-swin-detection",
+    "version": "0.1.0",
+    "python": ">=3.10,<3.11",
+    "publicApi": "dimer_swin_detection.DimerSwinDetector",
+    "cli": "dimer-swin-detect",
+    "defaultDevice": "cpu",
+    "framework": {
+      "torch": "2.1.2",
+      "mmdetection": "3.3.0",
+      "mmcv": "2.1.0",
+      "mmengine": "0.10.7",
+      "numpy": "1.26.4",
+      "opencvPython": "4.10.0.84"
+    }
+  },
+  "model": {
+    "architecture": "Swin-T + Mask R-CNN",
+    "task": "object-detection",
+    "pretrainingAndBenchmarkDomain": "COCO 2017",
+    "distribution": "OpenMMLab MMDetection 3.3.0",
+    "config": "swin/mask-rcnn_swin-t-p4-w7_fpn_1x_coco.py",
+    "configSourceRevision": "open-mmlab/mmdetection@v3.3.0",
+    "checkpointUrl": "https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_1x_coco/mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth",
+    "checkpointSizeBytes": 191461353,
+    "checkpointSha256": "9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291",
+    "checkpointVerification": "REQUIRED_BEFORE_DESERIALIZATION"
+  },
+  "input": {
+    "modality": "RGB-compatible image",
+    "validation": "Pillow decode/verify; positive dimensions; maximum 64,000,000 pixels",
+    "byod": true
+  },
+  "output": {
+    "unit": "detection",
+    "fields": ["image_id", "class_id", "class_name", "score", "bbox_xyxy"],
+    "scoreSemantics": "uncalibrated MMDetection class confidence score",
+    "decisionThreshold": "caller-owned",
+    "instanceMasks": "OUT_OF_SCOPE_FOR_DIMER_V1"
+  },
+  "evaluation": {
+    "metrics": ["COCO AP@[0.50:0.95]", "AP50", "AP75"],
+    "releaseTutorial": "tutorials/swin_detection_task_inference.ipynb",
+    "notebookProfile": "TASK-INFERENCE",
+    "defaultSample": "COCO8 validation subset",
+    "sampleEvidenceOnly": true
+  },
+  "security": {
+    "checkpointSerialization": "PyTorch .pth; code-capable serialization",
+    "digestMeaning": "byte identity only; not publisher authenticity",
+    "runtimeSecretsRequired": false
+  },
+  "relationToGradientAdaptationSurface": {
+    "surface": "spec/pipeline-surface.json",
+    "status": "BLOCKED_PENDING_REPRESENTATION_AND_WORKERS",
+    "note": "The implemented pretrained TASK-INFERENCE runtime does not implement, satisfy, or remove blockers for the future composed-worker gradient-adaptation pipeline."
+  }
+}
