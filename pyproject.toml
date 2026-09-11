@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dimer-swin-detection"
+version = "0.1.0"
+description = "DIMER Swin-T Mask R-CNN task-inference runtime"
+requires-python = ">=3.10,<3.11"
+license = {text = "MIT"}
+authors = [{name = "Kurt Valcorza"}]
+
+[project.scripts]
+dimer-swin-detect = "dimer_swin_detection.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
