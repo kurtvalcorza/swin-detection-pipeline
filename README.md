@@ -21,6 +21,15 @@ The upstream detection implementation also supports instance masks, but this pip
 
 The upstream architecture, task, benchmark, config, and official checkpoint source are frozen. The repository now carries an executable, fail-closed scaffold. It deliberately does **not** emit a release manifest yet: the reviewed `ml-worker` contract has the object-detection task profile, but no canonical vision detection representation profile is present, and task-specific validator/finetuner releases do not yet exist.
 
+**Lifecycle (DIMER Pipeline Specification 1.0):** `scaffold` — declared machine-readably in
+`spec/pipeline-surface.json` (`dimerPipelineSpec`: `lifecycle_status`, intended
+`implementation_topology` `COMPOSED-WORKERS`, `capability_modes` `GRADIENT-ADAPTATION`). The
+canonical checkpoint `mask_rcnn_swin_tiny_patch4_window7_1x.pth` carries `redistribution_status: unknown` in
+`provenance/open-weights.json` (`weightLicensing`), so DIMER hosting is **BLOCKED** until an
+authoritative upstream weight-licence determination is recorded (LIC2/LIC7).
+`scripts/verify_scaffold.py` refuses any lifecycle above `scaffold` while blockers exist, any
+declared components/release, and any non-blocked hosting for an `unknown`/`prohibited` status.
+
 Repository-owned build artifacts:
 
 - `spec/pipeline-surface.json` — machine-readable task/model/contract surface and blockers;
