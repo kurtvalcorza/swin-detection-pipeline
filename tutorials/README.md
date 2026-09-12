@@ -1,5 +1,15 @@
 # Tutorials
 
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/kurtvalcorza/swin-detection-pipeline)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/swin-detection-pipeline/blob/main/tutorials/swin_detection_task_inference.ipynb)
+[![Python 3.10 required](https://img.shields.io/badge/Python-3.10%20required-3776ab?style=flat&logo=python&logoColor=white)](../README.md)
+[![Checkpoint](https://img.shields.io/badge/Checkpoint-mask__rcnn__swin__tiny__patch4__window7__1x-ffcc4d?style=flat)](https://github.com/SwinTransformer/storage/releases/tag/v1.0.3)
+[![Upstream](https://img.shields.io/badge/Upstream-microsoft%2FSwin--Transformer-181717?style=flat&logo=github&logoColor=white)](https://github.com/microsoft/Swin-Transformer)
+[![arXiv](https://img.shields.io/badge/arXiv-2103.14030-b31b1b.svg)](https://arxiv.org/abs/2103.14030)
+[![Model released](https://img.shields.io/badge/Model%20released-2021--05--11-6f42c1?style=flat)](https://github.com/SwinTransformer/storage/releases/tag/v1.0.3)
+[![Sample eval](https://img.shields.io/badge/Sample%20eval-COCO%20AP%200.707%20%7C%20AP50%200.957-2ea44f?style=flat)](../MODEL_CARD.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+
 Notebook specification: **DIMER Notebook Specification 1.0**
 
 | Notebook | Profile | Capability | Default runtime | BYOD | Release status |
