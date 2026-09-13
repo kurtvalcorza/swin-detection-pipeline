@@ -1,0 +1,15 @@
+{
+  "format": "dimer_hf_snapshot",
+  "formatVersion": 1,
+  "modelKey": "swin-t-mask-rcnn-coco",
+  "modelId": "open-mmlab/mmdetection:mask-rcnn_swin-t-p4-w7_fpn_1x_coco",
+  "revision": "44ebd17b145c2372c4b700bfb9cb20dbd28ab64a",
+  "files": [
+    {
+      "path": "mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth",
+      "bytes": 191461353,
+      "sha256": "9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291"
+    }
+  ],
+  "totalBytes": 191461353
+}
