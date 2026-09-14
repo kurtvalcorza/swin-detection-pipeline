@@ -2,6 +2,7 @@
 license: mit
 model_card_spec: "1.1"
 pipeline_tag: object-detection
+task: "Object Detection"
 pipeline_spec: "1.0"
 base_model: SwinTransformer/storage mask_rcnn_swin_tiny_patch4_window7_1x.pth (release v1.0.3, asset 36780486)
 date_published: "2021-05-11"
