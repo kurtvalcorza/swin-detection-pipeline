@@ -1,8 +1,11 @@
 ---
 license: mit
 model_card_spec: "1.1"
+pipeline_tag: object-detection
 pipeline_spec: "1.0"
 base_model: SwinTransformer/storage mask_rcnn_swin_tiny_patch4_window7_1x.pth (release v1.0.3, asset 36780486)
+date_published: "2021-05-11"
+date_published_source: "GitHub release SwinTransformer/storage v1.0.3 published_at 2021-05-11"
 base_model_sha256: b67f9d6cd62a4d723c78faec1b49cbf548faa22437264defb00f2f6e54d21b78
 base_model_weights_license: unknown — not yet determined from an authoritative upstream statement; DIMER hosting BLOCKED
 pipeline_id: org.valcorza.swin-detection
@@ -21,7 +24,7 @@ task_inference_surface: spec/task-inference-surface.json
 [![arXiv Paper](https://img.shields.io/badge/arXiv-2103.14030-b31b1b.svg)](https://arxiv.org/abs/2103.14030)
 [![Code license: MIT](https://img.shields.io/badge/Code%20license-MIT-yellow.svg)](LICENSE)
 [![Weights license](https://img.shields.io/badge/Weights%20license-unknown%20%E2%80%94%20hosting%20blocked-lightgrey?style=flat)](provenance/open-weights.json)
-[![Pipeline](https://img.shields.io/badge/Pipeline-swin--detection--pipeline-2ea44f?style=flat&logo=github)](https://github.com/kurtvalcorza/swin-detection-pipeline)
+
 [![Checkpoint](https://img.shields.io/badge/Checkpoint-mask__rcnn__swin--t--p4--w7__fpn__1x__coco-ffcc4d?style=flat)](spec/task-inference-surface.json)
 [![Model released](https://img.shields.io/badge/Model%20released-2021--05--11-6f42c1?style=flat)](https://github.com/SwinTransformer/storage/releases/tag/v1.0.3)
 [![Sample eval](https://img.shields.io/badge/Sample%20eval-COCO%20AP%200.707%20%7C%20AP50%200.957-2ea44f?style=flat)](tutorials/README.md)
@@ -45,7 +48,7 @@ This pipeline provides a ready-to-run interactive Google Colab notebook for pret
 
 ---
 
-###### Description
+#### Description
 
 This repository has **two deliberately separate capability surfaces**. First, it now ships an implemented pretrained `TASK-INFERENCE` runtime for Swin-T + Mask R-CNN through `dimer_swin_detection.DimerSwinDetector`, the `dimer-swin-detect` CLI, `spec/task-inference-surface.json`, and the release-grade notebook `tutorials/swin_detection_task_inference.ipynb`. That runtime uses the pinned OpenMMLab MMDetection 3.3.0 distribution, verifies the exact checkpoint size and SHA-256 before deserialization, validates image inputs, and returns the DIMER v1 detection surface: class-labelled axis-aligned boxes and uncalibrated class scores. Second, the future composed-worker `GRADIENT-ADAPTATION` pipeline remains a DIMER Pipeline Spec 1.0 `scaffold`. Its validator, finetuner, canonical detection representation, accelerator qualification, composition, and release manifest are still absent. The `lifecycle_status: scaffold` front matter applies to that adaptation composition; it does not negate the separately implemented pretrained inference capability.
 
@@ -87,7 +90,7 @@ For the implemented pretrained inference tutorial, the task-appropriate headline
 
 ###### Performance Measures
 
-The repository now measures performance only within the narrow, labelled tutorial path. The release-grade notebook constructs COCO ground truth for its fixed validation images, converts repository API detections to COCO result records, and invokes `pycocotools` COCO evaluation. This demonstrates that the supported API can be evaluated end to end and produces nontrivial results above the deliberately weak empty-detector baseline. It does **not** measure robustness, calibration, per-class AP, small/medium/large object AP, latency distributions, memory ceilings, demographic parity or domain-transfer performance. Those require larger and purpose-built datasets. The `MODEL_SPEC` also carries an upstream-reported full-COCO box AP value for context; the notebook labels it as upstream-reported and not measured locally. Any deployment should replace the tutorial sample with a representative labelled validation set and define acceptance criteria that correspond to the real cost of missed objects, false alarms and localization errors.
+The repository now measures performance only within the narrow, labelled tutorial path. The release-grade notebook constructs COCO ground truth for its fixed validation images, converts repository API detections to COCO result records, and invokes `pycocotools` COCO evaluation. This demonstrates that the supported API can be evaluated end to end and produces nontrivial results above the deliberately weak empty-detector baseline. It does **not** measure robustness, calibration, per-class AP, small/medium/large object AP, latency distributions, memory ceilings, demographic parity or domain-transfer performance. Those require larger and purpose-built datasets. The `MODEL_SPEC` also carries an upstream-reported full-COCO box AP value for context; the notebook labels it as upstream-reported and not measured locally. Any deployment should replace the tutorial sample with a representative labelled validation set and define acceptance criteria that correspond to the real cost of missed objects, false alarms and localization errors. In the standalone notebook the evaluation stage is the package's `evaluation_report`, which carries `coco_box_ap` (pycocotools COCO AP@[0.50:0.95], AP50, AP75) with the verdict `sample-sanity` only when ground-truth boxes are supplied (the gated COCO8 path) and otherwise records `not-measurable` with what labelled data would make the task measurable.
 
 ###### Decision thresholds
 
@@ -111,7 +114,7 @@ This repository is not intended for autonomous or materially consequential decis
 
 ###### Mitigations
 
-Implemented mitigations for pretrained inference include a repository-owned API rather than notebook-only model code, immutable model metadata, checkpoint size and SHA-256 verification **before** code-capable `.pth` deserialization, pinned/checked OpenMMLab versions, basic image validation, explicit score semantics, a 64-megapixel input ceiling, a narrow boxes/classes/scores output contract, machine-readable provenance and an exact-notebook clean execution gate. The tutorial distinguishes its own sample metrics from upstream benchmark claims and provides a trivial baseline so readers do not see a number without context. The older scaffold controls remain active for gradient adaptation: `scripts/verify_scaffold.py` refuses promotion while worker/representation/qualification blockers remain, and `provenance/open-weights.json` keeps DIMER hosting blocked while adaptation-lineage weight redistribution is `unknown`. These are supply-chain and lifecycle mitigations, not substitutes for domain validation, fairness assessment, threshold calibration, user training, access control, audit logging or legal review.
+Implemented mitigations for pretrained inference include a repository-owned API rather than notebook-only model code, immutable model metadata, checkpoint size and SHA-256 verification **before** code-capable `.pth` deserialization, pinned/checked OpenMMLab versions, basic image validation, explicit score semantics, a 64-megapixel input ceiling, a narrow boxes/classes/scores output contract, machine-readable provenance and an exact-notebook clean execution gate. The tutorial distinguishes its own sample metrics from upstream benchmark claims and provides a trivial baseline so readers do not see a number without context. The older scaffold controls remain active for gradient adaptation: `scripts/verify_scaffold.py` refuses promotion while worker/representation/qualification blockers remain, and `provenance/open-weights.json` keeps DIMER hosting blocked while adaptation-lineage weight redistribution is `unknown`. These are supply-chain and lifecycle mitigations, not substitutes for domain validation, fairness assessment, threshold calibration, user training, access control, audit logging or legal review. The standalone notebook routes every input through the package's `validate_inputs`, which applies the same checks as `predict` and writes an input manifest (schema, ceilings, per-image observations, verdict and any rejection finding) before inference.
 
 ###### Risks and harms
 
@@ -137,6 +140,12 @@ Unacceptable uses include surveillance or tracking intended to identify, follow 
 | Adaptation lineage checkpoint | Microsoft/SwinTransformer `mask_rcnn_swin_tiny_patch4_window7_1x.pth`, SHA-256 `b67f9d6cd62a4d723c78faec1b49cbf548faa22437264defb00f2f6e54d21b78` |
 | Adaptation weight hosting | `redistribution_status: unknown`, `dimer_hosting: BLOCKED` |
 | Adaptation blockers | detection representation, validator release, finetuner release, accelerator qualification |
+
+## Immutable provenance
+
+- **Inference model identity (fleet snapshot scheme):** `MODEL_ID` `open-mmlab/mmdetection:mask-rcnn_swin-t-p4-w7_fpn_1x_coco` — the config recipe inside the pinned MMDetection 3.3.0 package; `MODEL_REVISION` `44ebd17b145c2372c4b700bfb9cb20dbd28ab64a` is the `v3.3.0` release-tag commit of `open-mmlab/mmdetection` (the config source; the checkpoint itself has no git revision); `MODEL_KEY` `swin-t-mask-rcnn-coco`; weights licence Apache-2.0 (OpenMMLab).
+- **Snapshot manifest:** `weights/swin-t-mask-rcnn-coco/dimer-base-manifest.json` pins the single checkpoint file `mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth` at 191,461,353 bytes, SHA-256 `9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291` (equal to `MODEL_SPEC`); `verify_snapshot` refuses any manifest that disagrees with `MODEL_SPEC`, and `stage_missing_files` fetches only an absent checkpoint from the pinned `download.openmmlab.com` URL. The `.pth` is code-capable serialization deserialized by the pinned MMDetection loader after the digest check; see `docs/WEIGHTS.md`.
+- **Standalone tutorial:** `tutorials/swin_detection_task_inference.ipynb` carries `src/dimer_swin_detection/metrics.py` and `runtime.py` verbatim plus the manifest and the runtime pins inline (`tools/build_notebook.py`, NOTEBOOK_SPEC 1.1 §3.6).
 
 ## References
 
