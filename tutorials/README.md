@@ -32,3 +32,7 @@ _Requirement identifiers in these notes (for example `ST1`, `PAR3`, `DAT24`, `EV
 - Detection obligations: the class count (80) and request ceilings are printed before the model runs, scores are described as uncalibrated MMDetection confidences with no shipped threshold (`score_threshold` is a caller-owned output filter, 0.0 for evaluation), and exported detections keep their score ordering per image in both JSON and CSV.
 - `USE_BYOD` and `USE_COCO8` default to `False` so the sample path never opens an upload dialog or downloads data.
 - `tools/validate_release_assets.py` performs source validation only. It does not satisfy the clean-runtime execution requirement; a release review must confirm that a recorded clean run in `docs/release-verification.md` matches the notebook revision under review before the status is promoted to `Release-grade`. The previous Notebook Specification 1.0 notebook's clean run of 2026-09-11 (COCO AP `0.707` on COCO8) is retained there as an audit trail for the replaced carrier only.
+
+## AI Assistance Disclosure
+
+This tutorial and its accompanying documentation were developed with generative AI assistance for code development and technical writing under maintainer direction. The maintainer remains responsible for reviewing the implementation, validating results, and making release decisions. AI assistance does not constitute independent verification, provider endorsement, or release approval.
