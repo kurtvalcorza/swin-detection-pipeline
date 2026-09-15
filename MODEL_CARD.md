@@ -41,7 +41,7 @@ This pipeline provides a ready-to-run interactive Google Colab notebook for pret
 
 - **Task Inference Tutorial**:  
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/swin-detection-pipeline/blob/main/tutorials/swin_detection_task_inference.ipynb) [`swin_detection_task_inference.ipynb`](https://github.com/kurtvalcorza/swin-detection-pipeline/blob/main/tutorials/swin_detection_task_inference.ipynb)  
-  *Pretrained COCO object detection with the pinned `mask_rcnn_swin-t-p4-w7_fpn_1x_coco` checkpoint through `DimerSwinDetector`: verify the checkpoint, run detection on sample or your own images, and export boxes, masks, and the sample evaluation.*
+  *Pretrained COCO object detection with the pinned `mask_rcnn_swin-t-p4-w7_fpn_1x_coco` checkpoint through `DimerSwinDetector`: verify the checkpoint, run detection on sample or your own images, and export boxes, classes, scores, and the sample evaluation.*
 
 > [!NOTE]
 > Runs on the default CPU runtime; the shipped OpenMMLab runtime is CPU-only and requires Python 3.10.
