@@ -3,7 +3,7 @@
 `tutorials/swin_detection_task_inference.ipynb` (`TASK-INFERENCE`, standalone) is a **release candidate** until
 the exact notebook revision has executed top-to-bottom in a clean supported runtime. Unit tests, JSON validation,
 code-cell compilation, and `tools/validate_release_assets.py` are necessary checks but are **not** runtime evidence
-under DIMER Notebook Specification 1.1. This file is the durable release-gate record for the notebook.
+under DIMER Notebook Specification 2.2. This file is the durable release-gate record for the notebook.
 
 ## Automatic coverage (static, every pull request)
 
@@ -14,7 +14,7 @@ under DIMER Notebook Specification 1.1. This file is the durable release-gate re
 - notebook JSON parses; every code cell compiles as plain Python (no `%`/`!` magics); no persisted outputs or
   execution counts; no unresolved placeholder markers; every code cell is preceded by an explanatory markdown cell;
 - exactly one tutorial notebook, named in `tutorials/README.md` with its `TASK-INFERENCE` profile, the notebook-spec
-  version and the standalone carrier; `metadata.dimer` declares that profile, spec `1.1`, `standalone: true` and
+  version and the standalone carrier; `metadata.dimer` declares that profile, spec `2.2`, `standalone: true` and
   `generated_from` (repository, revision, the two carried modules, their joined SHA-256, generator);
 - the standalone carrier (ST1–ST6, PAR1–PAR3): no clone, repository install, repository import, worker process or
   subprocess on the primary path (the generator-owned install cell excepted); one cell tagged `embedded_module` per
@@ -102,11 +102,13 @@ A known-failing default path in the supported runtime blocks release.
 Notebook identity is the Git blob id of `tutorials/swin_detection_task_inference.ipynb` (verify with
 `git rev-parse <commit>:tutorials/swin_detection_task_inference.ipynb`).
 
-### Standalone carrier (Notebook Specification 1.1) — clean-runtime evidence
+### Standalone carrier — clean-runtime evidence
 
 | Date (UTC) | Commit / notebook blob | Executor | Path exercised | Wall | Outcome |
 |---|---|---|---|---|---|
-| 2026-09-14 | `181c09c` / `966c4ad9a255` | GitHub Actions `verify-task-tutorial` run `34769953971`, Ubuntu 24.04.5, CPython 3.10.19, CPU | Default sample path | 84.0 s | **PASSED** — 17/17 code cells executed cleanly, checkpoint verified & loaded, 4 outputs generated, evaluation verdict `not-measurable` on synthetic sample |
+| 2026-09-14 | `181c09c` / `966c4ad9a255` | GitHub Actions `verify-task-tutorial` run [`34769953971`](https://github.com/kurtvalcorza/swin-detection-pipeline/actions/runs/34769953971) (job `103757597810`), Ubuntu 24.04.5, CPython 3.10.19 kernel, CPU | Default sample path (in-kernel pinned install; synthetic scene) | 84.0 s | **PASSED** — 10/10 code cells executed cleanly in one pass, checkpoint verified & loaded, 4 outputs generated, evaluation verdict `not-measurable` on the synthetic sample; the workflow's assertions confirm `runtime.python` 3.10.x, `runtime.mmdet` 3.3.0 and the checkpoint SHA-256. The other library versions and the detection count were printed in the job log but not copied here, and the log host was not reachable when this record was corrected; the cell count was earlier mis-recorded as 17/17. |
+
+That row is evidence for the in-kernel-install revision only. The current notebook (2026-10-05 review fixes: isolated uv environment with a managed CPython 3.10.18, COCO8 default) has no recorded run yet.
 
 ### Previous carrier (Notebook Specification 1.0, repository-installing) — audit trail only
 
@@ -119,16 +121,14 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 ## Current status
 
-No clean-runtime execution of the standalone notebook has been recorded yet; the run is **pending**. Static validation
+The standalone in-kernel-install revision passed one clean GitHub Actions run (above); the current isolated-runtime revision is **pending**. Static validation
 (`tools/validate_release_assets.py`), nbformat validation, a `compile()` sweep over every code cell, and the offline
 unit suite passed on the tutorial source at the candidate revision, which is necessary but not sufficient. The
 registry status remains **Candidate** until a reviewer confirms a recorded run against the notebook blob under review
-and an integrator promotes it; promotion is not performed by the builder. Facts a reviewer should weigh:
-`stage_missing_files` was exercised only with an injected downloader in the unit suite (the real fetch from
-`download.openmmlab.com` into a fresh `weights/swin-t-mask-rcnn-coco/` has not been executed on this carrier);
-`verify_snapshot` was executed once over the real local checkpoint on the builder's workstation (OK); the OpenMMLab
-loader, `coco_box_ap` (pycocotools) and the single-command pinned install (`--extra-index-url` PyTorch CPU +
-`--find-links` OpenMMLab mmcv, in place of the previous notebook's separate `pip`/`mim` steps) have been validated
-statically only — wheel availability for every pin was checked against the indexes, resolution has not been run; and
-the standalone carrier itself — executing the carried module cells in a runtime that has no repository checkout — has
-been validated statically (parity PASS, carrier probe) but never run.
+and an integrator promotes it; promotion is not performed by the builder. Facts a reviewer should weigh: the
+2026-09-14 run executed the checkpoint fetch, the OpenMMLab loader and the pinned install with pip in a Python 3.10
+kernel; the current revision installs the same pins with `uv` into a uv-managed CPython 3.10.18 (pins mode, not
+hash-locked: the PyTorch CPU index and the OpenMMLab wheel page could not be reached to compile a lock) and evaluates
+COCO8 by default, and neither has been run yet. A hosted run must record `restarted: false`, the library versions, the
+detection count, the COCO8 AP values beside the empty-detector baseline, and a Colab run before any entry point calls
+Colab supported.

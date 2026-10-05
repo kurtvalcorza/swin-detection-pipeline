@@ -1,0 +1,17 @@
+LICENSE
+README.md
+pyproject.toml
+src/dimer_swin_detection/__init__.py
+src/dimer_swin_detection/cli.py
+src/dimer_swin_detection/metrics.py
+src/dimer_swin_detection/runtime.py
+src/dimer_swin_detection.egg-info/PKG-INFO
+src/dimer_swin_detection.egg-info/SOURCES.txt
+src/dimer_swin_detection.egg-info/dependency_links.txt
+src/dimer_swin_detection.egg-info/entry_points.txt
+src/dimer_swin_detection.egg-info/top_level.txt
+tests/test_metrics.py
+tests/test_notebook_parity.py
+tests/test_role_helpers.py
+tests/test_snapshot.py
+tests/test_weight_facts.py
