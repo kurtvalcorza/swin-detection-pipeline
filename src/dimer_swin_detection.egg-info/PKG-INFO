@@ -1,9 +1,0 @@
-Metadata-Version: 2.4
-Name: dimer-swin-detection
-Version: 0.1.0
-Summary: DIMER Swin-T Mask R-CNN task-inference runtime
-Author: Kurt Valcorza
-License: MIT
-Requires-Python: <3.11,>=3.10
-License-File: LICENSE
-Dynamic: license-file
