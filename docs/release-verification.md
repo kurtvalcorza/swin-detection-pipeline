@@ -107,8 +107,9 @@ Notebook identity is the Git blob id of `tutorials/swin_detection_task_inference
 | Date (UTC) | Commit / notebook blob | Executor | Path exercised | Wall | Outcome |
 |---|---|---|---|---|---|
 | 2026-09-14 | `181c09c` / `966c4ad9a255` | GitHub Actions `verify-task-tutorial` run [`34769953971`](https://github.com/kurtvalcorza/swin-detection-pipeline/actions/runs/34769953971) (job `103757597810`), Ubuntu 24.04.5, CPython 3.10.19 kernel, CPU | Default sample path (in-kernel pinned install; synthetic scene) | 84.0 s | **PASSED** — 10/10 code cells executed cleanly in one pass, checkpoint verified & loaded, 4 outputs generated, evaluation verdict `not-measurable` on the synthetic sample; the workflow's assertions confirm `runtime.python` 3.10.x, `runtime.mmdet` 3.3.0 and the checkpoint SHA-256. The other library versions and the detection count were printed in the job log but not copied here, and the log host was not reachable when this record was corrected; the cell count was earlier mis-recorded as 17/17. |
+| 2026-10-10 (11:41:13 UTC start) | `f5a6c1726bfdddd381dfcbd47a6d697fcebebf46` / `ea6b456dff309207c007097defa97a599002e2e9` (`NOTEBOOK_SOURCE.repository_revision` `b6d284425ca7`, `module_sha256` `92d2e49d5f2b…`, generator `build_notebook.py/2.1-swd`, `notebook_spec` 2.2) | Colab CLI 0.7.4 sequential execution (`colab exec -f`, not a browser Run all; order from `exec.log`, no execution counts), fresh Colab Tesla T4 VM (session `suite-swin-f5a6c17-65d6`), committed blob fetched at the commit and checked before the VM was allocated; kernel Python 3.13.15, isolated uv-managed CPython 3.10.18 (45 locked packages, setup 15 s), `torch 2.1.2+cpu`, MMDetection 3.3.0, MMCV 2.1.0, MMEngine 0.10.7, device `cpu` (by design; the T4 is unused), `restarted: false` | Default COCO8 path, every form field at its default (BYOD off) | 108.0 s | **PASSED** — one pass, no restart, 0 errors; 12/12 code cells in order (cells 4–5, the carried modules, print nothing); 1 checkpoint file digest-verified at `44ebd17b145c`; COCO8 val 4 images / 17 ground-truth boxes; `does-not-exist.png` refused by `validate_inputs`; 88 detections at threshold 0.0 (4 / 20 / 39 / 25 per image); COCO box AP@[.50:.95] 0.707, AP50 0.957, AP75 0.699 (AR@100 0.717) beside the empty-detector baseline 0.0; verdict `sample-sanity`; 4 outputs written. Same AP values as the 2026-09-11 GitHub Actions run of the earlier carrier. Evidence in `docs/execution-evidence/2026-10-10-f5a6c17/`: executed notebook SHA-256 `80e0000c3fba6ec96ad202a62640da7c723290301e3244258473446479e96d51`, `run_summary.json` `a98152e3efe0c4c0bb8fde455862941f88f0e6508a9be42f1aba7282a3814d0f`, `exec.log` `90546e774706e2997a29dfec506573da9af1809dbbd3dcd521952fa690538d5f`. Not exercised: the synthetic-scene path, BYOD, a browser Run all |
 
-That row is evidence for the in-kernel-install revision only. The current notebook (2026-10-05 review fixes: isolated uv environment with a managed CPython 3.10.18, COCO8 default) has no recorded run yet.
+That row is evidence for the in-kernel-install revision only. The current notebook (2026-10-05 review fixes: isolated uv environment with a managed CPython 3.10.18, COCO8 default) is recorded in the 2026-10-10 Colab T4 row above.
 
 ### Previous carrier (Notebook Specification 1.0, repository-installing) — audit trail only
 
@@ -121,7 +122,7 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 ## Current status
 
-The standalone in-kernel-install revision passed one clean GitHub Actions run (above); the current isolated-runtime revision is **pending**. Static validation
+The standalone in-kernel-install revision passed one clean GitHub Actions run (above); the current isolated-runtime blob `ea6b456dff30` (commit `f5a6c17`) completed one pass with no restart and 0 errors on a fresh Colab Tesla T4 VM on 2026-10-10 (Colab CLI 0.7.4 sequential execution, 12/12 code cells, 108.0 s, CPU execution by design; COCO8 4 images / 17 boxes, 88 detections, AP@[.50:.95] 0.707, AP50 0.957, AP75 0.699 beside the empty-detector baseline 0.0, verdict `sample-sanity`). Static validation
 (`tools/validate_release_assets.py`), nbformat validation, a `compile()` sweep over every code cell, and the offline
 unit suite passed on the tutorial source at the candidate revision, which is necessary but not sufficient. The
 registry status remains **Candidate** until a reviewer confirms a recorded run against the notebook blob under review
@@ -130,6 +131,6 @@ and an integrator promotes it; promotion is not performed by the builder. Facts 
 kernel; the current revision installs the same pins with `uv` into a uv-managed CPython 3.10.18 from the
 hash lock `tutorials/requirements-colab.lock.txt` (`--require-hashes --only-binary :all:`; MMCV 2.1.0 is the prebuilt cp310
 manylinux wheel from the OpenMMLab page, torch the `+cpu` wheel from the PyTorch CPU index) and evaluates
-COCO8 by default, and neither has been run yet. A hosted run must record `restarted: false`, the library versions, the
+COCO8 by default; both ran in the 2026-10-10 Colab T4 row above. A hosted run must record `restarted: false`, the library versions, the
 detection count, the COCO8 AP values beside the empty-detector baseline, and a Colab run before any entry point calls
 Colab supported.
