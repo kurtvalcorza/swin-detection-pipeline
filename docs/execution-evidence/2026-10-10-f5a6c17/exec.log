@@ -1,0 +1,160 @@
+[colab] Parsing notebook '/home/kurt/colab-runs/swin-detection-pipeline-f5a6c17-65d65d/swin_detection_task_inference_f5a6c17_colab-cli-t4.ipynb'...
+[colab] Executing cell 1/12 - Infrastructure: install the locked runtime into an isolated environment...
+{'isolated_environment': '/content/dimer_isolated_env', 'isolated_python': '3.10.18', 'kernel_python': '3.13.15', 'locked_packages': 45, 'setup_seconds': 15}
+[colab] Executing cell 2/12 - Route the remaining cells to the isolated environment...
+Every later code cell now runs in /content/dimer_isolated_env/bin/python (pid 672).
+[colab] Executing cell 3/12 - Infrastructure: record the pinned runtime and the notebook source...
+{'notebook_source': {'repository': 'swin-detection-pipeline', 'repository_revision': 'b6d284425ca776b742a73c54538a04955fe70ade', 'embedded_module': 'src/dimer_swin_detection/runtime.py', 'embedded_modules': ['src/dimer_swin_detection/metrics.py', 'src/dimer_swin_detection/runtime.py'], 'module_sha256': '92d2e49d5f2bad9ea74da4f6ddcbf1271fc27336176c3235214f1176c4f57db4', 'generator': 'build_notebook.py/2.1-swd', 'notebook_spec': '2.2'}, 'python': '3.10.18', 'torch': '2.1.2+cpu', 'numpy': '1.26.4', 'cuda': False}
+[colab] Executing cell 4/12 - swin_detection_task_inference-12...
+[colab] Executing cell 5/12 - swin_detection_task_inference-14...
+[colab] Executing cell 6/12 - Infrastructure: pin, stage and verify the model...
+{'model_id': 'open-mmlab/mmdetection:mask-rcnn_swin-t-p4-w7_fpn_1x_coco', 'revision': '44ebd17b145c2372c4b700bfb9cb20dbd28ab64a', 'license': 'Apache-2.0', 'files': 1, 'total_bytes': 191461353}
+{'weights_dir': '/content/weights/swin-t-mask-rcnn-coco', 'fetched': ['mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth']}
+{'verified_files': 1, 'revision': '44ebd17b145c2372c4b700bfb9cb20dbd28ab64a'}
+Loads checkpoint by local backend from path: /content/weights/swin-t-mask-rcnn-coco/mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth
+{'device': 'cpu', 'source': 'local-snapshot'}
+[colab] Executing cell 7/12 - swin_detection_task_inference-18...
+{'python': '3.10.18', 'torch': '2.1.2+cpu', 'numpy': '1.26.4', 'mmdet': '3.3.0', 'mmcv': '2.1.0', 'mmengine': '0.10.7', 'classes': 80, 'checkpoint': 'mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth', 'source': 'local-snapshot', 'device': 'cpu'}
+[colab] Executing cell 8/12 - swin_detection_task_inference-20...
+{'sample_kind': 'COCO8-val', 'images': ['000000000036.jpg', '000000000042.jpg', '000000000049.jpg', '000000000061.jpg'], 'sha256': {'000000000036.jpg': '4c28394898302bef227834d63498a0fc54e4295f11c590c8a8ebcba51347bc03', '000000000042.jpg': 'c87afb6dfe55db1cada52479ed939a231e030d64f5e3c3eaf7eb1544591f853a', '000000000049.jpg': '86b46022d382f67b0934147fe515e1c3c3f5c04db45045516214b5e3092148e3', '000000000061.jpg': '6460e4a7cc80e34815aba8910a23152a16a24a416fa598138bd9231cccd413e2'}, 'ground_truth_boxes': 17}
+[colab] Executing cell 9/12 - swin_detection_task_inference-22...
+{'ceilings': {'MAX_PIXELS': 64000000, 'score_threshold': [0.0, 1.0], 'max_detections': [1, None], 'classes': 80}}
+{
+  "schema": {
+    "input": "one or more image files readable by Pillow (any mode), given by path",
+    "pixels": [
+      1,
+      64000000
+    ],
+    "score_threshold": [
+      0.0,
+      1.0
+    ],
+    "max_detections": [
+      1,
+      null
+    ],
+    "classes": "80 COCO 2017 categories in MMDetection order",
+    "preprocessing": "MMDetection test pipeline of the pinned config (resize, normalise, pad); nothing is altered by this module"
+  },
+  "inputs": [
+    {
+      "id": "000000000036.jpg",
+      "path": "/content/sample/coco8/images/val/000000000036.jpg",
+      "width": 481,
+      "height": 640,
+      "mode": "RGB"
+    },
+    {
+      "id": "000000000042.jpg",
+      "path": "/content/sample/coco8/images/val/000000000042.jpg",
+      "width": 640,
+      "height": 478,
+      "mode": "RGB"
+    },
+    {
+      "id": "000000000049.jpg",
+      "path": "/content/sample/coco8/images/val/000000000049.jpg",
+      "width": 381,
+      "height": 500,
+      "mode": "RGB"
+    },
+    {
+      "id": "000000000061.jpg",
+      "path": "/content/sample/coco8/images/val/000000000061.jpg",
+      "width": 640,
+      "height": 488,
+      "mode": "RGB"
+    }
+  ],
+  "score_threshold": 0.0,
+  "max_detections": 300,
+  "verdict": "accepted",
+  "findings": [
+    {
+      "input": "missing-file-probe",
+      "verdict": "rejected",
+      "message": "Image does not exist: /content/sample/does-not-exist.png"
+    }
+  ],
+  "model_id": "open-mmlab/mmdetection:mask-rcnn_swin-t-p4-w7_fpn_1x_coco",
+  "model_revision": "44ebd17b145c2372c4b700bfb9cb20dbd28ab64a"
+}
+[colab] Executing cell 10/12 - swin_detection_task_inference-24...
+{'n_detections': 88, 'per_image': {'000000000036.jpg': 4, '000000000042.jpg': 20, '000000000049.jpg': 39, '000000000061.jpg': 25}, 'score_threshold': 0.0, 'max_detections': 300}
+ 1. 000000000036.jpg         class  0 person         score 0.9992  bbox_xyxy [172.5, 162.2, 454.7, 635.4]
+ 2. 000000000036.jpg         class 25 umbrella       score 0.9975  bbox_xyxy [12.1, 47.7, 451.9, 507.0]
+ 3. 000000000061.jpg         class 20 elephant       score 0.9951  bbox_xyxy [235.2, 245.2, 366.9, 326.6]
+ 4. 000000000049.jpg         class 17 horse          score 0.9941  bbox_xyxy [172.9, 233.5, 291.3, 411.0]
+ 5. 000000000049.jpg         class 17 horse          score 0.9929  bbox_xyxy [75.1, 241.6, 189.1, 401.8]
+[colab] Executing cell 11/12 - swin_detection_task_inference-26...
+creating index...
+index created!
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.03s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.707
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.957
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.699
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.312
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.530
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.790
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.600
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.717
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.717
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.425
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.533
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.790
+{
+  "task": "COCO-80 object detection",
+  "score_semantics": "MMDetection class confidence scores; uncalibrated, not probabilities of correctness",
+  "decision_threshold": "caller-owned; score_threshold is an output filter, not a deployment threshold",
+  "sample_kind": "COCO8-val",
+  "n_images": 4,
+  "n_detections": 88,
+  "context": {
+    "upstream_reported_box_ap": 42.7,
+    "note": "upstream full-COCO box AP as reported by OpenMMLab; not measured here"
+  },
+  "model_id": "open-mmlab/mmdetection:mask-rcnn_swin-t-p4-w7_fpn_1x_coco",
+  "model_revision": "44ebd17b145c2372c4b700bfb9cb20dbd28ab64a",
+  "metrics": [
+    {
+      "id": "coco_box_ap",
+      "iou": "0.50:0.95",
+      "value": 0.7073102310231023,
+      "estimation": "single labelled sample of 4 image(s) / 17 boxes, no dispersion estimate"
+    },
+    {
+      "id": "coco_box_ap",
+      "iou": "0.50",
+      "value": 0.9570957095709571,
+      "estimation": "single labelled sample of 4 image(s) / 17 boxes, no dispersion estimate"
+    },
+    {
+      "id": "coco_box_ap",
+      "iou": "0.75",
+      "value": 0.6992574257425741,
+      "estimation": "single labelled sample of 4 image(s) / 17 boxes, no dispersion estimate"
+    }
+  ],
+  "baselines": [
+    {
+      "id": "empty_detector",
+      "coco_box_ap": 0.0,
+      "note": "a detector returning no boxes scores AP 0 by construction"
+    }
+  ],
+  "verdict": "sample-sanity",
+  "reason": "4 labelled image(s) with 17 ground-truth boxes from the tutorial sample; not a benchmark",
+  "needs": "a representative labelled holdout from the deployment domain for any generalisable AP claim"
+}
+[colab] Executing cell 12/12 - swin_detection_task_inference-28...
+['swin_detection_task_inference_detections.csv', 'swin_detection_task_inference_evaluation_report.json', 'swin_detection_task_inference_input_manifest.json', 'swin_detection_task_inference_result.json']
+[colab] Saving notebook with outputs to '/home/kurt/colab-runs/swin-detection-pipeline-f5a6c17-65d65d/swin_detection_task_inference_f5a6c17_colab-cli-t4_output.ipynb'...

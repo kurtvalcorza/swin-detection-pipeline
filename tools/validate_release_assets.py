@@ -1,6 +1,6 @@
 """Static release-asset validation for the DIMER Swin-T Mask R-CNN object-detection pipeline.
 
-Checks the STANDALONE tutorial notebook (DIMER Notebook Specification 2.0 §4), the tutorial
+Checks the STANDALONE tutorial notebook (DIMER Notebook Specification 2.2 §4), the tutorial
 registry, model card, README, STATUS.md and weight documentation for source conformance and
 cross-document identity consistency, and runs the generator parity checks (PAR1–PAR3).
 
@@ -34,7 +34,7 @@ CARD_BASE_MODEL = "SwinTransformer/storage mask_rcnn_swin_tiny_patch4_window7_1x
 # Additional 40-hex revisions a document may legitimately cite (none by default).
 KNOWN_SHAS: frozenset[str] = frozenset(())
 # Colab form gates that must default to the non-interactive sample path.
-BYOD_GATES = ("USE_BYOD", "USE_COCO8")
+BYOD_GATES = ("USE_BYOD",)
 # Machine-readable artifacts the notebook must write (OUT1-OUT3, DAT24, EVAL21).
 EXPECTED_OUTPUTS = (
     "outputs/swin_detection_task_inference_input_manifest.json",
@@ -69,7 +69,7 @@ MARKDOWN_MARKERS = (
     "**Trust boundary (MOD12).**",
     "is **not** a `weights_only` load",
     "not publisher authenticity",
-    "**CPython 3.10** Jupyter kernel",
+    "managed **CPython 3.10.18**",
     "**ordered by descending score within each image**",
     "**uncalibrated**",
     "the package ships no deployment threshold",
@@ -107,7 +107,7 @@ FORBIDDEN_OUTSIDE_MODULE = (
 # Specification 2.0; see docs/release-verification.md for the release gate.
 # ---------------------------------------------------------------------------
 
-NOTEBOOK_SPEC = "2.0"
+NOTEBOOK_SPEC = "2.2"
 ALLOWED_PROFILES = {"E2E", "ARTIFACT-INFERENCE", "TASK-INFERENCE", "MULTI-CAPABILITY", "SMOKE"}
 STATUS_TOKENS = ("Candidate", "Release-grade")
 PLACEHOLDER = re.compile(r"\b(TODO|TBD|FIXME)\b|Insert text here|Tooltip:", re.I)
@@ -144,10 +144,8 @@ REQUIRED_CARD_HEADINGS = [
 COMMON_CODE_MARKERS = (
     "PINS = [",
     "NOTEBOOK_SOURCE = {",
-    "SKIP_INSTALL = os.environ.get('DIMER_NOTEBOOK_CI_PREINSTALLED') == '1'",
-    "subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', *PINS], check=True)",
-    "importlib.metadata.packages_distributions()",
-    "importlib.invalidate_caches()",
+    "PINS = [",
+    "_ip.input_transformers_cleanup.append(_route_to_isolated_runtime)",
     "platform.python_version()",
     "torch.__version__",
     "MANIFEST = {",
@@ -569,17 +567,17 @@ def _validate_parity(path: Path, notebook: dict, code_cells: list[tuple[int, str
 
 
 def _validate_bootstrap_guard(path: Path, code_cells: list[tuple[int, str, ast.Module]]) -> None:
-    """The stale-import guard must actually raise: `if stale:` whose body raises RuntimeError."""
-    raises = False
-    for _, _, tree in code_cells:
-        for node in ast.walk(tree):
-            if isinstance(node, ast.If) and isinstance(node.test, ast.Name) and node.test.id == "stale":
-                for sub in ast.walk(node):
-                    if isinstance(sub, ast.Raise) and isinstance(sub.exc, ast.Call):
-                        func = sub.exc.func
-                        if isinstance(func, ast.Name) and func.id == "RuntimeError":
-                            raises = True
-    _check(raises, f"{path.name}: install cell must raise RuntimeError when already-imported packages change")
+    """SWD-M1/m3 (RUN1, RUN10, ENV6): nothing is pip-installed into the kernel and no cell asks for a restart. Exactly two
+    kernel cells exist: the isolated install (pinned uv by digest, a uv-managed CPython 3.10 checked by exact version, the
+    exact pins) and the router that sends every later cell to the isolated worker."""
+    kernel_raw = [source for _index, source, _tree in code_cells if "# dimer: kernel cell" in source]
+    _check(len(kernel_raw) == 2, f"{path.name}: exactly two kernel cells (isolated install and router) are expected (SWD-M1)")
+    install = next((k for k in kernel_raw if "MANAGED_PYTHON = " in k), "")
+    for needed in ('"--managed-python"', '"--index-strategy"', "UV_SHA256", 'platform.machine() != "x86_64"', "isolated_version != MANAGED_PYTHON", "MANAGED_PYTHON = '3.10."):
+        _check(needed in install, f"{path.name}: the isolated install cell must use {needed} (SWD-M1)")
+    every = "\n".join(source for _index, source, _tree in code_cells)
+    _check("Restart the runtime" not in every, f"{path.name}: no cell may ask for a runtime restart (SWD-m3)")
+    _check("[sys.executable, '-m', 'pip'" not in every, f"{path.name}: nothing may be pip-installed into the kernel (SWD-m3)")
 
 
 def _validate_notebook_content(
@@ -593,10 +591,12 @@ def _validate_notebook_content(
     _check(not missing, f"{path.name}: missing required source markers: {missing}")
     present = [label for label, pattern in FORBIDDEN_PATTERNS if pattern.search(code)]
     _check(not present, f"{path.name}: forbidden/insecure source: {present}")
-    leaked = [marker for marker in FORBIDDEN_OUTSIDE_MODULE if marker in outside]
+    # The two kernel cells (isolated install and router) are generator-owned; every other cell runs in the isolated worker.
+    kernel = {index for index, source, _tree in code_cells if "# dimer: kernel cell" in source}
+    learner = "\n".join(text for index, text in stripped.items() if index not in embedded and index not in kernel)
+    leaked = [marker for marker in FORBIDDEN_OUTSIDE_MODULE if marker in learner]
     _check(not leaked, f"{path.name}: direct library use outside the carried module cell (G2): {leaked}")
-    install_index = code_cells[0][0]  # the generator-owned install cell is the only place a subprocess may run
-    after_install = "\n".join(text for index, text in stripped.items() if index not in embedded and index != install_index)
+    after_install = learner
     workers = [marker for marker in FORBIDDEN_WORKER_CALLS if marker in after_install]
     _check(not workers, f"{path.name}: worker process or subprocess on the primary path (ST1): {workers}")
     _check(
