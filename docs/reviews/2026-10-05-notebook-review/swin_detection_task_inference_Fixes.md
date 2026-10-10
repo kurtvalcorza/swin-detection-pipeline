@@ -35,3 +35,9 @@
 2. A hosted **Colab** Run all in a fresh runtime (Python 3.12 kernel), recorded with `restarted: false`, versions, detection count and AP; only then may the badges call Colab supported. Then re-run the export cell once.
 3. The REL12 BYOD journey: one image by `BYOD_IMAGE_PATH` in a Jupyter kernel and one through the Colab dialog, plus one refused input.
 4. Maintainer follow-up: compile a hash lock for the OpenMMLab stack where the PyTorch CPU index and `download.openmmlab.com` are reachable, and switch the template from pins mode to `lock`.
+
+## Addendum (2026-10-10, relay fixer)
+
+- **Hash lock (SWD-M1, ENV10–ENV16; closes Remaining gates 4).** `tutorials/requirements-colab.lock.txt` is compiled from `tools/pins.txt` with `uv pip compile --generate-hashes --only-binary :all:` for CPython 3.10 / manylinux_2_28 x86_64 (45 packages, including MMDetection's `pycocotools`, `shapely`, `terminaltables`, `scipy` and `matplotlib`). The install cell uses it with `--require-hashes --only-binary :all:`, passing the pins' PyTorch CPU index and OpenMMLab find-links page after PyPI (generator taken from swin-segmentation-pipeline 36f8f08, same `/2.1-swd` lineage). Installed into a clean uv-managed CPython 3.10.18 on Linux with no source build; every routed cell ran there on the real checkpoint (COCO8: AP 0.707 / AP50 0.957 / AP75 0.699, 88 detections).
+- **Colab stubs.** The isolated worker's `google`, `google.colab` and `google.colab.files` stubs carry a `ModuleSpec`; `tests/test_worker_colab_stubs.py` checks it.
+- **SWD-m2.** `STATUS.md` now states spec 2.2 and the lock instead of spec 1.1; the status label is unchanged (Candidate).

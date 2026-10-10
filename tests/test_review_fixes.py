@@ -50,12 +50,14 @@ def _markdown(notebook: dict) -> str:
 
 def test_swd_M1_first_code_cell_provisions_and_checks_python_310_before_any_install(notebook: dict) -> None:
     first = _code(notebook)[0]
-    assert first.startswith("# @title Infrastructure: install the pinned runtime into an isolated environment")
+    assert first.startswith("# @title Infrastructure: install the locked runtime into an isolated environment")
     assert "MANAGED_PYTHON = '3.10.18'" in first
     assert first.index("isolated_version != MANAGED_PYTHON") < first.index('"pip", "install"'), "the interpreter is checked before anything is installed"
-    assert '"--managed-python"' in first and "*PINS]" in first and '"--index-strategy", "unsafe-best-match"' in first
-    pins = [line for line in first.splitlines() if "torch==2.1.2+cpu" in line or "mmcv==2.1.0" in line or "--find-links" in line]
-    assert len(pins) == 3
+    install = next(line for line in first.splitlines() if '"pip", "install"' in line)
+    assert '"--managed-python"' in first and '"--require-hashes", "--only-binary", ":all:"' in install
+    assert '"--index-strategy", "unsafe-best-match"' in install and '"--find-links"' in install
+    pins = first[first.index("PINS = [") : first.index("]", first.index("PINS = ["))]
+    assert "'torch==2.1.2+cpu'" in pins and "'mmcv==2.1.0'" in pins and "'--find-links'" in pins
 
 
 def test_swd_m3_no_kernel_install_and_no_restart_instruction(notebook: dict) -> None:

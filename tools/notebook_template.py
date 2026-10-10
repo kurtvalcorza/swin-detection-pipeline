@@ -14,9 +14,9 @@ TEMPLATE = {
     "profile": "TASK-INFERENCE",
     "mode": "GUIDED",
     # SWD-M1/m3 (NOTEBOOK_SPEC 2.2 §5): the qualified OpenMMLab stack needs CPython 3.10, which pip cannot provide. The
-    # notebook therefore builds an isolated uv environment with a uv-managed CPython 3.10.18, installs the exact pins of
-    # tools/pins.txt there (pins mode: the PyTorch CPU index and the OpenMMLab find-links page are needed, so no hash lock
-    # is carried yet), and routes every later cell to a persistent worker in it. The kernel's own Python does not matter.
+    # notebook therefore builds an isolated uv environment with a uv-managed CPython 3.10.18, installs the hash lock
+    # compiled from tools/pins.txt there (--require-hashes --only-binary :all:, with the PyTorch CPU index and the OpenMMLab
+    # find-links page the pins name), and routes every later cell to a persistent worker in it. The kernel's own Python does not matter.
     "isolated_runtime": True,
     "infrastructure_labels": True,
     "managed_python": "3.10.18",
@@ -26,11 +26,11 @@ TEMPLATE = {
         "bytes": 20081404,
         "sha256": "aee9802f46bae436bd91751bb33ddeb379ef1596b5c19df193219d545d244b60",
     },
-    "lock": None,
+    "lock": "tutorials/requirements-colab.lock.txt",
     "run_all": (
         "Selecting **Run all** in a fresh Linux x86_64 runtime (a Python 3.10 Jupyter kernel is the recorded runtime; Google Colab is "
         "expected to work through the isolated environment but no Colab run is recorded yet) builds an isolated environment with a "
-        "uv-managed CPython 3.10.18 and the exact pins of `tools/pins.txt` (the kernel's own Python and packages are left alone, so "
+        "uv-managed CPython 3.10.18 and the hash-locked pins of `tools/pins.txt` (the kernel's own Python and packages are left alone, so "
         "no restart is needed), stages and digest-verifies the pinned OpenMMLab checkpoint, fetches the digest-pinned labelled COCO8 "
         "validation subset (4 images, 17 ground-truth boxes), validates it into an input manifest before the model runs, detects "
         "objects, writes an evaluation report with COCO box AP against the empty-detector baseline, and exports machine-readable "
@@ -187,13 +187,13 @@ TEMPLATE = {
             "| **`.pth` trust boundary** | The checkpoint is a PyTorch pickle that can run code when loaded; the digest check fixes its bytes, not its author. |\n"
             "| **`not-measurable`** | The report's verdict when no ground truth exists, so no metric can be computed. |\n"
             "| **`sample-sanity`** | The verdict for a metric on a tiny tutorial sample: evidence the path works, not a benchmark. |\n"
-            "| **Isolated environment** | A separate Python 3.10 with the exact pins, in which every learner cell runs. |\n"
+            "| **Isolated environment** | A separate Python 3.10 built from the hash-locked pins, in which every learner cell runs. |\n"
             "| **BYOD** | Bring Your Own Data: the optional switch that runs the same cells on your image. |\n\n"
             "</details>"
         ),
     ],
     "prerequisites": [
-        "- **Runtime:** a fresh **Linux x86_64** runtime; the kernel's own Python version does not matter. The qualified OpenMMLab stack — torch 2.1.2 (CPU build), MMCV 2.1.0, MMEngine 0.10.7, MMDetection 3.3.0, NumPy 1.26.4 — has prebuilt wheels for Python 3.10 only, so Section 1 has `uv` provision a managed **CPython 3.10.18**, installs the exact pins there, and runs every later cell in that interpreter (Section 4 asserts it). The recorded runtime is a Python 3.10 Jupyter kernel on Linux (GitHub Actions); Google Colab (Python 3.12 kernel) is expected to work the same way but **no Colab run has been recorded yet**. CPU is the default and only qualified path; no GPU is required. The pinned torch/mmcv wheels are the largest downloads of the run.",
+        "- **Runtime:** a fresh **Linux x86_64** runtime; the kernel's own Python version does not matter. The qualified OpenMMLab stack — torch 2.1.2 (CPU build), MMCV 2.1.0, MMEngine 0.10.7, MMDetection 3.3.0, NumPy 1.26.4 — has prebuilt wheels for Python 3.10 only, so Section 1 has `uv` provision a managed **CPython 3.10.18**, installs the hash-locked pins there, and runs every later cell in that interpreter (Section 4 asserts it). The recorded runtime is a Python 3.10 Jupyter kernel on Linux (GitHub Actions); Google Colab (Python 3.12 kernel) is expected to work the same way but **no Colab run has been recorded yet**. CPU is the default and only qualified path; no GPU is required. The pinned torch/mmcv wheels are the largest downloads of the run.",
         "- **External package indexes:** the isolated install reads the PyTorch CPU index (`download.pytorch.org`) for the `+cpu` torch builds and the OpenMMLab wheel page (`download.openmmlab.com`) for MMCV, besides PyPI; the COCO8 archive comes from `github.com` (Ultralytics assets release).",
         "- **Knowledge:** basic Python and image handling; what a detection score and an IoU-based AP metric are.",
         "- **Data:** the default sample is the public COCO8 validation subset (4 labelled COCO 2017 images, 17 ground-truth boxes, a 443 KB archive from the Ultralytics `assets` release `v0.0.0`, verified against its SHA-256 before path-safe extraction), evaluated with COCO box AP. `SAMPLE = 'synthetic'` switches to a deterministic 640×480 scene generated in code (no download, no ground truth). `USE_BYOD` (off by default) takes one image file decodable by Pillow (PNG/JPEG/WebP and similar, at most 64 megapixels) from `BYOD_IMAGE_PATH`, or from the Colab upload dialog when that field is empty. Do not upload confidential or restricted data to a hosted notebook environment unless you are authorized to do so. Uploaded inputs remain in the notebook runtime; this pipeline does not send them to a third-party inference API.",
