@@ -144,6 +144,20 @@ Notebook identity is the Git blob id of `tutorials/swin_detection_task_inference
 
 The 2026-09-14 row is evidence for the in-kernel-install revision only; the 2026-10-10 row is evidence for blob `ea6b456d` (isolated uv environment, COCO8 default). Both predate the 2026-10-18 sample change: the 2026-10-10 AP values are resubstitution scores on four train2017 images (see **Default scored sample** above). The hosted run of the 2026-10-18 revision is pending.
 
+### CPU development runs of the 2026-10-18 revision (not the run of record)
+
+These two runs scored the new val2017 sample on CPU while the fix was being built. The maintainer allowed it as a
+development check (an inference-only measurement has no score-once rule). They are labelled here so that the look is
+disclosed. The hosted Colab T4 run of the final blob remains the run of record.
+
+| Date (UTC) | Commit / notebook blob | Executor | Outcome |
+|---|---|---|---|
+| 2026-10-18 | `7325021` / `a4c94fca64d6` (`repository_revision` `1628f8b`) | GitHub Actions `verify-task-tutorial` run [`39168312094`](https://github.com/kurtvalcorza/swin-detection-pipeline/actions/runs/39168312094), nbconvert from a scratch directory, isolated CPython 3.10.18, torch 2.1.2+cpu, MMDetection 3.3.0, CPU | **PASSED** (4m21s job); 50 images / 279 boxes; AP@[.50:.95] 0.5378, AP50 0.8013, AP75 0.5838; empty-detector baseline 0.0; verdict `sample-sanity`; `eval_data_in_training: false` |
+| 2026-10-18 | `7325021` / `a4c94fca64d6` | **CPU development run**: nbconvert in WSL2 Ubuntu (glibc 2.39, 24 vCPU, GPU hidden with `CUDA_VISIBLE_DEVICES=-1`), the same isolated CPython 3.10.18 stack, executed-notebook SHA-256 `5be39ab3…` | **PASSED** (420 s); 1,252 detections; AP@[.50:.95] 0.5378428166, AP50 0.8013336406, AP75 0.5837752546, the same as the CI run; baseline 0.0; verdict `sample-sanity` |
+
+Read these values as a sanity measurement on 50 val2017 images, which is the split upstream reported 42.7 on. They are
+not an independent test, and they have no dispersion estimate.
+
 ### Previous carrier (Notebook Specification 1.0, repository-installing) — audit trail only
 
 | Date (UTC) | Commit | Executor | Path exercised | Outcome |
