@@ -3,18 +3,19 @@
 `tutorials/swin_detection_task_inference.ipynb` (`TASK-INFERENCE`, standalone) is a **release candidate** until
 the exact notebook revision has executed top-to-bottom in a clean supported runtime. Unit tests, JSON validation,
 code-cell compilation, and `tools/validate_release_assets.py` are necessary checks but are **not** runtime evidence
-under DIMER Notebook Specification 2.2. This file is the durable release-gate record for the notebook.
+under DIMER Notebook Specification 2.5. This file is the durable release-gate record for the notebook.
 
 ## Automatic coverage (static, every pull request)
 
 `.github/workflows/ci.yml` runs `ruff`, the offline unit suite (`tests/test_snapshot.py`, `tests/test_role_helpers.py`,
-`tests/test_metrics.py`, `tests/test_notebook_parity.py` — OpenMMLab and pycocotools stubbed, no weights, no model),
+`tests/test_metrics.py`, `tests/test_notebook_parity.py`, `tests/test_review_fixes.py`, `tests/test_r86_review_fixes.py`,
+`tests/test_val2017_release_assets.py` — the last one downloads the 50 release-asset images and parses them; OpenMMLab and pycocotools stubbed, no weights, no model),
 `tools/validate_release_assets.py` and `tools/build_notebook.py --check` on Python 3.10. The validator checks:
 
 - notebook JSON parses; every code cell compiles as plain Python (no `%`/`!` magics); no persisted outputs or
   execution counts; no unresolved placeholder markers; every code cell is preceded by an explanatory markdown cell;
 - exactly one tutorial notebook, named in `tutorials/README.md` with its `TASK-INFERENCE` profile, the notebook-spec
-  version and the standalone carrier; `metadata.dimer` declares that profile, spec `2.2`, `standalone: true` and
+  version and the standalone carrier; `metadata.dimer` declares that profile, spec `2.5`, `notebook_kind: TUTORIAL`, `standalone: true` and
   `generated_from` (repository, revision, the two carried modules, their joined SHA-256, generator);
 - the standalone carrier (ST1–ST6, PAR1–PAR3): no clone, repository install, repository import, worker process or
   subprocess on the primary path (the generator-owned install cell excepted); one cell tagged `embedded_module` per
@@ -27,10 +28,10 @@ under DIMER Notebook Specification 2.2. This file is the durable release-gate re
   identity string appears in `README.md`, `MODEL_CARD.md`, and `docs/WEIGHTS.md` with no stray revisions;
 - the profile-specific public-API calls (`stage_missing_files`, `verify_snapshot`,
   `DimerSwinDetector.from_pretrained(weights_dir=...)`, `validate_inputs`, `predict_many`, `evaluation_report`),
-  the Python 3.10 assertion, the ceiling print (`MAX_PIXELS`, request ceilings, class count), the pinned COCO8 archive
-  digest, the exports, the learner-facing statements (uncalibrated scores, no shipped threshold, score-ordered
-  detections, the `.pth` trust boundary, `not-measurable` / `sample-sanity` verdicts) and the gated-off `USE_BYOD` /
-  `USE_COCO8` defaults listed in the validator; forbidden patterns (credential-in-URL, any `git clone` /
+  the Python 3.10 assertion, the ceiling print (`MAX_PIXELS`, request ceilings, class count), the pinned val2017 sample
+  (per-image SHA-256 fetch, ground-truth digest, `training_overlap`), atomic writes, the exports, the learner-facing statements (uncalibrated scores, no shipped threshold, score-ordered
+  detections, the `.pth` trust boundary, `not-measurable` / `sample-sanity` verdicts) and the gated-off `USE_BYOD`
+  default listed in the validator; forbidden patterns (credential-in-URL, any `git clone` /
   `github.com/kurtvalcorza` / repository import, a mutable `revision='main'`, direct `mmdet` / `mmcv` / `mmengine` /
   `pycocotools` / `torchvision` / `transformers` / `huggingface_hub` use **outside the carried module cells**,
   `trust_remote_code=True`, `pickle.load`, `torch.load(`, `extractall(`);
@@ -53,18 +54,19 @@ promotion evidence to record below; a red run blocks release.
 |---|---|---|
 | GitHub Actions `verify-task-tutorial` (supported clean-room path) | `ubuntu-latest`, `actions/setup-python` 3.10, CPU; `nbconvert` from a scratch directory | The qualified Python 3.10 CPU runtime; a green run is promotion evidence once recorded here with the notebook blob |
 | Jupyter on a CPython 3.10 kernel (user path) | Any Linux host with Python 3.10; CPU | The runtime the tutorial is written for; the notebook asserts the interpreter version |
-| Google Colab | Default Colab runtimes ship Python 3.11+ | **Unsupported**: the OpenMMLab wheels exist for Python 3.10 only and the pinned install fails; the badge is kept for the file location, not as a supported executor |
-| Kaggle CLI kernel | Kaggle images ship Python 3.11+ | **Unsupported** for the same reason |
+| Google Colab (Colab CLI fresh VM, or a browser Run all) | Linux x86_64 VM; any kernel Python | Supported through the isolated uv-managed CPython 3.10.18 environment (Section 1); a Colab CLI T4 run is the hosted run of record for a revision (one is recorded below for blob `ea6b456d`) |
+| Kaggle kernel | Linux x86_64; any kernel Python | Expected to work through the same isolated environment; no run recorded |
 
 ## Supported release verification procedure
 
 Before changing the registry status from `Candidate` to `Release-grade`:
 
 1. resolve the exact PR/commit head under review and confirm static CI is green;
-2. run that exact notebook revision in a clean CPython 3.10 CPU runtime with **no repository checkout** on the
-   notebook's path and a clean `weights/` directory (the `verify-task-tutorial` workflow does this);
+2. run that exact notebook revision in a clean Linux x86_64 runtime (a fresh Colab VM through the Colab CLI, or the
+   `verify-task-tutorial` workflow) with **no repository checkout** on the notebook's path and clean `weights/`,
+   `sample/` and `outputs/` directories;
 3. run the notebook top-to-bottom without editing implementation cells (form parameters at their defaults for the
-   sample path: `USE_BYOD = False`, `USE_COCO8 = False`);
+   sample path: `USE_BYOD = False`, `SAMPLE = 'val2017'`);
 4. verify that Section 1 reports `NOTEBOOK_SOURCE.repository_revision` equal to the revision recorded in
    `metadata.dimer.generated_from` and that the installed core package versions equal the inline `PINS`
    (= `tools/pins.txt`: torch 2.1.2+cpu, mmcv 2.1.0, mmengine 0.10.7, mmdet 3.3.0, numpy 1.26.4);
@@ -78,22 +80,53 @@ Before changing the registry status from `Candidate` to `Release-grade`:
      the one manifest entry on a clean runtime, `verify_snapshot` returns the manifest dict, and
      `from_pretrained(weights_dir=WEIGHTS_DIR)` reports `source == 'local-snapshot'`;
    - Section 4 asserts Python 3.10 and prints `mmdet 3.3.0`, `mmcv 2.1.0`, `mmengine 0.10.7`, 80 classes;
-   - the synthetic 640×480 scene is generated in code with its SHA-256 printed;
-   - `validate_inputs` writes `outputs/swin_detection_task_inference_input_manifest.json` (verdict `accepted`, one
-     recorded rejection finding from the missing-file probe);
+   - the 50 COCO val2017 images are downloaded from release `data-coco-val2017-50-v1` and each matches its pinned size and SHA-256;
+     the inline ground truth matches its digest (279 boxes over 59 categories); the sample print shows
+     `COCO-val2017-50`, 33 CC BY 2.0 / 17 CC BY-SA 2.0 and `eval_data_in_training: False`;
+   - `validate_inputs` writes `outputs/swin_detection_task_inference_input_manifest.json` (verdict `accepted`, 50
+     accepted inputs and one recorded rejection finding from the missing-file probe);
    - detection through `predict_many(image_paths, score_threshold=0.0, max_detections=300)`;
    - `evaluation_report` writes `outputs/swin_detection_task_inference_evaluation_report.json` with verdict
-     `not-measurable` on the synthetic sample (no ground truth), stated as such;
+     `sample-sanity`, `coco_box_ap` beside the empty-detector baseline, and `training_overlap`
+     (`checkpoint_training_split: train2017`, `eval_data_in_training: false`);
    - `outputs/swin_detection_task_inference_result.json` and `outputs/swin_detection_task_inference_detections.csv`
      written with `NOTEBOOK_SOURCE`, model revision, model licence, checkpoint digest, runtime versions and device;
-6. verify the exports exist and the interpretation section matches the observed path;
+6. verify the exports exist under their default names (no `_exploratory_` or `.part` file) and the interpretation
+   section matches the observed path;
 7. record the notebook Git blob id, commit, runtime (platform, Python, PyTorch, mmdet/mmcv/mmengine, device), model
    identifier and immutable revision, whether the weights directory was clean, outcome, produced outputs, and any
    warning or applicable `SHOULD` deviation in the table below;
 8. record no access tokens or other secrets.
 
-The gated `USE_COCO8` path (labelled COCO8 validation subset, `coco_box_ap` via pycocotools) is not part of the
-default-path gate; a separate run with the gate enabled may be recorded as additional evidence.
+The synthetic scene (`SAMPLE = 'synthetic'`, verdict `not-measurable`) and BYOD are optional exploratory paths, not
+part of the default-path gate. They write `_exploratory_<n>` files and never replace the default report; a run of
+them may be recorded as additional evidence. A refused BYOD input moves earlier outputs to `outputs/earlier_<n>/`.
+
+## Default scored sample (review row 86, 2026-10-18)
+
+Until 2026-10-18 the default scored sample was COCO8's `images/val` (Ultralytics), whose four files are COCO
+**train2017** images 36, 42, 49 and 61. The checkpoint (`mask-rcnn_swin-t-p4-w7_fpn_1x_coco`, MMDetection v3.3.0) was
+trained on `instances_train2017.json`, so every AP recorded below for COCO8 (0.707 / 0.957 / 0.699) is a
+resubstitution score on training images, not a measurement. Maintainer decisions R86-D1–D3 replaced it:
+
+- **Rule (fixed before any score was seen):** COCO val2017 images with licence id in {4 CC BY 2.0, 5 CC BY-SA 2.0,
+  7 no known copyright restrictions, 8 US Government work}, at least one non-crowd box, no crowd box, and no
+  train2017 match by image id, Flickr photo id or (width, height, date_captured); 1,154 images qualify; the first
+  50 by image id are used (279 boxes, 59 categories, 8,346,599 bytes; 33 CC BY 2.0, 17 CC BY-SA 2.0).
+- **Pin:** `tools/coco_val2017_sample_50.json` (per-image SHA-256, bytes, licence, Flickr and COCO URLs, ground
+  truth as `[class index, x1, y1, x2, y2]`; ground-truth digest `2f5e416a…`, `b6057ca6…` in the reviewer's
+  `[x, y, w, h]` form; source `annotations_trainval2017.zip` SHA-256 `113a836d…`). The fixer re-derived the rule and
+  the 50 ids from the annotations zip, re-downloaded every image over http from `images.cocodataset.org`, and
+  matched all 50 SHA-256 values and decoded sizes before uploading.
+- **Hosting:** assets of the release [`data-coco-val2017-50-v1`](https://github.com/kurtvalcorza/swin-detection-pipeline/releases/tag/data-coco-val2017-50-v1) (the 50 JPEGs, `ATTRIBUTION.md`, the pin).
+  The notebook downloads from there and refuses any file whose size or SHA-256 differs;
+  `images.cocodataset.org` (no valid TLS certificate at review time) is recorded for provenance only.
+- **Disclosure:** val2017 is the split upstream used to report box AP 42.7 and possibly for model selection, so the
+  result is a sanity measurement on images the model never trained on, not an independent test. The overlap
+  screen used ids and capture metadata, not pixels.
+- **CI:** `verify-task-tutorial` asserts the new pool (50 images, 279 boxes, the ground-truth digest, licences,
+  `eval_data_in_training: false`, no exploratory files). Its runs of an unchanged notebook are reproductions, not
+  new measurements. The hosted Colab T4 run of the new blob is the run of record.
 
 A known-failing default path in the supported runtime blocks release.
 
@@ -107,30 +140,26 @@ Notebook identity is the Git blob id of `tutorials/swin_detection_task_inference
 | Date (UTC) | Commit / notebook blob | Executor | Path exercised | Wall | Outcome |
 |---|---|---|---|---|---|
 | 2026-09-14 | `181c09c` / `966c4ad9a255` | GitHub Actions `verify-task-tutorial` run [`34769953971`](https://github.com/kurtvalcorza/swin-detection-pipeline/actions/runs/34769953971) (job `103757597810`), Ubuntu 24.04.5, CPython 3.10.19 kernel, CPU | Default sample path (in-kernel pinned install; synthetic scene) | 84.0 s | **PASSED** — 10/10 code cells executed cleanly in one pass, checkpoint verified & loaded, 4 outputs generated, evaluation verdict `not-measurable` on the synthetic sample; the workflow's assertions confirm `runtime.python` 3.10.x, `runtime.mmdet` 3.3.0 and the checkpoint SHA-256. The other library versions and the detection count were printed in the job log but not copied here, and the log host was not reachable when this record was corrected; the cell count was earlier mis-recorded as 17/17. |
-| 2026-10-10 (11:41:13 UTC start) | `f5a6c1726bfdddd381dfcbd47a6d697fcebebf46` / `ea6b456dff309207c007097defa97a599002e2e9` (`NOTEBOOK_SOURCE.repository_revision` `b6d284425ca7`, `module_sha256` `92d2e49d5f2b…`, generator `build_notebook.py/2.1-swd`, `notebook_spec` 2.2) | Colab CLI 0.7.4 sequential execution (`colab exec -f`, not a browser Run all; order from `exec.log`, no execution counts), fresh Colab Tesla T4 VM (session `suite-swin-f5a6c17-65d6`), committed blob fetched at the commit and checked before the VM was allocated; kernel Python 3.13.15, isolated uv-managed CPython 3.10.18 (45 locked packages, setup 15 s), `torch 2.1.2+cpu`, MMDetection 3.3.0, MMCV 2.1.0, MMEngine 0.10.7, device `cpu` (by design; the T4 is unused), `restarted: false` | Default COCO8 path, every form field at its default (BYOD off) | 108.0 s | **PASSED** — one pass, no restart, 0 errors; 12/12 code cells in order (cells 4–5, the carried modules, print nothing); 1 checkpoint file digest-verified at `44ebd17b145c`; COCO8 val 4 images / 17 ground-truth boxes; `does-not-exist.png` refused by `validate_inputs`; 88 detections at threshold 0.0 (4 / 20 / 39 / 25 per image); COCO box AP@[.50:.95] 0.707, AP50 0.957, AP75 0.699 (AR@100 0.717) beside the empty-detector baseline 0.0; verdict `sample-sanity`; 4 outputs written. Same AP values as the 2026-09-11 GitHub Actions run of the earlier carrier. Evidence in `docs/execution-evidence/2026-10-10-f5a6c17/`: executed notebook SHA-256 `80e0000c3fba6ec96ad202a62640da7c723290301e3244258473446479e96d51`, `run_summary.json` `a98152e3efe0c4c0bb8fde455862941f88f0e6508a9be42f1aba7282a3814d0f`, `exec.log` `90546e774706e2997a29dfec506573da9af1809dbbd3dcd521952fa690538d5f`. Not exercised: the synthetic-scene path, BYOD, a browser Run all |
+| 2026-10-10 (11:41:13 UTC start) | `f5a6c1726bfdddd381dfcbd47a6d697fcebebf46` / `ea6b456dff309207c007097defa97a599002e2e9` (`NOTEBOOK_SOURCE.repository_revision` `b6d284425ca7`, `module_sha256` `92d2e49d5f2b…`, generator `build_notebook.py/2.1-swd`, `notebook_spec` 2.2) | Colab CLI 0.7.4 sequential execution (`colab exec -f`, not a browser Run all; order from `exec.log`, no execution counts), fresh Colab Tesla T4 VM (session `suite-swin-f5a6c17-65d6`), committed blob fetched at the commit and checked before the VM was allocated; kernel Python 3.13.15, isolated uv-managed CPython 3.10.18 (45 locked packages, setup 15 s), `torch 2.1.2+cpu`, MMDetection 3.3.0, MMCV 2.1.0, MMEngine 0.10.7, device `cpu` (by design; the T4 is unused), `restarted: false` | Default COCO8 path, every form field at its default (BYOD off) | 108.0 s | **PASSED** — one pass, no restart, 0 errors; 12/12 code cells in order (cells 4–5, the carried modules, print nothing); 1 checkpoint file digest-verified at `44ebd17b145c`; COCO8 val 4 images / 17 ground-truth boxes; `does-not-exist.png` refused by `validate_inputs`; 88 detections at threshold 0.0 (4 / 20 / 39 / 25 per image); COCO box AP@[.50:.95] 0.707, AP50 0.957, AP75 0.699 (AR@100 0.717) beside the empty-detector baseline 0.0; verdict `sample-sanity`; 4 outputs written. Same AP values as the 2026-09-11 GitHub Actions run of the earlier carrier. Evidence in `docs/execution-evidence/2026-10-10-f5a6c17/`: executed notebook SHA-256 `80e0000c3fba6ec96ad202a62640da7c723290301e3244258473446479e96d51`, `run_summary.json` `a98152e3efe0c4c0bb8fde455862941f88f0e6508a9be42f1aba7282a3814d0f`, `exec.log` `ab08d17d231ca2636dadc79f1a23a05bc8cea42b4fbc752f1ccfabe4eb83cd63` (two lines redacted on 2026-10-18 to replace the runner's home-directory path with `<runner-home>`; the log as executed had SHA-256 `90546e774706e2997a29dfec506573da9af1809dbbd3dcd521952fa690538d5f`). Not exercised: the synthetic-scene path, BYOD, a browser Run all |
 
-That row is evidence for the in-kernel-install revision only. The current notebook (2026-10-05 review fixes: isolated uv environment with a managed CPython 3.10.18, COCO8 default) is recorded in the 2026-10-10 Colab T4 row above.
+The 2026-09-14 row is evidence for the in-kernel-install revision only; the 2026-10-10 row is evidence for blob `ea6b456d` (isolated uv environment, COCO8 default). Both predate the 2026-10-18 sample change: the 2026-10-10 AP values are resubstitution scores on four train2017 images (see **Default scored sample** above). The hosted run of the 2026-10-18 revision is pending.
 
 ### Previous carrier (Notebook Specification 1.0, repository-installing) — audit trail only
 
 | Date (UTC) | Commit | Executor | Path exercised | Outcome |
 |---|---|---|---|---|
-| 2026-09-11 | PR head `354545b89fef6934d01eb932d868fc3e1260d830` | GitHub Actions `verify-task-tutorial` run `34574579363`, Ubuntu 24.04.5, CPython 3.10.19, CPU | repository clone + pinned install, COCO8 validation subset (4 images, 17 GT boxes) | success — COCO AP@[0.50:0.95] `0.7073101933`, AP50 `0.9570957096`, AP75 `0.6993399340`; empty-detector baseline AP `0.0` |
+| 2026-09-11 | PR head `354545b89fef6934d01eb932d868fc3e1260d830` | GitHub Actions `verify-task-tutorial` run `34574579363`, Ubuntu 24.04.5, CPython 3.10.19, CPU | repository clone + pinned install, COCO8 `images/val` (4 COCO train2017 images, i.e. training images of this checkpoint; 17 GT boxes) | success — COCO AP@[0.50:0.95] `0.7073101933`, AP50 `0.9570957096`, AP75 `0.6993399340`; empty-detector baseline AP `0.0` |
 
 That run exercised a notebook that cloned this repository and evaluated COCO8 by default; it is evidence for that
 carrier and for the OpenMMLab inference path, not for the standalone notebook above.
 
 ## Current status
 
-The standalone in-kernel-install revision passed one clean GitHub Actions run (above); the current isolated-runtime blob `ea6b456dff30` (commit `f5a6c17`) completed one pass with no restart and 0 errors on a fresh Colab Tesla T4 VM on 2026-10-10 (Colab CLI 0.7.4 sequential execution, 12/12 code cells, 108.0 s, CPU execution by design; COCO8 4 images / 17 boxes, 88 detections, AP@[.50:.95] 0.707, AP50 0.957, AP75 0.699 beside the empty-detector baseline 0.0, verdict `sample-sanity`). Static validation
-(`tools/validate_release_assets.py`), nbformat validation, a `compile()` sweep over every code cell, and the offline
-unit suite passed on the tutorial source at the candidate revision, which is necessary but not sufficient. The
-registry status remains **Candidate** until a reviewer confirms a recorded run against the notebook blob under review
-and an integrator promotes it; promotion is not performed by the builder. Facts a reviewer should weigh: the
-2026-09-14 run executed the checkpoint fetch, the OpenMMLab loader and the pinned install with pip in a Python 3.10
-kernel; the current revision installs the same pins with `uv` into a uv-managed CPython 3.10.18 from the
-hash lock `tutorials/requirements-colab.lock.txt` (`--require-hashes --only-binary :all:`; MMCV 2.1.0 is the prebuilt cp310
-manylinux wheel from the OpenMMLab page, torch the `+cpu` wheel from the PyTorch CPU index) and evaluates
-COCO8 by default; both ran in the 2026-10-10 Colab T4 row above. A hosted run must record `restarted: false`, the library versions, the
-detection count, the COCO8 AP values beside the empty-detector baseline, and a Colab run before any entry point calls
-Colab supported.
+The registry status is **Candidate**. The 2026-10-18 revision (review row 86) replaces the scored sample with 50
+pinned COCO val2017 images, migrates the notebook to Notebook Specification 2.5, and has no hosted run yet. Its
+hosted Colab T4 run is the run of record; until it is recorded here against the exact notebook blob, no AP value
+is quoted for this revision. Earlier hosted runs (2026-09-14, 2026-10-10) do not transfer to it, and their COCO8
+AP values are resubstitution scores. Static validation (`tools/validate_release_assets.py`), the generator parity
+check and the offline unit suite are necessary but not sufficient. Promotion is performed by a reviewer/integrator,
+not by the builder. A hosted run must record `restarted: false`, the library versions, the detection count, the
+val2017 AP values beside the empty-detector baseline, and the notebook blob.

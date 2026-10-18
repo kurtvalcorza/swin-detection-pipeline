@@ -51,9 +51,11 @@ CODE_MARKERS = (
     "report = evaluation_report(detections, ground_truth, sample_kind=sample_kind)",
     "print({'ceilings': {'MAX_PIXELS': MAX_PIXELS, 'score_threshold': INPUT_SCHEMA['score_threshold'], 'max_detections': INPUT_SCHEMA['max_detections'], 'classes': len(pipe.classes)}})",
     "SCORE_THRESHOLD = 0.0",
-    "COCO8_SHA256 = '54c67fe9ef88313e021ec0e92b73c200167bb0a86633e8df8658d832cca828c9'",
-    "if archive_sha256 != COCO8_SHA256:",
-    "boxes_from_yolo_labels(label_text, width, height)",
+    "fetch_pinned(VAL2017_RELEASE_URL + name, sample_dir / name, sha256, size)",
+    "if gt_digest != VAL2017_GT_SHA256:",
+    "report['training_overlap'] = training_overlap",
+    "os.replace(temporary, path)",
+    "if not sample_ready:",
     "scene = Image.fromarray(array, mode='RGB')",
     "writer.writerow(['image_id', 'rank', 'class_id', 'class_name', 'score', 'x1', 'y1', 'x2', 'y2'])",
     "'model_revision': MODEL_REVISION",
@@ -107,7 +109,7 @@ FORBIDDEN_OUTSIDE_MODULE = (
 # Specification 2.0; see docs/release-verification.md for the release gate.
 # ---------------------------------------------------------------------------
 
-NOTEBOOK_SPEC = "2.2"
+NOTEBOOK_SPEC = "2.5"
 ALLOWED_PROFILES = {"E2E", "ARTIFACT-INFERENCE", "TASK-INFERENCE", "MULTI-CAPABILITY", "SMOKE"}
 STATUS_TOKENS = ("Candidate", "Release-grade")
 PLACEHOLDER = re.compile(r"\b(TODO|TBD|FIXME)\b|Insert text here|Tooltip:", re.I)
@@ -177,12 +179,22 @@ COMMON_MARKDOWN_MARKERS = (
     "without the repository being",
     "It does **not** establish benchmark superiority",
     "## References",
-    f"- Repository model card: https://github.com/kurtvalcorza/{REPO_NAME}/blob/main/MODEL_CARD.md",
+    # NOTEBOOK_SPEC 2.5 DOC14: IEEE-style reference entries; the model card is still linked from References.
+    f"https://github.com/kurtvalcorza/{REPO_NAME}/blob/main/MODEL_CARD.md",
+    "> **⚠️ Notice.** For research, training and evaluation only.",
 )
 # Patterns that must never appear in tutorial code (comment-stripped), in any cell.
 FORBIDDEN_PATTERNS = (
     ("credential in clone URL", re.compile(r"https://[^/'\"\s]*@github\.com/|x-access-token:")),
-    ("repository clone (ST1)", re.compile(r"\bgit\b[^\n]*\bclone\b|github\.com/kurtvalcorza")),
+    # R86-D3 (2026-10-18): the pinned sample images are data assets of this repository's release
+    # `data-coco-val2017-50-v1`; that one release-download prefix is the only allowed own-repository URL.
+    (
+        "repository clone (ST1)",
+        re.compile(
+            r"\bgit\b[^\n]*\bclone\b"
+            r"|github\.com/kurtvalcorza(?!/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/)"
+        ),
+    ),
     ("mutable git dependency (MOD14)", re.compile(r"git\+https?://(?![^\n]*@[0-9a-f]{40}\b)")),
     ("editable self-install", re.compile(r"""['"](?:-e|--editable)['"]|pip install (?:-e|--editable)\b""")),
     ("repository package import (ST1)", re.compile(rf"^\s*(?:from|import)\s+{PACKAGE}\b", re.M)),

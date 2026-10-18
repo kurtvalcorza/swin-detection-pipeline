@@ -1,0 +1,2861 @@
+{
+ "name": "COCO val2017 licence-filtered sample, 50 images",
+ "release_tag": "data-coco-val2017-50-v1",
+ "rule": "val2017; licence in {4 BY 2.0, 5 BY-SA 2.0, 7 no known copyright restrictions, 8 US Government Work}; >=1 non-crowd box; 0 crowd boxes; no flickr-photo-id or (w,h,date_captured) match to train2017; first 50 by image id",
+ "source": "COCO 2017 val split (images.cocodataset.org/val2017, annotations/instances_val2017.json)",
+ "annotations_zip_sha256": "113a836d90195ee1f884e704da6304dfaaecff1f023f49b6ca93c4aaae470268",
+ "annotation_licence": "COCO annotations: Creative Commons Attribution 4.0 (CC BY 4.0), COCO Consortium",
+ "image_licences": {
+  "Attribution License": 33,
+  "Attribution-ShareAlike License": 17
+ },
+ "training_overlap": {
+  "checkpoint_training_split": "train2017",
+  "eval_data_in_training": false,
+  "note": "val2017 is the upstream benchmark split (used to report box AP 42.7, possibly for model selection); screened against train2017 by image id, Flickr photo id and (width, height, date_captured), not by pixels"
+ },
+ "category_order": [
+  "person",
+  "bicycle",
+  "car",
+  "motorcycle",
+  "airplane",
+  "bus",
+  "train",
+  "truck",
+  "boat",
+  "traffic light",
+  "fire hydrant",
+  "stop sign",
+  "parking meter",
+  "bench",
+  "bird",
+  "cat",
+  "dog",
+  "horse",
+  "sheep",
+  "cow",
+  "elephant",
+  "bear",
+  "zebra",
+  "giraffe",
+  "backpack",
+  "umbrella",
+  "handbag",
+  "tie",
+  "suitcase",
+  "frisbee",
+  "skis",
+  "snowboard",
+  "sports ball",
+  "kite",
+  "baseball bat",
+  "baseball glove",
+  "skateboard",
+  "surfboard",
+  "tennis racket",
+  "bottle",
+  "wine glass",
+  "cup",
+  "fork",
+  "knife",
+  "spoon",
+  "bowl",
+  "banana",
+  "apple",
+  "sandwich",
+  "orange",
+  "broccoli",
+  "carrot",
+  "hot dog",
+  "pizza",
+  "donut",
+  "cake",
+  "chair",
+  "couch",
+  "potted plant",
+  "bed",
+  "dining table",
+  "toilet",
+  "tv",
+  "laptop",
+  "mouse",
+  "remote",
+  "keyboard",
+  "cell phone",
+  "microwave",
+  "oven",
+  "toaster",
+  "sink",
+  "refrigerator",
+  "book",
+  "clock",
+  "vase",
+  "scissors",
+  "teddy bear",
+  "hair drier",
+  "toothbrush"
+ ],
+ "box_format": "[class_index (0-79, COCO category order), x1, y1, x2, y2] in pixels, non-crowd boxes from instances_val2017.json",
+ "n_images": 50,
+ "n_boxes": 279,
+ "n_categories": 59,
+ "total_bytes": 8346599,
+ "gt_digest_sha256_review_form": "b6057ca6502f2e80cb468bc2f96d5035efc943ca71684a380f1347818e8ed63f",
+ "gt_digest_sha256": "2f5e416aca5db921d4ac74d54d1539647c054df1044d96b68b5fa75b7c6a56a5",
+ "images": [
+  {
+   "image_id": 285,
+   "file_name": "000000000285.jpg",
+   "sha256": "f3a2974ce3686332609124c70e3e6a2e3aca43fccf1cd1bd7c5c03820977f57d",
+   "bytes": 335861,
+   "width": 586,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7434/9138147604_c6225224b8_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000000285.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000000285.jpg",
+   "boxes": [
+    [
+     21,
+     1.43,
+     68.81,
+     586.0,
+     632.75
+    ]
+   ]
+  },
+  {
+   "image_id": 785,
+   "file_name": "000000000785.jpg",
+   "sha256": "83981537a7baeafbeb9c8cb67b3484dc26433f574b3685d021fa537e277e4726",
+   "bytes": 133674,
+   "width": 640,
+   "height": 425,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7015/6795644157_f019453ae7_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000000785.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000000785.jpg",
+   "boxes": [
+    [
+     0,
+     280.79,
+     44.73,
+     499.49,
+     391.41
+    ],
+    [
+     30,
+     205.34,
+     362.21,
+     615.06,
+     400.41
+    ]
+   ]
+  },
+  {
+   "image_id": 872,
+   "file_name": "000000000872.jpg",
+   "sha256": "c2aa138ee3a59b057a7ba6fc5a6a18e62af531aa7dab78a7bfd33c1cd7e55eb6",
+   "bytes": 317669,
+   "width": 621,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8447/7805810128_605424213d_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000000872.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000000872.jpg",
+   "boxes": [
+    [
+     32,
+     408.03,
+     172.04,
+     427.41,
+     188.57
+    ],
+    [
+     0,
+     145.26,
+     100.67,
+     437.21,
+     558.02
+    ],
+    [
+     0,
+     163.73,
+     126.42,
+     429.42,
+     606.82
+    ],
+    [
+     35,
+     368.64,
+     157.25,
+     426.09,
+     203.03
+    ]
+   ]
+  },
+  {
+   "image_id": 885,
+   "file_name": "000000000885.jpg",
+   "sha256": "1c67b783f78b18ddb5dd20aaba4d4aacaf98e5277051688a96da096afa9cdf1f",
+   "bytes": 111441,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3715/9639200419_ee41490b2a_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000000885.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000000885.jpg",
+   "boxes": [
+    [
+     0,
+     277.31,
+     189.99,
+     417.4,
+     398.21
+    ],
+    [
+     0,
+     281.02,
+     89.81,
+     392.85,
+     259.36
+    ],
+    [
+     0,
+     595.68,
+     25.78,
+     639.05,
+     253.26
+    ],
+    [
+     0,
+     434.7,
+     0.33,
+     467.49,
+     13.0
+    ],
+    [
+     0,
+     287.39,
+     0.19,
+     332.04,
+     11.65
+    ],
+    [
+     38,
+     400.04,
+     268.61,
+     481.38,
+     308.83
+    ],
+    [
+     0,
+     541.88,
+     1.73,
+     607.72,
+     11.85
+    ],
+    [
+     0,
+     1.11,
+     0.56,
+     60.05,
+     9.45
+    ],
+    [
+     0,
+     499.47,
+     0.76,
+     574.64,
+     14.14
+    ]
+   ]
+  },
+  {
+   "image_id": 1000,
+   "file_name": "000000001000.jpg",
+   "sha256": "24bb77a31928404e45a0454b06f6a0bd54a8db103590c9d7917288a1e0269f05",
+   "bytes": 321136,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4115/4906536419_6113bd7de4_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000001000.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000001000.jpg",
+   "boxes": [
+    [
+     38,
+     47.07,
+     303.19,
+     94.5,
+     390.51
+    ],
+    [
+     26,
+     20.54,
+     226.71,
+     73.83,
+     348.24
+    ],
+    [
+     26,
+     196.91,
+     224.35,
+     267.17,
+     341.9
+    ],
+    [
+     0,
+     115.16,
+     152.13,
+     198.39,
+     380.54
+    ],
+    [
+     0,
+     405.93,
+     120.42,
+     443.06,
+     165.94
+    ],
+    [
+     0,
+     265.33,
+     95.86,
+     354.25,
+     411.74
+    ],
+    [
+     0,
+     209.23,
+     174.64,
+     308.86,
+     423.72
+    ],
+    [
+     0,
+     504.67,
+     191.95,
+     640.0,
+     480.0
+    ],
+    [
+     0,
+     410.2,
+     208.53,
+     525.1,
+     480.0
+    ],
+    [
+     0,
+     380.85,
+     159.91,
+     469.29,
+     479.16
+    ],
+    [
+     0,
+     330.07,
+     154.25,
+     413.12,
+     468.13
+    ],
+    [
+     0,
+     410.75,
+     107.03,
+     498.84,
+     228.19
+    ],
+    [
+     0,
+     183.4,
+     121.34,
+     279.17,
+     394.09
+    ],
+    [
+     24,
+     209.49,
+     163.88,
+     271.91,
+     221.92
+    ],
+    [
+     24,
+     42.72,
+     223.89,
+     98.45,
+     274.87
+    ],
+    [
+     0,
+     52.14,
+     185.12,
+     111.4,
+     397.65
+    ],
+    [
+     0,
+     349.49,
+     118.71,
+     402.13,
+     159.84
+    ]
+   ]
+  },
+  {
+   "image_id": 1268,
+   "file_name": "000000001268.jpg",
+   "sha256": "8e85a2e71ee512fe748a3a3be9bb40b8591e8c501c0f3896efcb5be5999ec236",
+   "bytes": 180751,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm6.staticflickr.com/5454/9413846304_881d5e5c3b_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000001268.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000001268.jpg",
+   "boxes": [
+    [
+     14,
+     192.81,
+     224.8,
+     267.54,
+     258.23
+    ],
+    [
+     8,
+     124.77,
+     124.71,
+     264.31,
+     141.78
+    ],
+    [
+     8,
+     0.0,
+     129.71,
+     105.44,
+     144.85
+    ],
+    [
+     0,
+     23.27,
+     213.41,
+     76.8,
+     282.88
+    ],
+    [
+     0,
+     501.68,
+     77.66,
+     640.0,
+     421.37
+    ],
+    [
+     0,
+     402.34,
+     205.02,
+     467.6,
+     293.47
+    ],
+    [
+     0,
+     0.0,
+     209.18,
+     24.95,
+     289.78
+    ],
+    [
+     67,
+     528.91,
+     180.52,
+     558.59,
+     199.27
+    ],
+    [
+     24,
+     21.81,
+     231.3,
+     44.36,
+     282.85
+    ],
+    [
+     26,
+     492.47,
+     197.95,
+     595.54,
+     425.3
+    ],
+    [
+     8,
+     291.52,
+     86.03,
+     413.19,
+     143.48
+    ]
+   ]
+  },
+  {
+   "image_id": 1296,
+   "file_name": "000000001296.jpg",
+   "sha256": "34a98da7c11bc8811e6eec445145bb16f3d5f4338945ba116edcc1fe554d181b",
+   "bytes": 204829,
+   "width": 427,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4010/4690487654_90536a4a16_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000001296.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000001296.jpg",
+   "boxes": [
+    [
+     67,
+     299.46,
+     143.38,
+     371.18,
+     278.68
+    ],
+    [
+     74,
+     371.53,
+     408.26,
+     389.06,
+     424.87
+    ],
+    [
+     0,
+     7.16,
+     1.57,
+     427.0,
+     635.84
+    ],
+    [
+     0,
+     262.64,
+     25.32,
+     409.6,
+     238.65
+    ]
+   ]
+  },
+  {
+   "image_id": 1993,
+   "file_name": "000000001993.jpg",
+   "sha256": "039f3bfb862023bde7f835a36c32d8f59a3e66488863c2a47b7b746e78c44186",
+   "bytes": 110450,
+   "width": 640,
+   "height": 419,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3413/3223600591_25cb6f12c6_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000001993.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000001993.jpg",
+   "boxes": [
+    [
+     59,
+     258.93,
+     194.91,
+     614.85,
+     414.29
+    ],
+    [
+     56,
+     109.22,
+     250.46,
+     227.86,
+     408.64
+    ],
+    [
+     56,
+     0.0,
+     298.68,
+     35.15,
+     408.0
+    ],
+    [
+     60,
+     0.04,
+     251.11,
+     154.43,
+     419.0
+    ]
+   ]
+  },
+  {
+   "image_id": 2149,
+   "file_name": "000000002149.jpg",
+   "sha256": "3ef0da375244c3fdbb45bcfe5689e8e46fb616c00250f9dce6aa34d301801ac5",
+   "bytes": 52707,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3598/3330055100_17454411a4_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000002149.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000002149.jpg",
+   "boxes": [
+    [
+     45,
+     0.0,
+     71.01,
+     639.06,
+     421.24
+    ],
+    [
+     47,
+     96.45,
+     94.44,
+     339.59,
+     325.52
+    ]
+   ]
+  },
+  {
+   "image_id": 2153,
+   "file_name": "000000002153.jpg",
+   "sha256": "8795ff243cf20405bd442631d5d1cb7e60665dd459c8d57f5764333808dd49fd",
+   "bytes": 136034,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm3.staticflickr.com/2220/2535221304_39d9542f76_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000002153.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000002153.jpg",
+   "boxes": [
+    [
+     0,
+     283.4,
+     274.77,
+     466.31,
+     445.04
+    ],
+    [
+     0,
+     371.62,
+     207.81,
+     433.92,
+     405.09
+    ],
+    [
+     34,
+     372.1,
+     184.08,
+     459.17,
+     236.92
+    ],
+    [
+     0,
+     174.64,
+     0.0,
+     239.32,
+     119.95
+    ],
+    [
+     0,
+     275.4,
+     302.2,
+     379.19,
+     436.75
+    ]
+   ]
+  },
+  {
+   "image_id": 2592,
+   "file_name": "000000002592.jpg",
+   "sha256": "ffa3d472d44184b1f48878f7b097189723e57a24f36c44c29e4bc561110fbf41",
+   "bytes": 103017,
+   "width": 640,
+   "height": 366,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3271/2864950455_3f5b5086da_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000002592.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000002592.jpg",
+   "boxes": [
+    [
+     60,
+     0.82,
+     0.92,
+     637.63,
+     361.17
+    ],
+    [
+     41,
+     222.89,
+     34.54,
+     432.62,
+     247.56
+    ],
+    [
+     43,
+     27.84,
+     216.86,
+     616.83,
+     314.95
+    ]
+   ]
+  },
+  {
+   "image_id": 3501,
+   "file_name": "000000003501.jpg",
+   "sha256": "9615e4dc9099e860748ce3f839ed077fa6a1fa39a10b909c00600bf4e2b3f392",
+   "bytes": 150713,
+   "width": 612,
+   "height": 612,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7179/7077469199_84f6efe841_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000003501.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000003501.jpg",
+   "boxes": [
+    [
+     50,
+     125.28,
+     67.68,
+     263.52,
+     223.2
+    ],
+    [
+     50,
+     74.88,
+     174.24,
+     257.76,
+     361.44
+    ],
+    [
+     45,
+     12.38,
+     8.25,
+     603.75,
+     583.12
+    ]
+   ]
+  },
+  {
+   "image_id": 3553,
+   "file_name": "000000003553.jpg",
+   "sha256": "4286197d2b6fc18809a37a4ef3035109509fcf52782fb83894835faaa5743bea",
+   "bytes": 148040,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3433/3863384254_02e869d699_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000003553.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000003553.jpg",
+   "boxes": [
+    [
+     0,
+     153.26,
+     0.72,
+     420.25,
+     308.2
+    ],
+    [
+     36,
+     186.69,
+     262.44,
+     367.64,
+     371.58
+    ]
+   ]
+  },
+  {
+   "image_id": 6012,
+   "file_name": "000000006012.jpg",
+   "sha256": "7cd0d627b15c09f373aa613d013fb2d8ae6bd20bcce0d98aa31b963e6bcca495",
+   "bytes": 166135,
+   "width": 640,
+   "height": 531,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4030/4281955635_f02ce45926_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000006012.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000006012.jpg",
+   "boxes": [
+    [
+     46,
+     328.15,
+     25.06,
+     548.9,
+     502.36
+    ],
+    [
+     46,
+     98.7,
+     23.53,
+     306.11,
+     504.55
+    ]
+   ]
+  },
+  {
+   "image_id": 6723,
+   "file_name": "000000006723.jpg",
+   "sha256": "1d3ba71e9002721a2bc18791f3c86578d6de38fb61640803657276d53e73663f",
+   "bytes": 200461,
+   "width": 640,
+   "height": 361,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4009/4575950642_c74342b147_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000006723.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000006723.jpg",
+   "boxes": [
+    [
+     2,
+     171.76,
+     203.56,
+     207.14,
+     222.96
+    ],
+    [
+     2,
+     282.55,
+     202.06,
+     302.39,
+     212.2
+    ],
+    [
+     2,
+     332.46,
+     200.85,
+     345.05,
+     209.91
+    ],
+    [
+     5,
+     361.51,
+     194.03,
+     389.18,
+     224.01
+    ],
+    [
+     7,
+     362.11,
+     192.66,
+     389.52,
+     223.23
+    ],
+    [
+     7,
+     204.9,
+     201.04,
+     242.33,
+     229.29
+    ]
+   ]
+  },
+  {
+   "image_id": 6818,
+   "file_name": "000000006818.jpg",
+   "sha256": "99479f61ef2931ea70e161db0859e8706c6e48f13e8cb0798959f52433b01b98",
+   "bytes": 77539,
+   "width": 427,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm3.staticflickr.com/2318/2068039201_b967c69504_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000006818.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000006818.jpg",
+   "boxes": [
+    [
+     61,
+     186.97,
+     471.83,
+     287.64,
+     527.92
+    ]
+   ]
+  },
+  {
+   "image_id": 7281,
+   "file_name": "000000007281.jpg",
+   "sha256": "57f3508e600d3370320487dde8665f208f11612a11caac0801c7f5fc19188ac3",
+   "bytes": 137409,
+   "width": 640,
+   "height": 361,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4112/5022207571_74aab92fd5_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000007281.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000007281.jpg",
+   "boxes": [
+    [
+     17,
+     349.35,
+     188.65,
+     461.15,
+     357.12
+    ],
+    [
+     17,
+     471.85,
+     179.59,
+     548.56,
+     355.65
+    ],
+    [
+     0,
+     344.85,
+     132.99,
+     473.26,
+     299.35
+    ],
+    [
+     0,
+     465.33,
+     122.24,
+     527.5,
+     195.92
+    ],
+    [
+     0,
+     551.1,
+     193.24,
+     568.7,
+     222.01
+    ],
+    [
+     0,
+     572.72,
+     201.91,
+     580.12,
+     212.79
+    ],
+    [
+     0,
+     592.33,
+     203.68,
+     601.42,
+     217.19
+    ],
+    [
+     0,
+     255.86,
+     199.85,
+     261.64,
+     206.58
+    ],
+    [
+     0,
+     601.22,
+     203.33,
+     607.14,
+     214.96
+    ],
+    [
+     0,
+     634.84,
+     209.66,
+     638.59,
+     215.52
+    ],
+    [
+     0,
+     0.0,
+     225.63,
+     34.15,
+     271.16
+    ],
+    [
+     0,
+     534.6,
+     209.47,
+     538.33,
+     213.93
+    ]
+   ]
+  },
+  {
+   "image_id": 7574,
+   "file_name": "000000007574.jpg",
+   "sha256": "4f26c847c2f49574978e96733efaec720dd1d1ba95a8220d0de012b7317eed47",
+   "bytes": 163988,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7054/6924897347_7266fd119c_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000007574.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000007574.jpg",
+   "boxes": [
+    [
+     39,
+     501.24,
+     306.49,
+     533.2,
+     389.13
+    ],
+    [
+     39,
+     483.34,
+     299.06,
+     510.64,
+     381.47
+    ],
+    [
+     72,
+     1.08,
+     168.54,
+     103.55,
+     445.75
+    ],
+    [
+     40,
+     464.03,
+     312.24,
+     485.75,
+     379.82
+    ],
+    [
+     40,
+     452.19,
+     307.02,
+     472.81,
+     372.07
+    ],
+    [
+     69,
+     252.4,
+     242.7,
+     427.15,
+     353.8
+    ],
+    [
+     71,
+     43.49,
+     353.94,
+     308.03,
+     429.26
+    ],
+    [
+     45,
+     102.93,
+     74.91,
+     153.41,
+     89.4
+    ],
+    [
+     45,
+     348.26,
+     300.53,
+     401.09,
+     340.01
+    ],
+    [
+     68,
+     304.03,
+     146.07,
+     362.71,
+     236.38
+    ],
+    [
+     75,
+     205.62,
+     55.27,
+     230.27,
+     92.8
+    ],
+    [
+     75,
+     240.83,
+     57.72,
+     267.0,
+     93.7
+    ]
+   ]
+  },
+  {
+   "image_id": 7991,
+   "file_name": "000000007991.jpg",
+   "sha256": "63c6fae2e3defd4bc1c6f346806aef03eb11ccbd7c6bda3e479d1fbafd486db1",
+   "bytes": 194363,
+   "width": 640,
+   "height": 359,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm6.staticflickr.com/5283/5355551637_6638017f91_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000007991.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000007991.jpg",
+   "boxes": [
+    [
+     43,
+     0.81,
+     157.31,
+     147.63,
+     257.35
+    ],
+    [
+     51,
+     170.63,
+     70.11,
+     480.64,
+     339.57
+    ],
+    [
+     43,
+     6.53,
+     115.63,
+     151.06,
+     159.45
+    ]
+   ]
+  },
+  {
+   "image_id": 8021,
+   "file_name": "000000008021.jpg",
+   "sha256": "235537407867a7b894e78b3aecb55b33b14b64cbb23ca376a00d34c62a1a63a6",
+   "bytes": 180088,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm7.staticflickr.com/6117/6240308255_77782d0723_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000008021.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000008021.jpg",
+   "boxes": [
+    [
+     27,
+     318.36,
+     198.43,
+     340.32,
+     299.01
+    ],
+    [
+     0,
+     3.24,
+     255.14,
+     309.19,
+     478.92
+    ],
+    [
+     0,
+     435.33,
+     285.21,
+     640.0,
+     480.0
+    ],
+    [
+     0,
+     244.3,
+     101.17,
+     441.26,
+     368.07
+    ],
+    [
+     39,
+     443.84,
+     367.93,
+     451.8,
+     386.05
+    ],
+    [
+     39,
+     436.56,
+     368.91,
+     444.51,
+     385.75
+    ],
+    [
+     39,
+     431.83,
+     369.24,
+     437.38,
+     386.13
+    ]
+   ]
+  },
+  {
+   "image_id": 8690,
+   "file_name": "000000008690.jpg",
+   "sha256": "feca143d5e249b9fcaca7090c2400125ee19c7ad883c11fffe55e8bb451e7429",
+   "bytes": 246519,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3753/9867545575_fa972e6c4a_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000008690.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000008690.jpg",
+   "boxes": [
+    [
+     0,
+     136.7,
+     18.6,
+     351.52,
+     396.84
+    ],
+    [
+     0,
+     285.84,
+     73.35,
+     516.67,
+     396.94
+    ],
+    [
+     0,
+     74.25,
+     10.38,
+     175.94,
+     302.01
+    ],
+    [
+     0,
+     379.69,
+     390.29,
+     637.48,
+     474.43
+    ],
+    [
+     18,
+     52.5,
+     309.38,
+     640.0,
+     480.0
+    ]
+   ]
+  },
+  {
+   "image_id": 8762,
+   "file_name": "000000008762.jpg",
+   "sha256": "8b8aa2412ac3502dbb4b8a7d7987359d4049cf70e7177748e907e3ddfa3211ce",
+   "bytes": 48914,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4006/4466652187_5ba02f2ba9_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000008762.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000008762.jpg",
+   "boxes": [
+    [
+     9,
+     58.07,
+     85.64,
+     79.31,
+     146.99
+    ],
+    [
+     9,
+     163.15,
+     106.16,
+     186.25,
+     144.87
+    ],
+    [
+     9,
+     504.08,
+     230.61,
+     517.93,
+     241.98
+    ],
+    [
+     9,
+     495.15,
+     178.41,
+     515.26,
+     220.34
+    ],
+    [
+     2,
+     109.05,
+     285.07,
+     122.34,
+     292.29
+    ],
+    [
+     2,
+     0.0,
+     279.61,
+     27.83,
+     302.9
+    ],
+    [
+     9,
+     484.99,
+     229.2,
+     494.28,
+     245.84
+    ]
+   ]
+  },
+  {
+   "image_id": 8844,
+   "file_name": "000000008844.jpg",
+   "sha256": "bd8133fe5862ea2b0b308db3c1d96b23012f2f667d43cb524d35ac1b710670a4",
+   "bytes": 111826,
+   "width": 640,
+   "height": 426,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm7.staticflickr.com/6109/6283843124_f4091ce78a_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000008844.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000008844.jpg",
+   "boxes": [
+    [
+     0,
+     356.43,
+     58.23,
+     581.34,
+     277.42
+    ],
+    [
+     46,
+     534.18,
+     242.04,
+     563.85,
+     321.49
+    ],
+    [
+     46,
+     543.65,
+     259.19,
+     637.72,
+     392.8
+    ],
+    [
+     46,
+     0.0,
+     116.15,
+     387.79,
+     417.02
+    ],
+    [
+     46,
+     370.87,
+     243.57,
+     543.28,
+     383.9
+    ],
+    [
+     0,
+     340.56,
+     186.5,
+     368.51,
+     248.2
+    ],
+    [
+     0,
+     292.79,
+     184.36,
+     335.39,
+     228.79
+    ]
+   ]
+  },
+  {
+   "image_id": 9483,
+   "file_name": "000000009483.jpg",
+   "sha256": "c7e6e15f4db067c3e09ab8605759be9d850e2d5c45ea4dfb9cda8f5d85308ea4",
+   "bytes": 116766,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3179/2986591710_d76622fdf0_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000009483.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000009483.jpg",
+   "boxes": [
+    [
+     62,
+     458.8,
+     210.25,
+     578.99,
+     349.49
+    ],
+    [
+     0,
+     36.44,
+     62.46,
+     177.14,
+     480.0
+    ],
+    [
+     64,
+     375.93,
+     361.89,
+     409.74,
+     380.67
+    ],
+    [
+     66,
+     306.5,
+     317.58,
+     422.58,
+     361.21
+    ],
+    [
+     62,
+     250.87,
+     275.16,
+     280.4,
+     295.47
+    ],
+    [
+     62,
+     217.89,
+     269.87,
+     245.05,
+     287.82
+    ]
+   ]
+  },
+  {
+   "image_id": 10092,
+   "file_name": "000000010092.jpg",
+   "sha256": "70eae5520682d2ad23ff01df57fc4f29cb3f5d4c1d63753d3b7f120f6a0d939b",
+   "bytes": 150418,
+   "width": 640,
+   "height": 426,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8276/8710590452_08a7a8f59c_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000010092.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000010092.jpg",
+   "boxes": [
+    [
+     59,
+     93.61,
+     187.21,
+     439.37,
+     376.33
+    ],
+    [
+     56,
+     579.62,
+     389.47,
+     639.72,
+     426.0
+    ],
+    [
+     60,
+     546.22,
+     263.69,
+     639.79,
+     425.26
+    ],
+    [
+     14,
+     185.01,
+     104.38,
+     213.31,
+     141.28
+    ],
+    [
+     56,
+     538.19,
+     204.74,
+     640.0,
+     406.76
+    ]
+   ]
+  },
+  {
+   "image_id": 10707,
+   "file_name": "000000010707.jpg",
+   "sha256": "a361abb7579193709ef3debbec6298bf0c540bece429c4aadb19be82e04ab6a0",
+   "bytes": 121031,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm1.staticflickr.com/147/434840964_a9c5bc3b58_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000010707.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000010707.jpg",
+   "boxes": [
+    [
+     39,
+     212.13,
+     330.28,
+     229.11,
+     391.31
+    ],
+    [
+     57,
+     532.58,
+     247.92,
+     640.0,
+     480.0
+    ],
+    [
+     57,
+     0.0,
+     201.56,
+     236.4,
+     427.68
+    ],
+    [
+     60,
+     100.52,
+     351.32,
+     308.33,
+     474.43
+    ],
+    [
+     0,
+     228.16,
+     147.57,
+     397.13,
+     457.52
+    ],
+    [
+     0,
+     347.01,
+     187.53,
+     472.45,
+     452.31
+    ],
+    [
+     0,
+     422.83,
+     2.16,
+     600.81,
+     473.53
+    ],
+    [
+     41,
+     121.92,
+     357.43,
+     148.76,
+     415.67
+    ],
+    [
+     65,
+     429.06,
+     46.77,
+     447.5,
+     113.78
+    ],
+    [
+     39,
+     162.55,
+     348.69,
+     181.72,
+     408.66
+    ],
+    [
+     41,
+     126.09,
+     343.26,
+     151.5,
+     371.88
+    ],
+    [
+     63,
+     124.1,
+     249.14,
+     201.29,
+     274.38
+    ],
+    [
+     65,
+     233.93,
+     363.86,
+     265.13,
+     395.07
+    ],
+    [
+     24,
+     74.27,
+     323.47,
+     163.58,
+     450.16
+    ],
+    [
+     65,
+     193.15,
+     361.75,
+     213.35,
+     380.11
+    ]
+   ]
+  },
+  {
+   "image_id": 11149,
+   "file_name": "000000011149.jpg",
+   "sha256": "5973b8f1d5a30de98b1dcb715f1c94928a676fff8e45283515d0474e51ac0abc",
+   "bytes": 176762,
+   "width": 500,
+   "height": 375,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3625/3323418866_ea5017538d_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000011149.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000011149.jpg",
+   "boxes": [
+    [
+     1,
+     198.32,
+     91.17,
+     422.95,
+     272.36
+    ],
+    [
+     3,
+     0.0,
+     68.83,
+     136.82,
+     350.93
+    ],
+    [
+     0,
+     0.0,
+     3.8,
+     75.17,
+     121.2
+    ],
+    [
+     0,
+     417.13,
+     1.54,
+     500.0,
+     315.87
+    ],
+    [
+     1,
+     88.28,
+     58.95,
+     199.27,
+     230.48
+    ]
+   ]
+  },
+  {
+   "image_id": 11511,
+   "file_name": "000000011511.jpg",
+   "sha256": "4e24ed1528891621658ff01d23e8a74735cd18720d41f7fd2264044497ad2a0e",
+   "bytes": 188164,
+   "width": 640,
+   "height": 464,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7124/7556029168_519acfdf09_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000011511.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000011511.jpg",
+   "boxes": [
+    [
+     0,
+     90.35,
+     38.6,
+     130.06,
+     190.02
+    ],
+    [
+     0,
+     139.53,
+     32.22,
+     189.91,
+     172.46
+    ],
+    [
+     0,
+     35.39,
+     44.5,
+     85.61,
+     190.34
+    ],
+    [
+     13,
+     37.71,
+     227.02,
+     315.27,
+     415.56
+    ],
+    [
+     26,
+     286.74,
+     348.26,
+     398.31,
+     433.76
+    ],
+    [
+     26,
+     448.82,
+     260.55,
+     516.39,
+     364.13
+    ],
+    [
+     3,
+     483.81,
+     50.53,
+     530.65,
+     100.53
+    ],
+    [
+     26,
+     24.01,
+     95.45,
+     48.89,
+     149.09
+    ],
+    [
+     26,
+     90.05,
+     78.75,
+     101.53,
+     104.26
+    ],
+    [
+     0,
+     1.27,
+     51.73,
+     62.82,
+     214.29
+    ]
+   ]
+  },
+  {
+   "image_id": 12062,
+   "file_name": "000000012062.jpg",
+   "sha256": "319d58f0fa008d076b766671a5b607f94614f6005f773adced54a57567aa28fb",
+   "bytes": 227134,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3775/9086068242_2064357878_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000012062.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000012062.jpg",
+   "boxes": [
+    [
+     18,
+     130.68,
+     70.4,
+     565.96,
+     279.3
+    ],
+    [
+     18,
+     0.0,
+     174.53,
+     270.89,
+     422.47
+    ],
+    [
+     18,
+     344.48,
+     292.66,
+     640.0,
+     418.36
+    ],
+    [
+     32,
+     601.58,
+     58.61,
+     640.0,
+     131.86
+    ]
+   ]
+  },
+  {
+   "image_id": 12280,
+   "file_name": "000000012280.jpg",
+   "sha256": "158ef0b15ff392039468263fa18735f81b39de9e8a7753e1e1aba7037262da56",
+   "bytes": 169019,
+   "width": 480,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8516/8544258219_95e49e415e_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000012280.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000012280.jpg",
+   "boxes": [
+    [
+     0,
+     143.13,
+     241.34,
+     193.19,
+     369.96
+    ],
+    [
+     28,
+     174.29,
+     313.97,
+     224.19,
+     372.78
+    ],
+    [
+     62,
+     0.62,
+     126.71,
+     56.81,
+     191.03
+    ],
+    [
+     0,
+     339.75,
+     250.26,
+     353.98,
+     312.88
+    ],
+    [
+     0,
+     307.47,
+     280.65,
+     318.26,
+     298.19
+    ]
+   ]
+  },
+  {
+   "image_id": 12667,
+   "file_name": "000000012667.jpg",
+   "sha256": "0bf182b59b89f534d6f89a2b57c976c47b7f9a95e5e47a7f236b285b9211af14",
+   "bytes": 81731,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm1.staticflickr.com/197/499050773_995cd1e9bb_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000012667.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000012667.jpg",
+   "boxes": [
+    [
+     46,
+     283.84,
+     48.74,
+     447.61,
+     290.03
+    ]
+   ]
+  },
+  {
+   "image_id": 13004,
+   "file_name": "000000013004.jpg",
+   "sha256": "09d489992329d2a17186a82781c7d23d8c687ee580567babc7494f9bc8b1220a",
+   "bytes": 129165,
+   "width": 375,
+   "height": 500,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4049/4208826429_3432119060_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000013004.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000013004.jpg",
+   "boxes": [
+    [
+     46,
+     44.71,
+     72.94,
+     343.53,
+     290.59
+    ],
+    [
+     60,
+     1.13,
+     6.76,
+     375.0,
+     484.23
+    ]
+   ]
+  },
+  {
+   "image_id": 13291,
+   "file_name": "000000013291.jpg",
+   "sha256": "1e46187ec49947bfd8dd22f4d774bddfe3e29ca863fe09530516598998b8e640",
+   "bytes": 124885,
+   "width": 500,
+   "height": 335,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3394/3491087208_8efdfeb6d4_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000013291.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000013291.jpg",
+   "boxes": [
+    [
+     0,
+     288.33,
+     138.57,
+     499.11,
+     300.42
+    ],
+    [
+     0,
+     238.23,
+     135.43,
+     319.04,
+     282.55
+    ],
+    [
+     0,
+     41.4,
+     66.25,
+     166.37,
+     298.87
+    ],
+    [
+     29,
+     90.11,
+     151.95,
+     135.98,
+     194.4
+    ],
+    [
+     29,
+     217.53,
+     185.34,
+     250.6,
+     221.01
+    ],
+    [
+     29,
+     182.73,
+     195.78,
+     215.79,
+     232.32
+    ],
+    [
+     29,
+     252.41,
+     165.63,
+     294.63,
+     206.48
+    ],
+    [
+     0,
+     159.23,
+     136.61,
+     244.51,
+     267.13
+    ]
+   ]
+  },
+  {
+   "image_id": 13348,
+   "file_name": "000000013348.jpg",
+   "sha256": "8371f759628048bd294db70d9fbacb6d4f2558a12c25337fa04fea6418c9922a",
+   "bytes": 164490,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8286/7733450942_0da3e941b4_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000013348.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000013348.jpg",
+   "boxes": [
+    [
+     4,
+     0.0,
+     142.01,
+     566.13,
+     285.95
+    ],
+    [
+     0,
+     349.82,
+     270.26,
+     356.12,
+     291.03
+    ],
+    [
+     0,
+     17.11,
+     280.38,
+     26.23,
+     293.35
+    ],
+    [
+     0,
+     117.32,
+     270.57,
+     129.11,
+     289.8
+    ],
+    [
+     7,
+     52.32,
+     269.84,
+     77.48,
+     284.57
+    ],
+    [
+     7,
+     81.33,
+     255.4,
+     115.04,
+     273.22
+    ],
+    [
+     4,
+     0.0,
+     228.61,
+     54.69,
+     246.84
+    ],
+    [
+     7,
+     16.05,
+     289.31,
+     40.48,
+     308.31
+    ],
+    [
+     7,
+     75.78,
+     271.86,
+     103.5,
+     285.27
+    ],
+    [
+     0,
+     173.15,
+     240.08,
+     180.11,
+     251.56
+    ],
+    [
+     0,
+     124.96,
+     250.69,
+     129.07,
+     256.32
+    ],
+    [
+     0,
+     148.94,
+     244.69,
+     160.07,
+     255.24
+    ]
+   ]
+  },
+  {
+   "image_id": 13774,
+   "file_name": "000000013774.jpg",
+   "sha256": "d4a83955582202cd1c3586807245cec71bb38c856eee74d452c1ca752eed8655",
+   "bytes": 173437,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7167/6837122127_de8b1f8d77_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000013774.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000013774.jpg",
+   "boxes": [
+    [
+     0,
+     270.37,
+     281.95,
+     301.61,
+     368.27
+    ],
+    [
+     29,
+     235.78,
+     209.66,
+     253.02,
+     227.42
+    ]
+   ]
+  },
+  {
+   "image_id": 14473,
+   "file_name": "000000014473.jpg",
+   "sha256": "1b0fad3e8260366a27f9cb20fdd0f9d7c669bb40a535f6364b8c2e1c03d7b5c2",
+   "bytes": 166405,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8401/8607706408_e00725a54d_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000014473.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000014473.jpg",
+   "boxes": [
+    [
+     6,
+     0.0,
+     154.84,
+     593.21,
+     308.64
+    ],
+    [
+     0,
+     320.19,
+     271.2,
+     335.55,
+     313.6
+    ],
+    [
+     0,
+     277.01,
+     269.4,
+     297.55,
+     307.69
+    ],
+    [
+     0,
+     201.34,
+     258.58,
+     220.56,
+     295.28
+    ],
+    [
+     0,
+     155.85,
+     253.72,
+     172.67,
+     287.36
+    ],
+    [
+     0,
+     119.8,
+     245.57,
+     137.37,
+     280.72
+    ],
+    [
+     0,
+     77.84,
+     245.76,
+     94.49,
+     273.09
+    ],
+    [
+     0,
+     25.96,
+     225.26,
+     39.14,
+     261.05
+    ]
+   ]
+  },
+  {
+   "image_id": 15272,
+   "file_name": "000000015272.jpg",
+   "sha256": "d4a09d9517fea54811b7fabb1274117a107c4cb8fdccfbcae4ced6dd82034ce5",
+   "bytes": 344568,
+   "width": 424,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8386/8584364941_15ab4eb0e4_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000015272.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000015272.jpg",
+   "boxes": [
+    [
+     9,
+     41.95,
+     38.91,
+     276.42,
+     136.78
+    ]
+   ]
+  },
+  {
+   "image_id": 15746,
+   "file_name": "000000015746.jpg",
+   "sha256": "ba79e69d4272bc31ea4fb9f3731e020a9c8acf1fbf3b6ffb78528d70e2e183f7",
+   "bytes": 196039,
+   "width": 427,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3643/3517907686_509f46055f_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000015746.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000015746.jpg",
+   "boxes": [
+    [
+     10,
+     71.5,
+     197.7,
+     350.08,
+     575.37
+    ]
+   ]
+  },
+  {
+   "image_id": 17029,
+   "file_name": "000000017029.jpg",
+   "sha256": "d619327903c6b05520f0d6768807c067cce2d6d908d2d83da018a1da3b1792cf",
+   "bytes": 349935,
+   "width": 640,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7304/8746020648_f1e2075b86_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000017029.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000017029.jpg",
+   "boxes": [
+    [
+     16,
+     154.84,
+     105.81,
+     405.16,
+     541.94
+    ],
+    [
+     2,
+     56.09,
+     25.89,
+     569.53,
+     178.34
+    ],
+    [
+     29,
+     319.28,
+     77.66,
+     414.2,
+     122.25
+    ],
+    [
+     2,
+     0.0,
+     44.59,
+     21.76,
+     88.85
+    ]
+   ]
+  },
+  {
+   "image_id": 17182,
+   "file_name": "000000017182.jpg",
+   "sha256": "0ec7cbf35b5ff0352f9da0653eda2aaf5b578e7f2b5c8480c5b6c19fd2435141",
+   "bytes": 105405,
+   "width": 640,
+   "height": 428,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3020/2906486794_80400b009e_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000017182.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000017182.jpg",
+   "boxes": [
+    [
+     56,
+     184.71,
+     233.84,
+     250.09,
+     294.95
+    ],
+    [
+     73,
+     240.5,
+     230.8,
+     299.19,
+     306.07
+    ],
+    [
+     73,
+     275.92,
+     229.48,
+     311.02,
+     301.67
+    ],
+    [
+     73,
+     292.8,
+     226.84,
+     322.04,
+     298.05
+    ],
+    [
+     73,
+     305.45,
+     226.76,
+     334.46,
+     297.22
+    ],
+    [
+     73,
+     314.81,
+     228.57,
+     346.0,
+     294.86
+    ],
+    [
+     73,
+     318.46,
+     228.11,
+     356.3,
+     293.29
+    ],
+    [
+     47,
+     428.1,
+     261.44,
+     455.72,
+     280.5
+    ]
+   ]
+  },
+  {
+   "image_id": 18491,
+   "file_name": "000000018491.jpg",
+   "sha256": "195369c44ad1810c524d5523a556356b2ee384310d7493310ccb8165c42767ed",
+   "bytes": 109544,
+   "width": 640,
+   "height": 427,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm3.staticflickr.com/2134/5814907667_496ae24446_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000018491.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000018491.jpg",
+   "boxes": [
+    [
+     34,
+     105.36,
+     155.25,
+     122.32,
+     204.41
+    ],
+    [
+     35,
+     298.03,
+     216.69,
+     319.0,
+     245.29
+    ],
+    [
+     35,
+     318.95,
+     142.51,
+     331.68,
+     158.34
+    ],
+    [
+     0,
+     243.01,
+     184.65,
+     368.81,
+     305.25
+    ],
+    [
+     0,
+     301.3,
+     186.15,
+     422.2,
+     312.81
+    ],
+    [
+     0,
+     330.11,
+     69.96,
+     390.92,
+     207.55
+    ],
+    [
+     0,
+     274.91,
+     68.91,
+     331.5,
+     216.41
+    ],
+    [
+     0,
+     177.68,
+     77.51,
+     209.2,
+     152.02
+    ],
+    [
+     0,
+     69.7,
+     95.37,
+     122.8,
+     217.47
+    ],
+    [
+     0,
+     58.77,
+     61.57,
+     95.05,
+     119.75
+    ],
+    [
+     0,
+     122.79,
+     26.65,
+     164.14,
+     126.47
+    ],
+    [
+     0,
+     13.04,
+     81.09,
+     44.81,
+     147.65
+    ],
+    [
+     0,
+     0.39,
+     82.91,
+     12.34,
+     147.75
+    ],
+    [
+     13,
+     0.0,
+     141.07,
+     223.94,
+     152.96
+    ]
+   ]
+  },
+  {
+   "image_id": 18837,
+   "file_name": "000000018837.jpg",
+   "sha256": "70f986167a5f1ea723ee2a25273f39ee1d1d7a3bf8b2fa3a37eca946111f1d93",
+   "bytes": 224384,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8219/8372455764_124e052754_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000018837.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000018837.jpg",
+   "boxes": [
+    [
+     7,
+     24.81,
+     74.43,
+     606.2,
+     473.53
+    ],
+    [
+     0,
+     327.57,
+     14.59,
+     467.03,
+     158.38
+    ],
+    [
+     0,
+     294.3,
+     21.62,
+     342.47,
+     123.13
+    ],
+    [
+     0,
+     371.98,
+     286.74,
+     454.53,
+     480.0
+    ],
+    [
+     0,
+     17.07,
+     235.11,
+     34.69,
+     262.77
+    ],
+    [
+     0,
+     304.66,
+     193.68,
+     328.14,
+     240.97
+    ],
+    [
+     0,
+     115.32,
+     172.01,
+     163.95,
+     232.73
+    ],
+    [
+     2,
+     591.1,
+     254.64,
+     624.5,
+     301.67
+    ]
+   ]
+  },
+  {
+   "image_id": 19402,
+   "file_name": "000000019402.jpg",
+   "sha256": "b08173e02dc865e7f13fecbcbed574b70271c07fef6023236d0dea8d6bf77619",
+   "bytes": 173626,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4135/5435897535_a9b3e0a053_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000019402.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000019402.jpg",
+   "boxes": [
+    [
+     0,
+     260.54,
+     0.54,
+     637.84,
+     475.14
+    ],
+    [
+     0,
+     0.0,
+     52.85,
+     403.42,
+     480.0
+    ],
+    [
+     53,
+     3.74,
+     304.21,
+     236.88,
+     472.52
+    ]
+   ]
+  },
+  {
+   "image_id": 19924,
+   "file_name": "000000019924.jpg",
+   "sha256": "b0bb42c6674456ecd9155b790a6a595646aacfe45ce80bd7667ac75fb7fe8bc8",
+   "bytes": 102366,
+   "width": 458,
+   "height": 500,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3407/3642510664_1c89fbc90a_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000019924.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000019924.jpg",
+   "boxes": [
+    [
+     27,
+     142.7,
+     294.38,
+     282.02,
+     500.0
+    ],
+    [
+     0,
+     14.61,
+     29.21,
+     449.44,
+     494.38
+    ]
+   ]
+  },
+  {
+   "image_id": 20247,
+   "file_name": "000000020247.jpg",
+   "sha256": "92a0ab00f3a0b9f6de5162449a8b79167363897fb489c172eebc244bccef23cb",
+   "bytes": 158661,
+   "width": 640,
+   "height": 457,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm8.staticflickr.com/7027/6473127891_50c1ca2c03_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000020247.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000020247.jpg",
+   "boxes": [
+    [
+     21,
+     333.21,
+     176.15,
+     510.64,
+     439.2
+    ],
+    [
+     21,
+     1.03,
+     15.09,
+     86.27,
+     264.64
+    ]
+   ]
+  },
+  {
+   "image_id": 20553,
+   "file_name": "000000020553.jpg",
+   "sha256": "739fee1c09f6d7c1670d2f558f70d2aea2ea6863a964c5a9582ca3bb70a55cb5",
+   "bytes": 140118,
+   "width": 500,
+   "height": 375,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3288/2926009969_406b0b7654_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000020553.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000020553.jpg",
+   "boxes": [
+    [
+     39,
+     364.89,
+     132.03,
+     382.48,
+     167.93
+    ],
+    [
+     39,
+     391.28,
+     133.41,
+     407.96,
+     191.54
+    ],
+    [
+     39,
+     406.57,
+     132.32,
+     418.33,
+     186.2
+    ],
+    [
+     77,
+     170.96,
+     79.86,
+     285.26,
+     168.38
+    ],
+    [
+     77,
+     240.04,
+     179.39,
+     271.27,
+     233.18
+    ],
+    [
+     25,
+     85.64,
+     142.45,
+     178.23,
+     255.04
+    ],
+    [
+     56,
+     123.44,
+     192.65,
+     241.34,
+     296.03
+    ],
+    [
+     75,
+     405.06,
+     132.9,
+     417.37,
+     186.19
+    ],
+    [
+     77,
+     273.15,
+     115.78,
+     302.8,
+     161.65
+    ],
+    [
+     41,
+     362.21,
+     166.89,
+     383.4,
+     192.18
+    ],
+    [
+     60,
+     321.36,
+     163.05,
+     427.73,
+     203.78
+    ]
+   ]
+  },
+  {
+   "image_id": 21167,
+   "file_name": "000000021167.jpg",
+   "sha256": "b77df96f91ed9a0842559ea8a238d602d4a09069b9129c43a9d62a27361df156",
+   "bytes": 49463,
+   "width": 426,
+   "height": 640,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3469/3397730036_36219f4c6e_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000021167.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000021167.jpg",
+   "boxes": [
+    [
+     0,
+     21.52,
+     114.73,
+     223.86,
+     625.58
+    ],
+    [
+     40,
+     259.33,
+     297.48,
+     314.84,
+     378.07
+    ],
+    [
+     27,
+     255.39,
+     172.64,
+     321.75,
+     287.83
+    ],
+    [
+     0,
+     187.98,
+     38.89,
+     426.0,
+     640.0
+    ]
+   ]
+  },
+  {
+   "image_id": 21903,
+   "file_name": "000000021903.jpg",
+   "sha256": "3fa9ccedfc3ac829c07e14b0e7ef4211b5963f7700dc6e30dde3054f704efa09",
+   "bytes": 227109,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution License",
+   "licence_url": "http://creativecommons.org/licenses/by/2.0/",
+   "flickr_url": "http://farm9.staticflickr.com/8088/8456686192_fccee8c5bb_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000021903.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000021903.jpg",
+   "boxes": [
+    [
+     0,
+     334.38,
+     224.36,
+     551.19,
+     474.61
+    ],
+    [
+     20,
+     5.39,
+     109.69,
+     319.28,
+     386.91
+    ],
+    [
+     0,
+     615.62,
+     239.77,
+     640.0,
+     332.34
+    ]
+   ]
+  },
+  {
+   "image_id": 22479,
+   "file_name": "000000022479.jpg",
+   "sha256": "9f09af60f0a4f214a8b34ff6badbd25111cd8438c39097197a629255408cdb75",
+   "bytes": 97567,
+   "width": 640,
+   "height": 605,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm4.staticflickr.com/3447/3880630600_2c837dbf23_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000022479.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000022479.jpg",
+   "boxes": [
+    [
+     36,
+     260.45,
+     282.31,
+     484.27,
+     481.72
+    ],
+    [
+     13,
+     175.33,
+     435.41,
+     252.86,
+     461.12
+    ],
+    [
+     13,
+     265.93,
+     434.84,
+     303.8,
+     452.35
+    ],
+    [
+     0,
+     34.96,
+     1.3,
+     437.96,
+     457.25
+    ]
+   ]
+  },
+  {
+   "image_id": 22589,
+   "file_name": "000000022589.jpg",
+   "sha256": "a613ba4b6d895c6844d151efe922430660ef602ae40d4e16e1762f06b2d17335",
+   "bytes": 244843,
+   "width": 640,
+   "height": 480,
+   "format": "JPEG",
+   "licence": "Attribution-ShareAlike License",
+   "licence_url": "http://creativecommons.org/licenses/by-sa/2.0/",
+   "flickr_url": "http://farm5.staticflickr.com/4072/4569416948_52d65ff8f6_z.jpg",
+   "coco_url": "http://images.cocodataset.org/val2017/000000022589.jpg",
+   "release_url": "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/000000022589.jpg",
+   "boxes": [
+    [
+     18,
+     182.32,
+     214.08,
+     362.58,
+     342.83
+    ],
+    [
+     18,
+     0.0,
+     251.68,
+     611.22,
+     479.6
+    ]
+   ]
+  }
+ ]
+}

@@ -122,4 +122,7 @@ def test_st1_primary_path_has_no_repository_dependency(notebook: dict) -> None:
     assert f"import {TEMPLATE['package']}" not in code
     assert f"from {TEMPLATE['package']}" not in code
     # own-repository clone/install (ST1); SHA-pinned upstream git dependencies are allowed
-    assert "github.com/kurtvalcorza" not in code
+    # R86-D3 (2026-10-18): the pinned sample images are downloaded from this repository's data release; that one
+    # release-asset prefix is data, not repository code, so it is the only allowed own-repository URL.
+    data_release = "github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/"
+    assert "github.com/kurtvalcorza" not in code.replace(data_release, "")

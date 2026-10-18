@@ -10,8 +10,6 @@ from __future__ import annotations
 
 import importlib.util
 import json
-import sys
-import types
 from pathlib import Path
 
 import pytest
@@ -73,18 +71,20 @@ def test_swd_M1_no_entry_point_presents_colab_as_verified() -> None:
     for path in (NOTEBOOK, ROOT / "README.md", ROOT / "tutorials" / "README.md"):
         text = path.read_text(encoding="utf-8")
         assert "colab-badge.svg" not in text, path.name
-        assert "verification pending" in text or "verification%20pending" in text, path.name
+        # R86-m3 (2026-10-18): the badge says the hosted run of *this* revision is pending.
+        assert "hosted run of this revision pending" in text and "hosted%20run%20pending" in text, path.name
 
 
 # ---- SWD-M2: the default path measures --------------------------------------------------------------------------
 
 
-def test_swd_M2_default_sample_is_the_labelled_coco8_subset(notebook: dict) -> None:
-    sample = next(s for s in _code(notebook) if "SAMPLE = 'coco8'" in s)
-    assert "USE_COCO8" not in sample
-    assert "elif SAMPLE == 'coco8':" in sample and "boxes_from_yolo_labels(label_text, width, height)" in sample
+def test_swd_M2_default_sample_is_labelled_and_measured(notebook: dict) -> None:
+    # R86-D1 (2026-10-18): the labelled default is the pinned COCO val2017 sample; COCO8 (train2017 images) is gone.
+    sample = next(s for s in _code(notebook) if "SAMPLE = 'val2017'" in s)
+    assert "USE_COCO8" not in sample and "coco8" not in sample.lower()
+    assert "elif SAMPLE == 'val2017':" in sample and "fetch_pinned(VAL2017_RELEASE_URL + name" in sample
     workflow = (ROOT / ".github" / "workflows" / "verify-task-tutorial.yml").read_text(encoding="utf-8")
-    assert "report['verdict']=='sample-sanity'" in workflow and "ground_truth_boxes']==17" in workflow
+    assert "report['verdict']=='sample-sanity'" in workflow and "ground_truth_boxes']==279" in workflow
     assert "not-measurable" in _markdown(notebook) and "SAMPLE = 'synthetic'" in _markdown(notebook)
 
 
@@ -107,50 +107,4 @@ def test_swd_M3_infrastructure_cells_are_collapsed(notebook: dict) -> None:
     assert _markdown(notebook).count("**Predict before running:**") >= 4
 
 
-# ---- SWD-m1: BYOD by path, and a guarded upload ------------------------------------------------------------------
-
-
-def _sample_cell(notebook: dict) -> str:
-    return next(s for s in _code(notebook) if "SAMPLE = 'coco8'" in s)
-
-
-def _run_byod(notebook: dict, tmp_path: Path, monkeypatch, path: str = "", uploaded: dict | None = None) -> dict:
-    import numpy
-
-    monkeypatch.chdir(tmp_path)
-    if uploaded is not None:
-        files = types.SimpleNamespace(upload=lambda: uploaded)
-        colab = types.ModuleType("google.colab")
-        colab.files = files
-        google = types.ModuleType("google")
-        google.colab = colab
-        monkeypatch.setitem(sys.modules, "google", google)
-        monkeypatch.setitem(sys.modules, "google.colab", colab)
-    else:
-        monkeypatch.setitem(sys.modules, "google.colab", None)
-    source = _sample_cell(notebook).replace("USE_BYOD = False", "USE_BYOD = True").replace("BYOD_IMAGE_PATH = ''", f"BYOD_IMAGE_PATH = {path!r}")
-    namespace = {"numpy": numpy}
-    exec(source, namespace)  # noqa: S102 - the notebook's own cell
-    return namespace
-
-
-def test_swd_m1_byod_by_path_works_without_colab(notebook: dict, tmp_path: Path, monkeypatch) -> None:
-    from PIL import Image
-
-    image = tmp_path / "mine.png"
-    Image.new("RGB", (64, 48), (10, 20, 30)).save(image)
-    namespace = _run_byod(notebook, tmp_path, monkeypatch, path=str(image))
-    assert namespace["sample_kind"] == "BYOD" and namespace["image_paths"] == [image] and namespace["ground_truth"] is None
-
-
-@pytest.mark.parametrize("uploaded", [{}, {"a.png": b"x", "b.png": b"y"}])
-def test_swd_m1_cancelled_or_multi_file_upload_names_the_rule(notebook: dict, tmp_path: Path, monkeypatch, uploaded: dict) -> None:
-    with pytest.raises(ValueError, match=r"Upload exactly one image file \(received \d\)"):
-        _run_byod(notebook, tmp_path, monkeypatch, uploaded=uploaded)
-
-
-def test_swd_m1_no_dialog_outside_colab_says_to_set_the_path(notebook: dict, tmp_path: Path, monkeypatch) -> None:
-    with pytest.raises(RuntimeError, match="set BYOD_IMAGE_PATH"):
-        _run_byod(notebook, tmp_path, monkeypatch)
-    with pytest.raises(FileNotFoundError, match="is not a file in this runtime"):
-        _run_byod(notebook, tmp_path, monkeypatch, path=str(tmp_path / "absent.png"))
+# ---- SWD-m1: BYOD by path and the guarded upload are covered, with the R86-m5 refusals, in test_r86_review_fixes.py.
