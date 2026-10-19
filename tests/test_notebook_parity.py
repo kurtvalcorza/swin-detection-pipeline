@@ -122,4 +122,10 @@ def test_st1_primary_path_has_no_repository_dependency(notebook: dict) -> None:
     assert f"import {TEMPLATE['package']}" not in code
     assert f"from {TEMPLATE['package']}" not in code
     # own-repository clone/install (ST1); SHA-pinned upstream git dependencies are allowed
-    assert "github.com/kurtvalcorza" not in code
+    # R86-D3 / peer-review F1: only the exact pinned data-release assets are allowed (validator rule, shared here).
+    spec = importlib.util.spec_from_file_location("validate_release_assets", ROOT / "tools" / "validate_release_assets.py")
+    validator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(validator)
+    masked, problems = validator.data_release_violations(code)
+    assert not problems, problems
+    assert "github.com/kurtvalcorza" not in masked.lower()

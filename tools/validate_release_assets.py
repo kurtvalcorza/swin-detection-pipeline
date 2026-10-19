@@ -51,9 +51,11 @@ CODE_MARKERS = (
     "report = evaluation_report(detections, ground_truth, sample_kind=sample_kind)",
     "print({'ceilings': {'MAX_PIXELS': MAX_PIXELS, 'score_threshold': INPUT_SCHEMA['score_threshold'], 'max_detections': INPUT_SCHEMA['max_detections'], 'classes': len(pipe.classes)}})",
     "SCORE_THRESHOLD = 0.0",
-    "COCO8_SHA256 = '54c67fe9ef88313e021ec0e92b73c200167bb0a86633e8df8658d832cca828c9'",
-    "if archive_sha256 != COCO8_SHA256:",
-    "boxes_from_yolo_labels(label_text, width, height)",
+    "fetch_pinned(VAL2017_RELEASE_URL + name, sample_dir / name, sha256, size)",
+    "if gt_digest != VAL2017_GT_SHA256:",
+    "report['training_overlap'] = training_overlap",
+    "os.replace(temporary, path)",
+    "if not sample_ready:",
     "scene = Image.fromarray(array, mode='RGB')",
     "writer.writerow(['image_id', 'rank', 'class_id', 'class_name', 'score', 'x1', 'y1', 'x2', 'y2'])",
     "'model_revision': MODEL_REVISION",
@@ -107,7 +109,7 @@ FORBIDDEN_OUTSIDE_MODULE = (
 # Specification 2.0; see docs/release-verification.md for the release gate.
 # ---------------------------------------------------------------------------
 
-NOTEBOOK_SPEC = "2.2"
+NOTEBOOK_SPEC = "2.5"
 ALLOWED_PROFILES = {"E2E", "ARTIFACT-INFERENCE", "TASK-INFERENCE", "MULTI-CAPABILITY", "SMOKE"}
 STATUS_TOKENS = ("Candidate", "Release-grade")
 PLACEHOLDER = re.compile(r"\b(TODO|TBD|FIXME)\b|Insert text here|Tooltip:", re.I)
@@ -177,12 +179,52 @@ COMMON_MARKDOWN_MARKERS = (
     "without the repository being",
     "It does **not** establish benchmark superiority",
     "## References",
-    f"- Repository model card: https://github.com/kurtvalcorza/{REPO_NAME}/blob/main/MODEL_CARD.md",
+    # NOTEBOOK_SPEC 2.5 DOC14: IEEE-style reference entries; the model card is still linked from References.
+    f"https://github.com/kurtvalcorza/{REPO_NAME}/blob/main/MODEL_CARD.md",
+    "> **⚠️ Notice.** For research, training and evaluation only.",
 )
+# R86-D3 / peer-review F1 (2026-10-19): the only own-repository URLs a tutorial may contain are the exact assets of the
+# data release, built from the committed pin: the release prefix as the single `VAL2017_RELEASE_URL` constant, used only
+# by the digest-checked `fetch_pinned` call and the provenance field, and the full URL of a pinned asset. Anything else
+# under github.com/kurtvalcorza (dot segments, %2e, a query, another file, string concatenation) stays a violation.
+DATA_RELEASE_PREFIX = "https://github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/"
+DATA_RELEASE_CONSTANT = f"VAL2017_RELEASE_URL = '{DATA_RELEASE_PREFIX}'"
+DATA_RELEASE_USES = (
+    "fetch_pinned(VAL2017_RELEASE_URL + name, sample_dir / name, sha256, size)",
+    "'source': VAL2017_RELEASE_URL if sample_kind == DEFAULT_SAMPLE_KIND else None",
+)
+
+
+def data_release_assets() -> set[str]:
+    pin = json.loads((ROOT / "tools" / "coco_val2017_sample_50.json").read_text(encoding="utf-8"))
+    names = [image["file_name"] for image in pin["images"]]
+    if not all(re.fullmatch(r"[0-9]{12}\.jpg", name) for name in names):
+        raise ValidationError("pin file names must be 12-digit COCO .jpg names")
+    return {DATA_RELEASE_PREFIX + name for name in [*names, "coco_val2017_sample_50.json", "ATTRIBUTION.md"]}
+
+
+def data_release_violations(code: str) -> tuple[str, list[str]]:
+    """Return `code` with the allowed data-release URLs masked, and the violations found on the way."""
+    problems: list[str] = []
+    for token in re.findall(r"github\.com/kurtvalcorza[^\s'\"]*", code, re.I):
+        if re.search(r"\.\.|%2e|%2f|%5c|[?#\\]", token, re.I):
+            problems.append(f"own-repository URL with a dot segment, escape, query or fragment: {token}")
+    if code.count(DATA_RELEASE_CONSTANT) > 1:
+        problems.append("VAL2017_RELEASE_URL is assigned more than once")
+    uses = code.count("VAL2017_RELEASE_URL") - code.count(DATA_RELEASE_CONSTANT)
+    allowed_uses = sum(code.count(use) for use in DATA_RELEASE_USES)
+    if uses != allowed_uses:
+        problems.append(f"VAL2017_RELEASE_URL is used outside the digest-checked fetch ({uses} uses, {allowed_uses} allowed)")
+    masked = code.replace(DATA_RELEASE_CONSTANT, "VAL2017_RELEASE_URL = '<data-release>'")
+    for url in sorted(data_release_assets(), key=len, reverse=True):
+        masked = re.sub(re.escape(url) + r"(?=['\"])", "<data-release-asset>", masked)
+    return masked, problems
+
+
 # Patterns that must never appear in tutorial code (comment-stripped), in any cell.
 FORBIDDEN_PATTERNS = (
     ("credential in clone URL", re.compile(r"https://[^/'\"\s]*@github\.com/|x-access-token:")),
-    ("repository clone (ST1)", re.compile(r"\bgit\b[^\n]*\bclone\b|github\.com/kurtvalcorza")),
+    ("repository clone (ST1)", re.compile(r"\bgit\b[^\n]*\bclone\b|github\.com/kurtvalcorza", re.I)),
     ("mutable git dependency (MOD14)", re.compile(r"git\+https?://(?![^\n]*@[0-9a-f]{40}\b)")),
     ("editable self-install", re.compile(r"""['"](?:-e|--editable)['"]|pip install (?:-e|--editable)\b""")),
     ("repository package import (ST1)", re.compile(rf"^\s*(?:from|import)\s+{PACKAGE}\b", re.M)),
@@ -589,7 +631,9 @@ def _validate_notebook_content(
     outside = "\n".join(text for index, text in stripped.items() if index not in embedded)
     missing = [marker for marker in COMMON_CODE_MARKERS + CODE_MARKERS if marker not in code]
     _check(not missing, f"{path.name}: missing required source markers: {missing}")
-    present = [label for label, pattern in FORBIDDEN_PATTERNS if pattern.search(code)]
+    masked, release_problems = data_release_violations(code)
+    _check(not release_problems, f"{path.name}: data-release URL rule (ST1): {release_problems}")
+    present = [label for label, pattern in FORBIDDEN_PATTERNS if pattern.search(masked)]
     _check(not present, f"{path.name}: forbidden/insecure source: {present}")
     # The two kernel cells (isolated install and router) are generator-owned; every other cell runs in the isolated worker.
     kernel = {index for index, source, _tree in code_cells if "# dimer: kernel cell" in source}
