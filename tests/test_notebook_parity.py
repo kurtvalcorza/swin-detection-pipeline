@@ -122,7 +122,10 @@ def test_st1_primary_path_has_no_repository_dependency(notebook: dict) -> None:
     assert f"import {TEMPLATE['package']}" not in code
     assert f"from {TEMPLATE['package']}" not in code
     # own-repository clone/install (ST1); SHA-pinned upstream git dependencies are allowed
-    # R86-D3 (2026-10-18): the pinned sample images are downloaded from this repository's data release; that one
-    # release-asset prefix is data, not repository code, so it is the only allowed own-repository URL.
-    data_release = "github.com/kurtvalcorza/swin-detection-pipeline/releases/download/data-coco-val2017-50-v1/"
-    assert "github.com/kurtvalcorza" not in code.replace(data_release, "")
+    # R86-D3 / peer-review F1: only the exact pinned data-release assets are allowed (validator rule, shared here).
+    spec = importlib.util.spec_from_file_location("validate_release_assets", ROOT / "tools" / "validate_release_assets.py")
+    validator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(validator)
+    masked, problems = validator.data_release_violations(code)
+    assert not problems, problems
+    assert "github.com/kurtvalcorza" not in masked.lower()

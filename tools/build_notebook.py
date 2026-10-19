@@ -664,7 +664,9 @@ def render(repo: Path, template: dict[str, Any], revision: str | None = None) ->
     )
     prereq = list(template["prerequisites"]) + [
         f"- **External access:** {ctx['host']['name']} only, to fetch the pinned `{ctx['MODEL_ID']}` snapshot (~{total_mb:.0f} MB in total) "
-        f"at revision `{ctx['MODEL_REVISION'][:12]}…`. No repository access and no credentials are required; nothing is installed from this repository."
+        f"at revision `{ctx['MODEL_REVISION'][:12]}…`."
+        + (f" The default sample also needs {template['data_access']}." if template.get("data_access") else "")
+        + " No repository code, no clone and no credentials are required; nothing is installed from this repository."
         + isolated_access
     ]
     add(_md("## Prerequisites\n\n" + "\n".join(prereq)))

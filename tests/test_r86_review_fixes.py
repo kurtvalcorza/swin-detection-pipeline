@@ -108,7 +108,7 @@ def test_r86_M1_notebook_rows_equal_the_pin_and_the_digest_check(notebook: dict,
     ns = _namespace()
     _run(_sample(notebook, SAMPLE="synthetic"), ns)
     rows = ns["VAL2017_IMAGES"]
-    assert [(r[0], r[1], r[2], r[4], r[5]) for r in rows] == [(i["file_name"], i["sha256"], i["bytes"], i["flickr_url"], i["boxes"]) for i in PIN["images"]]
+    assert [(r[0], r[1], r[2], r[4], r[5], r[6]) for r in rows] == [(i["file_name"], i["sha256"], i["bytes"], i["licence_url"], i["flickr_url"], i["boxes"]) for i in PIN["images"]]
     assert {r[3] for r in rows} <= PERMISSIVE
     assert ns["VAL2017_GT_SHA256"] == PIN["gt_digest_sha256"]
     assert dict(ns["VAL2017_TRAINING_OVERLAP"])["eval_data_in_training"] is False
@@ -163,6 +163,7 @@ def _byod(notebook: dict, tmp_path: Path, monkeypatch, path: str = "", uploaded:
 def test_r86_m5_byod_refusal_is_one_message_and_moves_outputs_aside(notebook: dict, tmp_path: Path, monkeypatch, case: str, rule: str) -> None:
     (tmp_path / "outputs").mkdir()
     (tmp_path / "outputs" / "swin_detection_task_inference_evaluation_report.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "outputs" / "swin_detection_task_inference_result_exploratory_1.json").write_text("{}", encoding="utf-8")
     kwargs: dict = {}
     if case == "missing":
         kwargs = {"path": str(tmp_path / "absent.png")}
@@ -175,8 +176,10 @@ def test_r86_m5_byod_refusal_is_one_message_and_moves_outputs_aside(notebook: di
     ns, out = _byod(notebook, tmp_path, monkeypatch, **kwargs)
     assert ns["sample_ready"] is False
     assert re.search(rule, out) and out.startswith("BYOD input refused:"), out
-    assert (tmp_path / "outputs" / "earlier_1" / "swin_detection_task_inference_evaluation_report.json").is_file()
-    assert not (tmp_path / "outputs" / "swin_detection_task_inference_evaluation_report.json").exists()
+    # Peer-review F8: only exploratory files move; the default sample's report stays where the text says it is.
+    assert (tmp_path / "outputs" / "earlier_1" / "swin_detection_task_inference_result_exploratory_1.json").is_file()
+    assert (tmp_path / "outputs" / "swin_detection_task_inference_evaluation_report.json").is_file()
+    assert not list((tmp_path / "sample").glob("*.png"))  # uploads are kept under sample/byod/
     for section, marker in (("6", "input_manifest = validate_inputs("), ("7", "pipe.predict_many("), ("8", "report = evaluation_report("), ("9", "payload = {")):
         skipped = _run(_cell(notebook, marker), ns)
         assert skipped.startswith(f"Section {section} skipped"), skipped
@@ -190,6 +193,53 @@ def test_r86_m5_byod_by_path_is_accepted_without_colab(notebook: dict, tmp_path:
     ns, _ = _byod(notebook, tmp_path, monkeypatch, path=str(image))
     assert ns["sample_ready"] is True and ns["sample_kind"] == "BYOD" and ns["image_paths"] == [image] and ns["ground_truth"] is None
     assert ns["OUTPUT_SUFFIX"] == "_exploratory_1"
+    assert ns["training_overlap"]["eval_data_in_training"] is None  # peer-review F11: never a truthy string
+
+
+def _validator():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("validate_release_assets", ROOT / "tools" / "validate_release_assets.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_r86_F1_only_the_exact_pinned_release_assets_are_allowed(notebook: dict) -> None:
+    validator = _validator()
+    code = "\n".join(_code(notebook))
+    masked, problems = validator.data_release_violations(code)
+    assert not problems and "github.com/kurtvalcorza" not in masked.lower()
+    prefix = validator.DATA_RELEASE_PREFIX
+    for injected in (
+        f"urllib.request.urlopen('{prefix}../../../archive/refs/heads/main.zip')",
+        f"urllib.request.urlopen('{prefix}%2e%2e/%2e%2e/%2e%2e/archive/refs/heads/main.zip')",
+        f"urllib.request.urlopen('{prefix}000000000285.jpg?x=1')",
+        f"exec(urllib.request.urlopen('{prefix}payload.py').read())",
+        "urllib.request.urlopen(VAL2017_RELEASE_URL + '../../../archive/refs/heads/main.zip')",
+        "urllib.request.urlopen('https://GitHub.com/KurtValcorza/swin-detection-pipeline/archive/main.zip')",
+    ):
+        masked, problems = validator.data_release_violations(code + "\n" + injected)
+        flagged = bool(problems) or any(p.search(masked) for label, p in validator.FORBIDDEN_PATTERNS if label == "repository clone (ST1)")
+        assert flagged, injected
+
+
+def test_r86_F3_bootstrap_interval_is_computed_by_the_section_8_cell(notebook: dict, tmp_path: Path, monkeypatch) -> None:
+    pytest.importorskip("pycocotools")  # CI's offline budget has no pycocotools; the notebook run covers it there
+    import numpy
+
+    from dimer_swin_detection.metrics import coco_box_ap
+
+    monkeypatch.chdir(tmp_path)
+    ns = _namespace()
+    _run(_sample(notebook, SAMPLE="synthetic"), ns)
+    gt = [{"image_id": f"im{i}.png", "boxes": [{"class_id": i % 3, "bbox_xyxy": [10.0, 10.0, 60.0 + i, 80.0]}]} for i in range(6)]
+    rows = [{"image_id": e["image_id"], "class_id": e["boxes"][0]["class_id"], "score": 0.9, "bbox_xyxy": e["boxes"][0]["bbox_xyxy"]} for e in gt]
+    ns.update(numpy=numpy, coco_box_ap=coco_box_ap, rows=rows, ground_truth=gt, detections=rows, sample_kind="COCO-val2017-50",
+              evaluation_report=lambda d, g, sample_kind: {"verdict": "sample-sanity", "sample_kind": sample_kind})
+    _run(_cell(notebook, "report = evaluation_report("), ns)
+    boot = ns["report"]["bootstrap_over_images"]
+    assert boot["resamples"] == 200 and boot["seed"] == 0 and boot["coco_ap_50_95_95pct_interval"] == [1.0, 1.0]
 
 
 # ---- R86-S1: atomic writes; exploratory passes never overwrite the default report ----------------------------------

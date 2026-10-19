@@ -100,7 +100,8 @@ Before changing the registry status from `Candidate` to `Release-grade`:
 
 The synthetic scene (`SAMPLE = 'synthetic'`, verdict `not-measurable`) and BYOD are optional exploratory paths, not
 part of the default-path gate. They write `_exploratory_<n>` files and never replace the default report; a run of
-them may be recorded as additional evidence. A refused BYOD input moves earlier outputs to `outputs/earlier_<n>/`.
+them may be recorded as additional evidence. A refused BYOD input moves earlier *exploratory* outputs to
+`outputs/earlier_<n>/`; the default sample's files are never moved. Uploads are saved under `sample/byod/`.
 
 ## Default scored sample (review row 86, 2026-10-18)
 
@@ -122,8 +123,15 @@ resubstitution score on training images, not a measurement. Maintainer decisions
   The notebook downloads from there and refuses any file whose size or SHA-256 differs;
   `images.cocodataset.org` (no valid TLS certificate at review time) is recorded for provenance only.
 - **Disclosure:** val2017 is the split upstream used to report box AP 42.7 and possibly for model selection, so the
-  result is a sanity measurement on images the model never trained on, not an independent test. The overlap
-  screen used ids and capture metadata, not pixels.
+  result is a sanity measurement on images outside the detector's training split (train2017), not an independent
+  test. The overlap screen used ids and capture metadata, not pixels, and covered train2017 only: the images were not
+  screened against the ImageNet-1K data the backbone was pretrained on.
+- **Why the sample scores above 0.427 (peer review F2, 2026-10-19):** the rule excludes crowd-annotated images, so the
+  sample has 5.58 boxes per image against 7.27 in all of val2017 and about 35 % small boxes against 42 % (val2017
+  figures measured by the peer reviewer from `instances_val2017.json`); 33 of its 59 categories have one or two boxes,
+  so the category-mean AP is volatile. A 200-resample bootstrap over images of the development-run detections gives a
+  95 % interval of 0.502–0.599, which excludes 0.427: the gap is mostly a selection effect, not sampling noise. The
+  notebook now prints this interval (`bootstrap_over_images`) and treats the empty detector as a floor, not a baseline.
 - **CI:** `verify-task-tutorial` asserts the new pool (50 images, 279 boxes, the ground-truth digest, licences,
   `eval_data_in_training: false`, no exploratory files). Its runs of an unchanged notebook are reproductions, not
   new measurements. The hosted Colab T4 run of the new blob is the run of record.
@@ -155,8 +163,14 @@ disclosed. The hosted Colab T4 run of the final blob remains the run of record.
 | 2026-10-18 | `7325021` / `a4c94fca64d6` (`repository_revision` `1628f8b`) | GitHub Actions `verify-task-tutorial` run [`39168312094`](https://github.com/kurtvalcorza/swin-detection-pipeline/actions/runs/39168312094), nbconvert from a scratch directory, isolated CPython 3.10.18, torch 2.1.2+cpu, MMDetection 3.3.0, CPU | **PASSED** (4m21s job); 50 images / 279 boxes; AP@[.50:.95] 0.5378, AP50 0.8013, AP75 0.5838; empty-detector baseline 0.0; verdict `sample-sanity`; `eval_data_in_training: false` |
 | 2026-10-18 | `7325021` / `a4c94fca64d6` | **CPU development run**: nbconvert in WSL2 Ubuntu (glibc 2.39, 24 vCPU, GPU hidden with `CUDA_VISIBLE_DEVICES=-1`), the same isolated CPython 3.10.18 stack, executed-notebook SHA-256 `5be39ab3…` | **PASSED** (420 s); 1,252 detections; AP@[.50:.95] 0.5378428166, AP50 0.8013336406, AP75 0.5837752546, the same as the CI run; baseline 0.0; verdict `sample-sanity` |
 
+The CI run on the PR head `69e81fd` (`verify-task-tutorial` run
+[`39168814777`](https://github.com/kurtvalcorza/swin-detection-pipeline/actions/runs/39168814777), the same blob
+`a4c94fca`) reproduced AP@[.50:.95] 0.5378428166. Every CI run of an unchanged blob is a reproduction of these values.
+Round 2 of the review (2026-10-19) changes the blob again (bootstrap interval, wording, attribution), so these runs
+are evidence for blob `a4c94fca` only.
+
 Read these values as a sanity measurement on 50 val2017 images, which is the split upstream reported 42.7 on. They are
-not an independent test, and they have no dispersion estimate.
+not an independent test. A bootstrap over images of these detections gives a 95 % interval of 0.502–0.599.
 
 ### Previous carrier (Notebook Specification 1.0, repository-installing) — audit trail only
 
@@ -171,8 +185,8 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 The registry status is **Candidate**. The 2026-10-18 revision (review row 86) replaces the scored sample with 50
 pinned COCO val2017 images, migrates the notebook to Notebook Specification 2.5, and has no hosted run yet. Its
-hosted Colab T4 run is the run of record; until it is recorded here against the exact notebook blob, no AP value
-is quoted for this revision. Earlier hosted runs (2026-09-14, 2026-10-10) do not transfer to it, and their COCO8
+hosted Colab T4 run is the run of record; until it is recorded here against the exact notebook blob, no hosted-run AP
+value is quoted for this revision. Development values (CPU and CI runs) are listed above, each labelled with its blob. Earlier hosted runs (2026-09-14, 2026-10-10) do not transfer to it, and their COCO8
 AP values are resubstitution scores. Static validation (`tools/validate_release_assets.py`), the generator parity
 check and the offline unit suite are necessary but not sufficient. Promotion is performed by a reviewer/integrator,
 not by the builder. A hosted run must record `restarted: false`, the library versions, the detection count, the
