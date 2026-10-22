@@ -71,8 +71,12 @@ def test_swd_M1_no_entry_point_presents_colab_as_verified() -> None:
     for path in (NOTEBOOK, ROOT / "README.md", ROOT / "tutorials" / "README.md"):
         text = path.read_text(encoding="utf-8")
         assert "colab-badge.svg" not in text, path.name
-        # R86-m3 (2026-10-18): the badge says the hosted run of *this* revision is pending.
-        assert "hosted run of this revision pending" in text and "hosted%20run%20pending" in text, path.name
+        # 2026-10-22: the badge makes no run-state claim (it would go stale the moment a hosted run is recorded);
+        # a plain link next to it points at the hosted-run evidence instead.
+        assert "run of record is still pending" not in text, path.name
+        assert "hosted run of this revision pending" not in text and "hosted%20run%20pending" not in text, path.name
+        assert "[![Open In Colab](https://img.shields.io/badge/Open%20in-Colab-lightgrey" in text, path.name
+        assert "[hosted-run evidence](" in text and "release-verification.md)" in text, path.name
 
 
 # ---- SWD-M2: the default path measures --------------------------------------------------------------------------

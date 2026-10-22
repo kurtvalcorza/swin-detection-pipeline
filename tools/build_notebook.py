@@ -215,7 +215,7 @@ def template_contract() -> dict[str, str]:
         "pipeline_class": "public class exposing from_pretrained(weights_dir=...)",
         "runtime_imports": "list of principal libraries whose versions the runtime cell prints, e.g. ['torch', 'timm']",
         "title": "H1 text",
-        "badges": "list of (alt, image_url, link_url)",
+        "badges": "list of (alt, image_url, link_url); image_url None renders a plain text link",
         "capability": "one-line capability statement",
         "intro": "markdown paragraphs after the header block (no heading)",
         "learning_objectives": "one markdown paragraph starting after the bold label",
@@ -624,7 +624,7 @@ def render(repo: Path, template: dict[str, Any], revision: str | None = None) ->
         cell["id"] = f"{stem}-{len(cells):02d}"
         cells.append(cell)
 
-    badges = " ".join(f"[![{alt}]({img})]({link})" for alt, img, link in template["badges"])
+    badges = " ".join(f"[![{alt}]({img})]({link})" if img else f"[{alt}]({link})" for alt, img, link in template["badges"])
     total_mb = (ctx["manifest"]["totalBytes"] + sum(e["manifest"]["totalBytes"] for e in ctx["extra_weights"])) / 1e6
     n_mod = len(ctx["modules"])
     carried = (
