@@ -73,13 +73,50 @@ def _run(source: str, namespace: dict) -> str:
     return out.getvalue()
 
 
-def _sample(nb: dict, **params: object) -> str:
-    source = _cell(nb, "SAMPLE = 'val2017'  # @param")
+DEFAULT_CALL = "sample = load_input('val2017')"
+
+
+def _sample(nb: dict) -> str:
+    """The Section 5 cell as written: its definitions, then the default sample (network)."""
+    return _cell(nb, DEFAULT_CALL)
+
+
+def _defs(nb: dict, ns: dict, kind: str | None = "synthetic") -> str:
+    """Section 5's definitions without the network-bound default call; `ns['sample']` is then a `kind` input."""
+    source = _sample(nb)
+    assert source.rstrip().endswith(DEFAULT_CALL)
+    out = _run(source.rstrip()[: -len(DEFAULT_CALL)], ns)
+    if kind is not None:
+        out += _run(f"sample = load_input({kind!r})", ns)
+    return out
+
+
+def _gated(nb: dict, gate: str, **params: object) -> str:
+    """An optional-section cell (Section 10 or 11) with its form fields set."""
+    source = _cell(nb, f"{gate} = False  # @param")
     for name, value in params.items():
         line = re.search(rf"^{name} = .*$", source, re.M)
         assert line, name
         source = source.replace(line.group(0), f"{name} = {value!r}  # @param", 1)
     return source
+
+
+STAGES = ("validate_stage", "detect_stage", "evaluate_stage", "export_stage")
+
+
+def _record_stages(ns: dict) -> list[tuple[str, str]]:
+    """Replace the four stage functions with recorders: (stage, input kind) per call, in order."""
+    calls: list[tuple[str, str]] = []
+
+    def recorder(stage: str):
+        def call(prepared, *args):
+            calls.append((stage, prepared["kind"]))
+            return ([], []) if stage == "detect_stage" else {"verdict": "not-measurable"}
+
+        return call
+
+    ns.update({stage: recorder(stage) for stage in STAGES})
+    return calls
 
 
 # ---- R86-M1 / D1 / D2: the pinned val2017 sample -------------------------------------------------------------------
@@ -106,7 +143,7 @@ def test_r86_D2_pin_is_the_rule_selected_50_with_the_reviewed_digest() -> None:
 def test_r86_M1_notebook_rows_equal_the_pin_and_the_digest_check(notebook: dict, tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     ns = _namespace()
-    _run(_sample(notebook, SAMPLE="synthetic"), ns)
+    _defs(notebook, ns)
     rows = ns["VAL2017_IMAGES"]
     assert [(r[0], r[1], r[2], r[4], r[5], r[6]) for r in rows] == [(i["file_name"], i["sha256"], i["bytes"], i["licence_url"], i["flickr_url"], i["boxes"]) for i in PIN["images"]]
     assert {r[3] for r in rows} <= PERMISSIVE
@@ -135,7 +172,7 @@ def test_r86_M1_val2017_path_refuses_wrong_bytes(notebook: dict, tmp_path: Path,
 # ---- R86-m5 (DAT20): refusals are messages, and earlier outputs move aside -----------------------------------------
 
 
-def _byod(notebook: dict, tmp_path: Path, monkeypatch, path: str = "", uploaded: dict | None = None) -> tuple[dict, str]:
+def _byod(notebook: dict, tmp_path: Path, monkeypatch, path: str = "", uploaded: dict | None = None) -> tuple[dict, str, list]:
     monkeypatch.chdir(tmp_path)
     if uploaded is not None:
         colab = types.ModuleType("google.colab")
@@ -147,7 +184,9 @@ def _byod(notebook: dict, tmp_path: Path, monkeypatch, path: str = "", uploaded:
     else:
         monkeypatch.setitem(sys.modules, "google.colab", None)
     ns = _namespace()
-    return ns, _run(_sample(notebook, USE_BYOD=True, BYOD_IMAGE_PATH=path), ns)
+    _defs(notebook, ns, kind=None)
+    calls = _record_stages(ns)
+    return ns, _run(_gated(notebook, "USE_BYOD", USE_BYOD=True, BYOD_IMAGE_PATH=path), ns), calls
 
 
 @pytest.mark.parametrize(
@@ -173,16 +212,13 @@ def test_r86_m5_byod_refusal_is_one_message_and_moves_outputs_aside(notebook: di
         kwargs = {"uploaded": {"a.png": b"x", "b.png": b"y"}}
     elif case == "undecodable":
         kwargs = {"uploaded": {"broken.png": b"not an image"}}
-    ns, out = _byod(notebook, tmp_path, monkeypatch, **kwargs)
-    assert ns["sample_ready"] is False
+    ns, out, calls = _byod(notebook, tmp_path, monkeypatch, **kwargs)
+    assert "byod" not in ns and calls == []  # nothing is run on a refused input
     assert re.search(rule, out) and out.startswith("BYOD input refused:"), out
     # Peer-review F8: only exploratory files move; the default sample's report stays where the text says it is.
     assert (tmp_path / "outputs" / "earlier_1" / "swin_detection_task_inference_result_exploratory_1.json").is_file()
     assert (tmp_path / "outputs" / "swin_detection_task_inference_evaluation_report.json").is_file()
     assert not list((tmp_path / "sample").glob("*.png"))  # uploads are kept under sample/byod/
-    for section, marker in (("6", "input_manifest = validate_inputs("), ("7", "pipe.predict_many("), ("8", "report = evaluation_report("), ("9", "payload = {")):
-        skipped = _run(_cell(notebook, marker), ns)
-        assert skipped.startswith(f"Section {section} skipped"), skipped
 
 
 def test_r86_m5_byod_by_path_is_accepted_without_colab(notebook: dict, tmp_path: Path, monkeypatch) -> None:
@@ -190,10 +226,12 @@ def test_r86_m5_byod_by_path_is_accepted_without_colab(notebook: dict, tmp_path:
 
     image = tmp_path / "mine.png"
     Image.new("RGB", (64, 48), (10, 20, 30)).save(image)
-    ns, _ = _byod(notebook, tmp_path, monkeypatch, path=str(image))
-    assert ns["sample_ready"] is True and ns["sample_kind"] == "BYOD" and ns["image_paths"] == [image] and ns["ground_truth"] is None
-    assert ns["OUTPUT_SUFFIX"] == "_exploratory_1"
-    assert ns["training_overlap"]["eval_data_in_training"] is None  # peer-review F11: never a truthy string
+    ns, _, calls = _byod(notebook, tmp_path, monkeypatch, path=str(image))
+    byod = ns["byod"]
+    assert byod["kind"] == "BYOD" and byod["image_paths"] == [image] and byod["ground_truth"] is None
+    assert byod["output_suffix"] == "_exploratory_1"
+    assert byod["training_overlap"]["eval_data_in_training"] is None  # peer-review F11: never a truthy string
+    assert calls == [(stage, "BYOD") for stage in STAGES]  # DAT13/DAT15: the same four stages as the sample
 
 
 def _validator():
@@ -232,10 +270,11 @@ def test_r86_F3_bootstrap_interval_is_computed_by_the_section_8_cell(notebook: d
 
     monkeypatch.chdir(tmp_path)
     ns = _namespace()
-    _run(_sample(notebook, SAMPLE="synthetic"), ns)
+    _defs(notebook, ns)
     gt = [{"image_id": f"im{i}.png", "boxes": [{"class_id": i % 3, "bbox_xyxy": [10.0, 10.0, 60.0 + i, 80.0]}]} for i in range(6)]
     rows = [{"image_id": e["image_id"], "class_id": e["boxes"][0]["class_id"], "score": 0.9, "bbox_xyxy": e["boxes"][0]["bbox_xyxy"]} for e in gt]
-    ns.update(numpy=numpy, coco_box_ap=coco_box_ap, rows=rows, ground_truth=gt, detections=rows, sample_kind="COCO-val2017-50",
+    ns["sample"] = {**ns["sample"], "kind": "COCO-val2017-50", "ground_truth": gt, "output_suffix": ""}
+    ns.update(numpy=numpy, coco_box_ap=coco_box_ap, rows=rows, detections=rows,
               evaluation_report=lambda d, g, sample_kind: {"verdict": "sample-sanity", "sample_kind": sample_kind})
     _run(_cell(notebook, "report = evaluation_report("), ns)
     boot = ns["report"]["bootstrap_over_images"]
@@ -247,7 +286,7 @@ def test_r86_F3_bootstrap_interval_is_computed_by_the_section_8_cell(notebook: d
 
 def _section6(notebook: dict, ns: dict) -> None:
     ns.update(MAX_PIXELS=64_000_000, INPUT_SCHEMA={"score_threshold": [0, 1], "max_detections": [1, None]}, pipe=types.SimpleNamespace(classes=list(range(80))))
-    _run(_cell(notebook, "input_manifest = validate_inputs("), ns)
+    _run(_cell(notebook, "input_manifest = validate_inputs("), ns)  # defines validate_stage and runs it on ns['sample']
 
 
 def test_r86_S1_exploratory_passes_get_new_names_and_keep_the_default(notebook: dict, tmp_path: Path, monkeypatch) -> None:
@@ -258,8 +297,8 @@ def test_r86_S1_exploratory_passes_get_new_names_and_keep_the_default(notebook: 
     default.write_text('{"default": true}', encoding="utf-8")
     for n in (1, 2):
         ns = _namespace()
-        _run(_sample(notebook, SAMPLE="synthetic"), ns)
-        assert ns["OUTPUT_SUFFIX"] == f"_exploratory_{n}"
+        _defs(notebook, ns)
+        assert ns["sample"]["output_suffix"] == f"_exploratory_{n}"
         _section6(notebook, ns)
         assert (outputs / f"swin_detection_task_inference_input_manifest_exploratory_{n}.json").is_file()
     assert default.read_text(encoding="utf-8") == '{"default": true}'
@@ -269,7 +308,7 @@ def test_r86_S1_exploratory_passes_get_new_names_and_keep_the_default(notebook: 
 def test_r86_S1_a_failed_write_never_leaves_an_empty_main_report(notebook: dict, tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     ns = _namespace()
-    _run(_sample(notebook, SAMPLE="synthetic"), ns)
+    _defs(notebook, ns)
     report = tmp_path / "outputs" / "swin_detection_task_inference_evaluation_report.json"
     ns["write_json_atomic"](report, {"verdict": "sample-sanity"})
     with pytest.raises(TypeError):
@@ -303,7 +342,7 @@ def test_r86_M1_text_states_dat9_and_drops_the_overclaims(notebook: dict) -> Non
 def test_r86_m1_licences_and_attribution_are_stated(notebook: dict) -> None:
     md = _markdown(notebook)
     assert "CC BY 4.0" in md and "33 CC BY 2.0" in md and "17 CC BY-SA 2.0" in md and "ATTRIBUTION.md" in md
-    assert "'licences': sample_licences" in _cell(notebook, "payload = {")
+    assert "'licences': prepared['licences']" in _cell(notebook, "payload = {")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     assert "CC BY 4.0" in readme and "ATTRIBUTION.md" in readme
 
@@ -322,9 +361,9 @@ def test_r86_m3_no_stale_release_text(notebook: dict) -> None:
     assert "USE_COCO8 = False" not in rv and "data-coco-val2017-50-v1" in rv
 
 
-def test_r86_m4_spec_2_5_use_notice_and_isolated_env(notebook: dict) -> None:
+def test_r86_m4_spec_use_notice_and_isolated_env(notebook: dict) -> None:
     dimer = notebook["metadata"]["dimer"]
-    assert dimer["notebook_spec"] == "2.5" and dimer["notebook_kind"] == "TUTORIAL"
+    assert dimer["notebook_spec"] == "3.0" and dimer["notebook_kind"] == "TUTORIAL"
     first_code = next(i for i, c in enumerate(notebook["cells"]) if c["cell_type"] == "code")
     before = ["".join(c["source"]) for c in notebook["cells"][:first_code]]
     assert any(s.startswith("> **⚠️ Notice.** For research, training and evaluation only.") for s in before)

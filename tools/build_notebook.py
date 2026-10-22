@@ -27,8 +27,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-GENERATOR_VERSION = "build_notebook.py/2.2-swd"
-NOTEBOOK_SPEC = "2.5"
+GENERATOR_VERSION = "build_notebook.py/2.3-swd"
+NOTEBOOK_SPEC = "3.0"
+# NOTEBOOK_SPEC 3.0 §3.7: the kinds a 3.0 notebook may declare (`DEMO` is retired).
+KINDS = ("TUTORIAL", "WORKSHOP", "CAPSTONE")
 
 # /2.1: the `isolated_runtime` environment is the fleet's version 2.2 reference mechanism (ast-audio-classification-pipeline
 # and bioclip2-biodiversity-pipeline): a pinned uv wheel verified by size and SHA-256, a managed CPython of a fixed
@@ -46,6 +48,9 @@ NOTEBOOK_SPEC = "2.5"
 # /2.2-swd (row-86 review fixes, 2026-10-18): NOTEBOOK_SPEC 2.5 — an optional template `kind` is declared in the header and in
 # metadata.dimer.notebook_kind (KND1), an optional `data_host` names the sample-data host in the header, and Section 1
 # documents the DIMER_ISOLATED_ENV override of the isolated-environment folder.
+# /2.3-swd (2026-10-22): NOTEBOOK_SPEC 3.0 — the declared spec is 3.0 and a template `kind` must be one of KINDS (the
+# retired `DEMO` kind is refused). Rendering is unchanged; the §7.2 order (interpretation, then the optional activity
+# and BYOD) is the template's, which puts those sections in `cells` and leaves Troubleshooting + References as `closing`.
 
 # ST2: default rewrite rule; a template may replace it with its own `rewrites` list. Every rule must
 # match exactly once across the embedded modules, so a silent no-op is impossible.
@@ -222,7 +227,7 @@ def template_contract() -> dict[str, str]:
         "exclusions": "one markdown sentence after the bold label",
         "prerequisites": "list of markdown bullets; the generator appends the External access bullet",
         "cells": "list of {'md': str, 'code': str} stage cells inserted after the model cell; may use {stem}, {MODEL_ID}, {MODEL_REVISION}",
-        "closing": "markdown for Interpretation and limits + References",
+        "closing": "markdown for the last sections (Interpretation and limits + References, or, when the template places Interpretation and the optional sections in `cells`, Troubleshooting + References)",
         "weights_key": "MODEL_KEY value (weights/<key>/dimer-base-manifest.json)",
         # optional:
         "modules": "OPTIONAL list of module files under src/<package>/ to embed (default ['pipeline.py']); dependency order is computed",
@@ -594,6 +599,8 @@ _BYOD_DEFAULT = (
 
 def _declarations(template: dict[str, Any]) -> tuple[str, str, str]:
     mode = template.get("mode", "GUIDED")
+    if template.get("kind") is not None and template["kind"] not in KINDS:
+        raise SystemExit(f"template kind {template['kind']!r} is not one of {KINDS} (NOTEBOOK_SPEC {NOTEBOOK_SPEC} §3.7)")
     if mode not in MODES:
         raise SystemExit(f"template mode {mode!r} is not one of {MODES}")
     run_all = template.get("run_all") or _RUN_ALL_DEFAULT.get(template["profile"])
