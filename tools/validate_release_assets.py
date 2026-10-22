@@ -1,6 +1,6 @@
 """Static release-asset validation for the DIMER Swin-T Mask R-CNN object-detection pipeline.
 
-Checks the STANDALONE tutorial notebook (DIMER Notebook Specification 2.2 §4), the tutorial
+Checks the STANDALONE tutorial notebook (DIMER Notebook Specification 3.0 §4), the tutorial
 registry, model card, README, STATUS.md and weight documentation for source conformance and
 cross-document identity consistency, and runs the generator parity checks (PAR1–PAR3).
 
@@ -34,7 +34,7 @@ CARD_BASE_MODEL = "SwinTransformer/storage mask_rcnn_swin_tiny_patch4_window7_1x
 # Additional 40-hex revisions a document may legitimately cite (none by default).
 KNOWN_SHAS: frozenset[str] = frozenset(())
 # Colab form gates that must default to the non-interactive sample path.
-BYOD_GATES = ("USE_BYOD",)
+BYOD_GATES = ("USE_BYOD", "RUN_ACTIVITY")  # NOTEBOOK_SPEC 3.0: the optional activity is off by default too
 # Machine-readable artifacts the notebook must write (OUT1-OUT3, DAT24, EVAL21).
 EXPECTED_OUTPUTS = (
     "outputs/swin_detection_task_inference_input_manifest.json",
@@ -55,7 +55,14 @@ CODE_MARKERS = (
     "if gt_digest != VAL2017_GT_SHA256:",
     "report['training_overlap'] = training_overlap",
     "os.replace(temporary, path)",
-    "if not sample_ready:",
+    "sample = load_input('val2017')",
+    "input_manifest = validate_stage(sample)",
+    "detections, rows = detect_stage(sample)",
+    "report = evaluate_stage(sample, detections, rows)",
+    "result = export_stage(sample, input_manifest, rows, report)",
+    "activity = load_input('synthetic')",
+    "byod = load_input('BYOD', BYOD_IMAGE_PATH)",
+    "except SampleRefused as refusal:",
     "scene = Image.fromarray(array, mode='RGB')",
     "writer.writerow(['image_id', 'rank', 'class_id', 'class_name', 'score', 'x1', 'y1', 'x2', 'y2'])",
     "'model_revision': MODEL_REVISION",
@@ -64,6 +71,19 @@ CODE_MARKERS = (
     "**pipe.versions",
     "'device': pipe.device",
 )
+# NOTEBOOK_SPEC 3.0 §7.2 (TASK-INFERENCE): the default path ends at the export, then Interpretation; the optional
+# activity and BYOD follow it, then Troubleshooting and References. Headings in the order they must appear.
+SECTION_ORDER = (
+    "## 9. Export outputs and provenance",
+    "## Interpretation and limits",
+    "## Conclusion (your notes)",
+    "## 10. Activity: change one thing",
+    "## 11. Your own image (BYOD)",
+    "## Troubleshooting",
+    "## References",
+)
+# The form gates whose cells must sit after the Interpretation heading (optional sections, off by default).
+OPTIONAL_SECTION_GATES = ("RUN_ACTIVITY = False", "USE_BYOD = False")
 # Profile-specific learner-facing statements.
 MARKDOWN_MARKERS = (
     "**Capability:** pretrained COCO-80 object detection",
@@ -109,7 +129,7 @@ FORBIDDEN_OUTSIDE_MODULE = (
 # Specification 2.0; see docs/release-verification.md for the release gate.
 # ---------------------------------------------------------------------------
 
-NOTEBOOK_SPEC = "2.5"
+NOTEBOOK_SPEC = "3.0"
 ALLOWED_PROFILES = {"E2E", "ARTIFACT-INFERENCE", "TASK-INFERENCE", "MULTI-CAPABILITY", "SMOKE"}
 STATUS_TOKENS = ("Candidate", "Release-grade")
 PLACEHOLDER = re.compile(r"\b(TODO|TBD|FIXME)\b|Insert text here|Tooltip:", re.I)
@@ -660,6 +680,25 @@ def _validate_notebook_content(
     _check(ref in markdown, f"{path.name}: references must link {ref}")
 
 
+def _validate_section_order(path: Path, notebook: dict) -> None:
+    """NOTEBOOK_SPEC 3.0 §7.2: each heading once, in order; the optional gates only after Interpretation."""
+    cells = notebook.get("cells", [])
+    positions = []
+    for heading in SECTION_ORDER:
+        found = [
+            index
+            for index, cell in enumerate(cells)
+            if cell.get("cell_type") == "markdown" and any(line.startswith(heading) for line in _cell_source(cell).splitlines())
+        ]
+        _check(len(found) == 1, f"{path.name}: heading {heading!r} must appear exactly once (found {len(found)})")
+        positions.append((found[0], _cell_source(cells[found[0]]).index(heading)))
+    _check(positions == sorted(positions), f"{path.name}: sections are out of the NOTEBOOK_SPEC 3.0 §7.2 order {list(SECTION_ORDER)}")
+    interpretation = positions[SECTION_ORDER.index("## Interpretation and limits")][0]
+    for gate in OPTIONAL_SECTION_GATES:
+        gated = [index for index, cell in enumerate(cells) if cell.get("cell_type") == "code" and gate in _cell_source(cell)]
+        _check(len(gated) == 1 and gated[0] > interpretation, f"{path.name}: the {gate.split()[0]} cell must follow Interpretation and limits (§7.2)")
+
+
 def validate_notebooks() -> None:
     tutorials = ROOT / "tutorials"
     notebooks = sorted(tutorials.glob("*.ipynb"))
@@ -674,6 +713,7 @@ def validate_notebooks() -> None:
     _validate_identity(path, code_cells, embedded, revision)
     _validate_parity(path, notebook, code_cells, build)
     _validate_notebook_content(path, code_cells, markdown, embedded)
+    _validate_section_order(path, notebook)
     registry = _read(tutorials / "README.md")
     _check(f"`{path.name}`" in registry, f"{path.name} missing from tutorials/README.md")
     _check(f"`{EXPECTED_PROFILE}`" in registry, f"tutorials/README.md must record `{EXPECTED_PROFILE}`")

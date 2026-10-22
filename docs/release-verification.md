@@ -3,19 +3,19 @@
 `tutorials/swin_detection_task_inference.ipynb` (`TASK-INFERENCE`, standalone) is a **release candidate** until
 the exact notebook revision has executed top-to-bottom in a clean supported runtime. Unit tests, JSON validation,
 code-cell compilation, and `tools/validate_release_assets.py` are necessary checks but are **not** runtime evidence
-under DIMER Notebook Specification 2.5. This file is the durable release-gate record for the notebook.
+under DIMER Notebook Specification 3.0. This file is the durable release-gate record for the notebook.
 
 ## Automatic coverage (static, every pull request)
 
 `.github/workflows/ci.yml` runs `ruff`, the offline unit suite (`tests/test_snapshot.py`, `tests/test_role_helpers.py`,
 `tests/test_metrics.py`, `tests/test_notebook_parity.py`, `tests/test_review_fixes.py`, `tests/test_r86_review_fixes.py`,
-`tests/test_val2017_release_assets.py` — the last one downloads the 50 release-asset images and parses them; OpenMMLab and pycocotools stubbed, no weights, no model),
+`tests/test_spec3_migration.py`, `tests/test_val2017_release_assets.py` — the last one downloads the 50 release-asset images and parses them; OpenMMLab and pycocotools stubbed, no weights, no model),
 `tools/validate_release_assets.py` and `tools/build_notebook.py --check` on Python 3.10. The validator checks:
 
 - notebook JSON parses; every code cell compiles as plain Python (no `%`/`!` magics); no persisted outputs or
   execution counts; no unresolved placeholder markers; every code cell is preceded by an explanatory markdown cell;
 - exactly one tutorial notebook, named in `tutorials/README.md` with its `TASK-INFERENCE` profile, the notebook-spec
-  version and the standalone carrier; `metadata.dimer` declares that profile, spec `2.5`, `notebook_kind: TUTORIAL`, `standalone: true` and
+  version and the standalone carrier; `metadata.dimer` declares that profile, spec `3.0`, `notebook_kind: TUTORIAL`, `standalone: true` and
   `generated_from` (repository, revision, the two carried modules, their joined SHA-256, generator);
 - the standalone carrier (ST1–ST6, PAR1–PAR3): no clone, repository install, repository import, worker process or
   subprocess on the primary path (the generator-owned install cell excepted); one cell tagged `embedded_module` per
@@ -30,8 +30,9 @@ under DIMER Notebook Specification 2.5. This file is the durable release-gate re
   `DimerSwinDetector.from_pretrained(weights_dir=...)`, `validate_inputs`, `predict_many`, `evaluation_report`),
   the Python 3.10 assertion, the ceiling print (`MAX_PIXELS`, request ceilings, class count), the pinned val2017 sample
   (per-image SHA-256 fetch, ground-truth digest, `training_overlap`), atomic writes, the exports, the learner-facing statements (uncalibrated scores, no shipped threshold, score-ordered
-  detections, the `.pth` trust boundary, `not-measurable` / `sample-sanity` verdicts) and the gated-off `USE_BYOD`
-  default listed in the validator; forbidden patterns (credential-in-URL, any `git clone` /
+  detections, the `.pth` trust boundary, `not-measurable` / `sample-sanity` verdicts), the gated-off `USE_BYOD` and
+  `RUN_ACTIVITY` defaults listed in the validator, and the NOTEBOOK_SPEC 3.0 §7.2 section order (export, Interpretation and
+  limits, Conclusion, the optional Section 10 activity and Section 11 BYOD, Troubleshooting, References); forbidden patterns (credential-in-URL, any `git clone` /
   `github.com/kurtvalcorza` / repository import, a mutable `revision='main'`, direct `mmdet` / `mmcv` / `mmengine` /
   `pycocotools` / `torchvision` / `transformers` / `huggingface_hub` use **outside the carried module cells**,
   `trust_remote_code=True`, `pickle.load`, `torch.load(`, `extractall(`);
@@ -185,8 +186,15 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 ## Current status
 
-The registry status is **Candidate**. The 2026-10-18 revision (review row 86) replaces the scored sample with 50
-pinned COCO val2017 images, migrates the notebook to Notebook Specification 2.5, and its run of record is the
+The registry status is **Candidate under Notebook Specification 3.0**. The 2026-10-22 migration (branch `spec3/migrate`)
+declares `notebook_spec` 3.0 and moves the optional activity (Section 10, `RUN_ACTIVITY`, off by default) and BYOD (Section 11,
+`USE_BYOD`, off by default) after the interpretation, as §7.2 orders them, each running the same stage functions as the default
+path. The default path's computations and outputs are otherwise unchanged, but the notebook blob changed, so under REL14 no run
+listed above is evidence for it. Promotion is pending (1) a hosted Colab T4 run of the new blob's default path, (2) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime), (3) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches), and (4) a run of the optional Section 10 activity. The notebook has no external-artifact section: it exports
+predictions, not a reusable artifact, and this is not one of the nine companion pipelines, so XAS1 does not apply.
+
+History, for the Notebook Specification 2.5 blobs: the 2026-10-18 revision (review row 86) replaced the scored sample with 50
+pinned COCO val2017 images, migrated the notebook to Notebook Specification 2.5, and its run of record is the
 2026-10-19 hosted Colab T4 run of blob `7775654c` (commit `a27a4fe`; table above): box AP@[.50:.95] 0.538
 (`0.5378428165820687`) and AP75 0.584, with a 95 % image-bootstrap interval of [0.5018, 0.5992], as printed in
 `docs/execution-evidence/2026-10-19-a27a4fe/exec.log` and the executed notebook beside it. These are sanity measurements on

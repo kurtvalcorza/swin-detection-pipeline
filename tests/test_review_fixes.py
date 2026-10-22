@@ -84,12 +84,12 @@ def test_swd_M1_no_entry_point_presents_colab_as_verified() -> None:
 
 def test_swd_M2_default_sample_is_labelled_and_measured(notebook: dict) -> None:
     # R86-D1 (2026-10-18): the labelled default is the pinned COCO val2017 sample; COCO8 (train2017 images) is gone.
-    sample = next(s for s in _code(notebook) if "SAMPLE = 'val2017'" in s)
+    sample = next(s for s in _code(notebook) if "sample = load_input('val2017')" in s)
     assert "USE_COCO8" not in sample and "coco8" not in sample.lower()
-    assert "elif SAMPLE == 'val2017':" in sample and "fetch_pinned(VAL2017_RELEASE_URL + name" in sample
+    assert "if kind == 'val2017':" in sample and "fetch_pinned(VAL2017_RELEASE_URL + name" in sample
     workflow = (ROOT / ".github" / "workflows" / "verify-task-tutorial.yml").read_text(encoding="utf-8")
     assert "report['verdict']=='sample-sanity'" in workflow and "ground_truth_boxes']==279" in workflow
-    assert "not-measurable" in _markdown(notebook) and "SAMPLE = 'synthetic'" in _markdown(notebook)
+    assert "not-measurable" in _markdown(notebook) and "`RUN_ACTIVITY`" in _markdown(notebook)
 
 
 # ---- SWD-M3: the guided layer ------------------------------------------------------------------------------------

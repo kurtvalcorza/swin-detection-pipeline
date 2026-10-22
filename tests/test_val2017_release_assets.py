@@ -41,14 +41,15 @@ def test_every_pinned_image_resolves_and_parses_through_the_notebook_cell(tmp_pa
     from PIL import Image
 
     nb = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
-    source = next("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code" and "SAMPLE = 'val2017'  # @param" in "".join(c["source"]))
+    source = next("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code" and "sample = load_input('val2017')" in "".join(c["source"]))
     monkeypatch.chdir(tmp_path)
     namespace = {"numpy": numpy, "__name__": "notebook_cell"}
     exec(source, namespace)  # noqa: S102 - the notebook's own sample cell, default path
-    assert namespace["sample_ready"] is True and namespace["sample_kind"] == "COCO-val2017-50"
-    assert len(namespace["ground_truth"]) == 50 and namespace["n_ground_truth_boxes"] == 279
-    assert namespace["OUTPUT_SUFFIX"] == ""
-    for image, path in zip(PIN["images"], namespace["image_paths"], strict=True):
+    sample = namespace["sample"]
+    assert sample["kind"] == "COCO-val2017-50"
+    assert len(sample["ground_truth"]) == 50 and sample["ground_truth_boxes"] == 279
+    assert sample["output_suffix"] == ""
+    for image, path in zip(PIN["images"], sample["image_paths"], strict=True):
         assert path.name == image["file_name"] and path.stat().st_size == image["bytes"]
         with Image.open(path) as opened:
             opened.load()
