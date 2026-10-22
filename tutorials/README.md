@@ -1,7 +1,7 @@
 # Tutorials
 
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/kurtvalcorza/swin-detection-pipeline)
-[![Open In Colab (hosted run of this revision pending)](https://img.shields.io/badge/Colab-hosted%20run%20pending%20(this%20revision)-lightgrey?style=flat&logo=googlecolab)](https://colab.research.google.com/github/kurtvalcorza/swin-detection-pipeline/blob/main/tutorials/swin_detection_task_inference.ipynb)
+[![Open In Colab](https://img.shields.io/badge/Open%20in-Colab-lightgrey?style=flat&logo=googlecolab)](https://colab.research.google.com/github/kurtvalcorza/swin-detection-pipeline/blob/main/tutorials/swin_detection_task_inference.ipynb) [hosted-run evidence](../docs/release-verification.md)
 [![Isolated Python 3.10](https://img.shields.io/badge/Python-3.10%20(isolated%2C%20uv--managed)-3776ab?style=flat&logo=python&logoColor=white)](../README.md)
 [![Checkpoint](https://img.shields.io/badge/OpenMMLab-mask--rcnn__swin--t--p4--w7__fpn__1x__coco-ffcc4d?style=flat)](../docs/WEIGHTS.md)
 [![Upstream](https://img.shields.io/badge/Upstream-microsoft%2FSwin--Transformer-181717?style=flat&logo=github&logoColor=white)](https://github.com/microsoft/Swin-Transformer)

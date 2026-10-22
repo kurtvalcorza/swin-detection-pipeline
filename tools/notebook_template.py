@@ -392,9 +392,14 @@ TEMPLATE = {
             "https://github.com/kurtvalcorza/swin-detection-pipeline",
         ),
         (
-            "Open In Colab (hosted run of this revision pending)",
-            "https://img.shields.io/badge/Colab-hosted%20run%20pending%20(this%20revision)-lightgrey?style=flat&logo=googlecolab",
+            "Open In Colab",
+            "https://img.shields.io/badge/Open%20in-Colab-lightgrey?style=flat&logo=googlecolab",
             "https://colab.research.google.com/github/kurtvalcorza/swin-detection-pipeline/blob/main/tutorials/swin_detection_task_inference.ipynb",
+        ),
+        (
+            "hosted-run evidence",
+            None,
+            "https://github.com/kurtvalcorza/swin-detection-pipeline/blob/main/docs/release-verification.md",
         ),
         (
             "Isolated Python 3.10",
@@ -679,7 +684,7 @@ TEMPLATE = {
                 "model beats its published number. Recorded development runs of the previous revision of this notebook on the same 50 images "
                 "(notebook blob `a4c94fca`, 2026-10-18: a GitHub Actions run and a CPU run, identical) gave AP@[.50:.95] 0.538, AP50 0.801 and "
                 "AP75 0.584, and a 200-resample bootstrap over images of those detections gave a 95 % interval of about 0.50–0.60. The hosted "
-                "run of record is still pending, so trust your own output first. **Why above 0.427: a selection effect.** The rule that picked "
+                "runs on record are listed in `docs/release-verification.md`; trust your own output first. **Why above 0.427: a selection effect.** The rule that picked "
                 "these images excluded every image with a crowd annotation, and crowded scenes hold many of COCO's small objects. The sample has "
                 "5.58 boxes per image against 7.27 in all of val2017, and about 35 % small boxes against 42 %; small objects are where detectors "
                 "score lowest, so a crowd-free sample is easier. COCO AP is also a mean over the categories present: 33 of the 59 categories "
