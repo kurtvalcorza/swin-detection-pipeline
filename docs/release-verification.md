@@ -199,11 +199,13 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 ## Current status
 
-The registry status is **Candidate under Notebook Specification 3.0**. The 2026-10-22 migration (branch `spec3/migrate`)
+The registry status is **Candidate under Notebook Specification 3.0**. The 2026-10-23 refusal-display fix (branch `fix/refusal-display`: a refused BYOD input is shown as one `Refused: <file name>: <rule>` line with no traceback, and the BYOD image must decode as PNG, JPEG or WebP) changed the notebook blob from `ea2ff3b3` to `0dd698fc`, so under REL14 the `faf8edb` default-path run and the `9de0f7e` activity run are history for blob `ea2ff3b3`, not evidence for `0dd698fc`; new hosted runs of `0dd698fc` (the default path, the Section 10 activity, the REL12 BYOD review and the REL2 browser run) are pending and will be recorded in `docs/release-verification.md`.
+
+History, for blob `ea2ff3b3`: the 2026-10-22 migration (branch `spec3/migrate`)
 declares `notebook_spec` 3.0 and moves the optional activity (Section 10, `RUN_ACTIVITY`, off by default) and BYOD (Section 11,
 `USE_BYOD`, off by default) after the interpretation, as §7.2 orders them, each running the same stage functions as the default
 path. The default path's computations and outputs are otherwise unchanged, but the notebook blob changed, so under REL14 only the 2026-10-22 `faf8edb` row is
-evidence for it. The hosted Colab T4 run of the new blob `ea2ff3b3` at `faf8edb` (2026-10-22, Colab CLI) passed the default path (box AP@[0.50:0.95] 0.538). The optional Section 10 activity ran on the same blob in the `9de0f7e` run (`RUN_ACTIVITY = True` run copy, Colab CLI 0.7.5, fresh T4, 2026-10-22, PASS), which satisfies the activity gate. Promotion is pending only (1) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime) and (2) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches). The notebook has no external-artifact section: it exports
+evidence for it. The hosted Colab T4 run of the new blob `ea2ff3b3` at `faf8edb` (2026-10-22, Colab CLI) passed the default path (box AP@[0.50:0.95] 0.538). The optional Section 10 activity ran on the same blob in the `9de0f7e` run (`RUN_ACTIVITY = True` run copy, Colab CLI 0.7.5, fresh T4, 2026-10-22, PASS), which satisfies the activity gate. For that blob, promotion was pending only (1) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime) and (2) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches). The notebook has no external-artifact section: it exports
 predictions, not a reusable artifact, and this is not one of the nine companion pipelines, so XAS1 does not apply.
 
 History, for the Notebook Specification 2.5 blobs: the 2026-10-18 revision (review row 86) replaced the scored sample with 50
