@@ -196,7 +196,7 @@ def _byod(notebook: dict, tmp_path: Path, monkeypatch, path: str = "", uploaded:
         ("no-dialog", "There is no upload dialog outside Google Colab"),
         ("no-file", r"Upload exactly one image file \(received 0\)"),
         ("two-files", r"Upload exactly one image file \(received 2\)"),
-        ("undecodable", "cannot be used"),
+        ("undecodable", r"^Refused: broken.png: .*cannot decode"),
     ],
 )
 def test_r86_m5_byod_refusal_is_one_message_and_moves_outputs_aside(notebook: dict, tmp_path: Path, monkeypatch, case: str, rule: str) -> None:
@@ -214,11 +214,78 @@ def test_r86_m5_byod_refusal_is_one_message_and_moves_outputs_aside(notebook: di
         kwargs = {"uploaded": {"broken.png": b"not an image"}}
     ns, out, calls = _byod(notebook, tmp_path, monkeypatch, **kwargs)
     assert "byod" not in ns and calls == []  # nothing is run on a refused input
-    assert re.search(rule, out) and out.startswith("BYOD input refused:"), out
+    assert re.search(rule, out) and out.startswith("Refused: "), out
+    assert out.count("Refused:") == 1 and len(out.strip().splitlines()) == 1 and "Traceback" not in out, out  # DAT20: one line
     # Peer-review F8: only exploratory files move; the default sample's report stays where the text says it is.
     assert (tmp_path / "outputs" / "earlier_1" / "swin_detection_task_inference_result_exploratory_1.json").is_file()
     assert (tmp_path / "outputs" / "swin_detection_task_inference_evaluation_report.json").is_file()
     assert not list((tmp_path / "sample").glob("*.png"))  # uploads are kept under sample/byod/
+
+
+# ---- Refusal display (DAT19/DAT20, 2026-10-23): one `Refused: <file>: <rule>` line, decoded-format check ------------
+
+KIT_REFUSE = b"This is a text file saved with a .jpg extension; it is not an image.\r\n"  # the browser kit's refuse.jpg
+
+
+def _image_bytes(fmt: str) -> bytes:
+    from PIL import Image
+
+    buffer = io.BytesIO()
+    Image.new("RGB", (32, 24), (200, 100, 50)).save(buffer, format=fmt)
+    return buffer.getvalue()
+
+
+def _real_validate_inputs(ns: dict) -> None:
+    from dimer_swin_detection.runtime import validate_inputs
+
+    ns["validate_inputs"] = validate_inputs  # the carried package's own validation, as the notebook embeds it
+
+
+@pytest.mark.parametrize(
+    "name, payload, rule",
+    [
+        ("refuse.jpg", KIT_REFUSE, "Input is not a readable image"),  # the browser kit's refusal case
+        ("animation.gif", "GIF", "decodes as GIF"),
+        ("scan.bmp", "BMP", "decodes as BMP"),
+        ("disguised.png", "GIF", "decodes as GIF"),  # by decoded format, not by the extension
+    ],
+)
+def test_refusal_is_one_clean_line_naming_the_file_and_the_run_halts(notebook: dict, tmp_path: Path, monkeypatch, name: str, payload, rule: str) -> None:
+    data = _image_bytes(payload) if isinstance(payload, str) else payload
+    monkeypatch.chdir(tmp_path)
+    colab = types.ModuleType("google.colab")
+    colab.files = types.SimpleNamespace(upload=lambda: {name: data})
+    google = types.ModuleType("google")
+    google.colab = colab
+    monkeypatch.setitem(sys.modules, "google", google)
+    monkeypatch.setitem(sys.modules, "google.colab", colab)
+    ns = _namespace()
+    _defs(notebook, ns, kind=None)
+    _real_validate_inputs(ns)
+    calls = _record_stages(ns)
+    out = _run(_gated(notebook, "USE_BYOD", USE_BYOD=True, BYOD_IMAGE_PATH=""), ns)  # raises nothing: no traceback
+    lines = out.strip().splitlines()
+    assert len(lines) == 1 and lines[0].startswith(f"Refused: {name}: ") and out.count("Refused:") == 1, out
+    assert re.search(rule, out) and "run this cell again" in out and "Traceback" not in out, out
+    assert "PNG, JPEG or WebP" in out
+    # The run halts: no stage ran on the refused input, and this is the notebook's last code cell, so nothing follows it.
+    assert "byod" not in ns and calls == []
+    assert "USE_BYOD = False  # @param" in _code(notebook)[-1]
+
+
+@pytest.mark.parametrize("fmt, suffix", [("PNG", ".png"), ("JPEG", ".jpg"), ("WEBP", ".webp")])
+def test_the_three_promised_formats_are_accepted(notebook: dict, tmp_path: Path, monkeypatch, fmt: str, suffix: str) -> None:
+    image = tmp_path / f"mine{suffix}"
+    image.write_bytes(_image_bytes(fmt))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setitem(sys.modules, "google.colab", None)
+    ns = _namespace()
+    _defs(notebook, ns, kind=None)
+    _real_validate_inputs(ns)
+    calls = _record_stages(ns)
+    out = _run(_gated(notebook, "USE_BYOD", USE_BYOD=True, BYOD_IMAGE_PATH=str(image)), ns)
+    assert "Refused" not in out and ns["byod"]["image_paths"] == [image]
+    assert calls == [(stage, "BYOD") for stage in STAGES]
 
 
 def test_r86_m5_byod_by_path_is_accepted_without_colab(notebook: dict, tmp_path: Path, monkeypatch) -> None:
