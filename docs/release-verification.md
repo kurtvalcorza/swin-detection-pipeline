@@ -1,5 +1,7 @@
 # Release verification
 
+**Pending hosted run (REL14).** On 2026-10-24 the notebook `tutorials/swin_detection_task_inference.ipynb` was regenerated from code `2863aa7` (blob `a3725c8b7422`) so that the detector is built from the packaged config with no checkpoint and served from the pinned safetensors conversion `mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.safetensors` (SHA-256 `9ed16ad66c9c…`, loaded with `load_state_dict(strict=True)`) instead of MMEngine's pickle load of the `.pth`; no hosted run of this blob is recorded yet, so it is Candidate until one is (REL14). The runs recorded below are history for earlier blobs and are not evidence for this one.
+
 `tutorials/swin_detection_task_inference.ipynb` (`TASK-INFERENCE`, standalone) is a **release candidate** until
 the exact notebook revision has executed top-to-bottom in a clean supported runtime. Unit tests, JSON validation,
 code-cell compilation, and `tools/validate_release_assets.py` are necessary checks but are **not** runtime evidence
@@ -170,7 +172,7 @@ the current blob before promotion). Its run copy is committed beside the evidenc
 | `run_summary.json` | `697023b025c405b73c702058a27cf4ba6e3147f8ce106c443cf8d2db097589f1` | unchanged (no local path) |
 | `run_copy.ipynb` | `db17d8d056dc8c2aa45d7a67f98792b6e3fe9ae159b95ca90dedc32b1cee5607` | unchanged (no local path) |
 
-The 2026-10-23 `88a939c` activity row is the optional-activity run of blob `0dd698fc`, the current blob. Its run copy is
+The 2026-10-23 `88a939c` activity row is the optional-activity run of blob `0dd698fc`, the blob before the 2026-10-24 safetensors regeneration. Its run copy is
 committed beside the evidence as `run_copy.ipynb`. Captured → committed SHA-256 (local run directory redacted to `<local-run-dir>`):
 
 | File (under `execution-evidence/2026-10-23-88a939c-activity/`) | Captured | Committed |
@@ -211,7 +213,7 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 ## Current status
 
-The registry status is **Candidate under Notebook Specification 3.0**. The 2026-10-23 refusal-display fix (branch `fix/refusal-display`: a refused BYOD input is shown as one `Refused: <file name>: <rule>` line with no traceback, and the BYOD image must decode as PNG, JPEG or WebP) changed the notebook blob from `ea2ff3b3` to `0dd698fc`, so under REL14 the `faf8edb` default-path run and the `9de0f7e` activity run are history for blob `ea2ff3b3`, not evidence for `0dd698fc`. The current blob is `0dd698fc` at commit `88a939c`, and two hosted Colab T4 runs of it (Colab CLI 0.7.5, 2026-10-23, both PASS) cover the default path (box AP@[0.50:0.95] 0.538, image-bootstrap 95 % interval [0.5018, 0.5992]) and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); both are recorded in `docs/release-verification.md`. Promotion is pending only (1) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime) and (2) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches).
+The registry status is **Candidate under Notebook Specification 3.0**, pending a hosted run of blob `a3725c8b` (the 2026-10-24 safetensors regeneration at the top of this file; REL14). Before it, the 2026-10-23 refusal-display fix (branch `fix/refusal-display`: a refused BYOD input is shown as one `Refused: <file name>: <rule>` line with no traceback, and the BYOD image must decode as PNG, JPEG or WebP) changed the notebook blob from `ea2ff3b3` to `0dd698fc`, so under REL14 the `faf8edb` default-path run and the `9de0f7e` activity run are history for blob `ea2ff3b3`, not evidence for `0dd698fc`. The current blob is `0dd698fc` at commit `88a939c`, and two hosted Colab T4 runs of it (Colab CLI 0.7.5, 2026-10-23, both PASS) cover the default path (box AP@[0.50:0.95] 0.538, image-bootstrap 95 % interval [0.5018, 0.5992]) and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); both are recorded in `docs/release-verification.md`. Promotion is pending only (1) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime) and (2) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches).
 
 History, for blob `ea2ff3b3`: the 2026-10-22 migration (branch `spec3/migrate`)
 declares `notebook_spec` 3.0 and moves the optional activity (Section 10, `RUN_ACTIVITY`, off by default) and BYOD (Section 11,
