@@ -17,3 +17,4 @@ pycocotools==2.0.11
 numpy==1.26.4
 opencv-python==4.10.0.84
 pillow==11.3.0
+safetensors==0.8.0

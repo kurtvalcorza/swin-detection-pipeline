@@ -35,7 +35,7 @@ under DIMER Notebook Specification 3.0. This file is the durable release-gate re
   limits, Conclusion, the optional Section 10 activity and Section 11 BYOD, Troubleshooting, References); forbidden patterns (credential-in-URL, any `git clone` /
   `github.com/kurtvalcorza` / repository import, a mutable `revision='main'`, direct `mmdet` / `mmcv` / `mmengine` /
   `pycocotools` / `torchvision` / `transformers` / `huggingface_hub` use **outside the carried module cells**,
-  `trust_remote_code=True`, `pickle.load`, `torch.load(`, `extractall(`);
+  `trust_remote_code=True`, `pickle.load`, any `torch.load(` without `weights_only=True` (and any `weights_only=False`), `extractall(`);
 - `STATUS.md`, `README.md` and `tutorials/README.md` agree on one release-status token and no document makes an
   unsupported release-grade, production-readiness or benchmark claim;
 - `MODEL_CARD.md` front matter, single H1, required heading order, and immutable provenance.

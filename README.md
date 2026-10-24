@@ -28,9 +28,10 @@ The repository exposes a real, public, CPU-capable pretrained inference path:
 - **Checkpoint:** 191,461,353 bytes; SHA-256 `9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291`
 - **Input validation:** readable image, positive dimensions, maximum 64,000,000 pixels
 - **Outputs:** image id, 80-class COCO class id/name, uncalibrated score, `bbox_xyxy`
-- **Checkpoint handling:** exact size and SHA-256 are verified before the upstream `.pth` file is deserialized
+- **Checkpoint handling:** exact size and SHA-256 of the upstream `.pth` are verified, then it is read once with `torch.load(..., weights_only=True)` and converted into `mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.safetensors` (191,434,712 bytes, SHA-256 `9ed16ad66c9ca031a67bbcfb4ae424fa069a29251de9aa6f38944823399a994b`, pinned as `CONVERTED_SHA256`)
+- **Served file:** the model is built from the packaged config with no checkpoint and loaded from the safetensors file with `load_state_dict(strict=True)`; MMDetection's pickle loader is never called, and the `.pth` is not read again once the conversion exists
 
-The `.pth` format is code-capable PyTorch serialization. Digest verification proves byte identity against the pinned distribution; it does not prove publisher authenticity or make an otherwise untrusted checkpoint safe.
+The upstream `.pth` is a pickled PyTorch checkpoint; the `weights_only=True` read refuses arbitrary pickled objects, and the served safetensors file holds tensors only. Digest verification proves byte identity against the pinned distribution; it does not prove publisher authenticity.
 
 Machine-readable capability metadata is in [`spec/task-inference-surface.json`](spec/task-inference-surface.json).
 

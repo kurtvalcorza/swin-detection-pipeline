@@ -53,15 +53,36 @@ def _pin_spec_to_payload(monkeypatch) -> None:
 
 
 def _stub_openmmlab(monkeypatch, calls: list) -> None:
+    """Stand-ins for MMDetection's initialiser and safetensors' reader, recording how the runtime calls them."""
     monkeypatch.setattr(runtime, "verify_runtime_versions", lambda: {"stub": "0"})
     monkeypatch.setattr(runtime, "resolve_packaged_config", lambda: Path("stub-config.py"))
 
+    class Model:
+        def __init__(self) -> None:
+            self.dataset_meta = {"classes": tuple(f"c{i}" for i in range(80)), "palette": "stub"}
+
+        def load_state_dict(self, state, strict):
+            calls.append(("load_state_dict", state, strict))
+
     def init(config, checkpoint, device="cpu"):
         calls.append((config, checkpoint, device))
-        return types.SimpleNamespace(dataset_meta={"classes": tuple(f"c{i}" for i in range(80))})
+        return Model()
+
+    def load_file(path):
+        return {"read": path}
 
     monkeypatch.setitem(sys.modules, "mmdet", types.SimpleNamespace(apis=types.SimpleNamespace(init_detector=init)))
     monkeypatch.setitem(sys.modules, "mmdet.apis", types.SimpleNamespace(init_detector=init))
+    monkeypatch.setitem(sys.modules, "safetensors", types.SimpleNamespace(torch=types.SimpleNamespace(load_file=load_file)))
+    monkeypatch.setitem(sys.modules, "safetensors.torch", types.SimpleNamespace(load_file=load_file))
+
+
+CONVERTED_PAYLOAD = b"" * 32
+
+
+def _pin_converted(monkeypatch) -> None:
+    """The stand-in converted file and the digest the runtime must find for it."""
+    monkeypatch.setattr(runtime, "CONVERTED_SHA256", hashlib.sha256(CONVERTED_PAYLOAD).hexdigest())
 
 
 def test_committed_manifest_pins_the_model_spec_checkpoint() -> None:
@@ -126,17 +147,33 @@ def test_stage_missing_files_fetches_only_the_absent_checkpoint(monkeypatch, tmp
     verify_snapshot(tmp_path)
 
 
-def test_from_pretrained_loads_the_verified_checkpoint(monkeypatch, tmp_path: Path) -> None:
+def test_from_pretrained_converts_the_verified_checkpoint_then_serves_the_conversion(monkeypatch, tmp_path: Path) -> None:
     _pin_spec_to_payload(monkeypatch)
+    _pin_converted(monkeypatch)
     _write_snapshot(tmp_path)
     (tmp_path / runtime.WEIGHTS_FILE).write_bytes(PAYLOAD)
     calls: list = []
     _stub_openmmlab(monkeypatch, calls)
+    conversions: list = []
+
+    def convert(source, target_dir):
+        conversions.append((source, target_dir))
+        (Path(target_dir) / runtime.CONVERTED_WEIGHTS_FILE).write_bytes(CONVERTED_PAYLOAD)
+
+    monkeypatch.setattr(runtime, "convert_checkpoint", convert)
     model = DimerSwinDetector.from_pretrained(weights_dir=tmp_path)
+    converted = tmp_path / runtime.CONVERTED_WEIGHTS_FILE
+    assert conversions == [(tmp_path / runtime.WEIGHTS_FILE, tmp_path)]
     assert model.source == "local-snapshot"
-    assert model.checkpoint == tmp_path / runtime.WEIGHTS_FILE
-    assert calls == [("stub-config.py", str(tmp_path / runtime.WEIGHTS_FILE), "cpu")]
-    assert len(model.classes) == 80
+    assert model.checkpoint == converted
+    # Built from the config with no checkpoint (no MMEngine pickle load), then loaded strictly from safetensors.
+    assert calls == [("stub-config.py", None, "cpu"), ("load_state_dict", {"read": str(converted)}, True)]
+    assert model.classes == runtime.COCO_CLASSES and len(model.classes) == 80
+    # Once converted, the source is neither staged, verified nor read again.
+    (tmp_path / runtime.WEIGHTS_FILE).unlink()
+    calls.clear()
+    DimerSwinDetector.from_pretrained(weights_dir=tmp_path)
+    assert len(conversions) == 1 and calls[0] == ("stub-config.py", None, "cpu")
 
 
 def test_from_pretrained_refuses_without_manifest_or_download(monkeypatch, tmp_path: Path) -> None:
@@ -149,12 +186,13 @@ def test_from_pretrained_refuses_without_manifest_or_download(monkeypatch, tmp_p
         DimerSwinDetector.from_pretrained(weights_dir=tmp_path)
 
 
-def test_cache_path_still_uses_acquire_verified_checkpoint(monkeypatch, tmp_path: Path) -> None:
+def test_cache_path_serves_the_converted_weights(monkeypatch, tmp_path: Path) -> None:
+    _pin_converted(monkeypatch)
     calls: list = []
     _stub_openmmlab(monkeypatch, calls)
-    acquired = tmp_path / "cached.pth"
-    acquired.write_bytes(PAYLOAD)
-    monkeypatch.setattr(runtime, "acquire_verified_checkpoint", lambda cache_dir: acquired)
+    acquired = tmp_path / runtime.CONVERTED_WEIGHTS_FILE
+    acquired.write_bytes(CONVERTED_PAYLOAD)
+    monkeypatch.setattr(runtime, "acquire_converted_weights", lambda cache_dir: acquired)
     model = DimerSwinDetector(cache_dir=tmp_path)
     assert model.source == "openmmlab-cache"
-    assert calls[0][1] == str(acquired)
+    assert calls == [("stub-config.py", None, "cpu"), ("load_state_dict", {"read": str(acquired)}, True)]

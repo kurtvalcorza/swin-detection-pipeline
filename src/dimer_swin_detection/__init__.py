@@ -1,5 +1,7 @@
 from .metrics import boxes_from_yolo_labels, coco_box_ap
 from .runtime import (
+    CONVERTED_SHA256,
+    CONVERTED_WEIGHTS_FILE,
     DEFAULT_WEIGHTS_DIR,
     INPUT_SCHEMA,
     MODEL_ID,
@@ -9,14 +11,18 @@ from .runtime import (
     MODEL_SPEC,
     Detection,
     DimerSwinDetector,
+    convert_checkpoint,
     evaluation_report,
     stage_missing_files,
     validate_image,
     validate_inputs,
+    verify_converted,
     verify_snapshot,
 )
 
 __all__ = [
+    "CONVERTED_SHA256",
+    "CONVERTED_WEIGHTS_FILE",
     "DEFAULT_WEIGHTS_DIR",
     "INPUT_SCHEMA",
     "MODEL_ID",
@@ -28,9 +34,11 @@ __all__ = [
     "DimerSwinDetector",
     "boxes_from_yolo_labels",
     "coco_box_ap",
+    "convert_checkpoint",
     "evaluation_report",
     "stage_missing_files",
     "validate_image",
     "validate_inputs",
+    "verify_converted",
     "verify_snapshot",
 ]
