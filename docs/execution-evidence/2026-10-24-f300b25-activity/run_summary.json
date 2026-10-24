@@ -1,0 +1,51 @@
+{
+  "repo": "swin-detection-pipeline",
+  "sha": "f300b2523caf0ee51faa78cc4d967e9736acd371",
+  "notebook": "tutorials/swin_detection_task_inference.ipynb",
+  "blob": "a3725c8b74225309514d4088a7abdd7e7aadb40c",
+  "gpu": "T4",
+  "session": "suite-swin-f300b25-65d6",
+  "started_utc": "2026-10-24T09:17:40+00:00",
+  "runner": "Colab CLI `colab exec -f` on a fresh session (not a browser Run all)",
+  "overrides": [
+    {
+      "name": "RUN_ACTIVITY",
+      "from": "False",
+      "to": "True"
+    }
+  ],
+  "run_copy_blob": "090bd4f9c87595b35d204db5366adc2ed9d7c011",
+  "run_copy_sha256": "c1b9d802763335bcaa4e432aad1e4c10d76c98605a7c9eaf754d5b381f9b55fc",
+  "run_copy_note": "the executed copy differs from the committed blob only in the listed assignment literals; input_unchanged compares against that copy",
+  "status": "[suite-swin-f300b25-65d6] gpu-t4-s-usw4a2-k07ocom45kg9 | Hardware: T4 | Shape: Standard | Variant: GPU | Status: IDLE",
+  "exec_exit_code": 0,
+  "stopped": true,
+  "wall_s": 496.3,
+  "input_unchanged": true,
+  "executed_file": "swin_detection_task_inference_f300b25_colab-cli-t4_output.ipynb",
+  "log_cells": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "log_total": 14,
+  "code_cells": 14,
+  "executed_cells": 12,
+  "errors": [],
+  "execution_counts": [],
+  "sequential": null,
+  "executed_sha256": "f2bd57bcd5a6f0941439699edc6c167f50d9b9754c7725adb0de1bc8313b9dd6",
+  "log_sequential_complete": true,
+  "verdict": "PASS"
+}
