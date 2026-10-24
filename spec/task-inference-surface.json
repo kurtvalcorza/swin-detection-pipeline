@@ -30,7 +30,10 @@
     "checkpointUrl": "https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_1x_coco/mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.pth",
     "checkpointSizeBytes": 191461353,
     "checkpointSha256": "9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291",
-    "checkpointVerification": "REQUIRED_BEFORE_DESERIALIZATION"
+    "checkpointVerification": "REQUIRED_BEFORE_DESERIALIZATION",
+    "servedWeightsFile": "mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.safetensors",
+    "servedWeightsSha256": "9ed16ad66c9ca031a67bbcfb4ae424fa069a29251de9aa6f38944823399a994b",
+    "servedWeightsLoad": "init_detector(config, None) + load_state_dict(safetensors, strict=True)"
   },
   "input": {
     "modality": "RGB-compatible image",
@@ -52,7 +55,7 @@
     "sampleEvidenceOnly": true
   },
   "security": {
-    "checkpointSerialization": "PyTorch .pth; code-capable serialization",
+    "checkpointSerialization": "PyTorch .pth (pickle) as conversion source only, read once with torch.load(weights_only=True); served as safetensors",
     "digestMeaning": "byte identity only; not publisher authenticity",
     "runtimeSecretsRequired": false
   },

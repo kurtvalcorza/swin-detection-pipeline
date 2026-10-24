@@ -89,7 +89,8 @@ MARKDOWN_MARKERS = (
     "**Capability:** pretrained COCO-80 object detection",
     "**No adaptation occurs:**",
     "**Trust boundary (MOD12).**",
-    "is **not** a `weights_only` load",
+    "once with `torch.load(..., weights_only=True)`",
+    "served only from the converted safetensors file",
     "not publisher authenticity",
     "managed **CPython 3.10.18**",
     "**ordered by descending score within each image**",
@@ -252,7 +253,12 @@ FORBIDDEN_PATTERNS = (
     ("trust_remote_code enabled", re.compile(r"trust_remote_code\s*[=:]\s*True")),
     (
         "unsafe deserialization",
-        re.compile(r"\bpickle\.load|\btorch\.load\s*\(|getattr\(\s*torch\s*,\s*['\"]load['\"]"),
+        # The carried runtime's one-time conversion reads the pinned .pth with weights_only=True; any other
+        # torch.load (or an explicit weights_only=False) is still refused.
+        re.compile(
+            r"\bpickle\.load|\btorch\.load\s*\((?![^)]*weights_only\s*=\s*True)|weights_only\s*=\s*False"
+            r"|getattr\(\s*torch\s*,\s*['\"]load['\"]"
+        ),
     ),
     ("archive extractall", re.compile(r"\.extractall\s*\(")),
     ("notebook magic or shell escape", re.compile(r"(?m)^\s*[%!]|get_ipython\(\)")),
@@ -393,9 +399,11 @@ def validate_identity_consistency() -> None:
 WEIGHT_DOCS = ("README.md", "MODEL_CARD.md", "docs/WEIGHTS.md")
 EXTERNAL_WEIGHT_BYTES: dict[int, str] = {
     191_487_694: "SwinTransformer/storage v1.0.3 asset mask_rcnn_swin_tiny_patch4_window7_1x.pth",
+    191_434_712: "the served safetensors conversion of the manifest checkpoint",
 }
 EXTERNAL_WEIGHT_DIGESTS: dict[str, str] = {
     "b67f9d6cd62a4d723c78faec1b49cbf548faa22437264defb00f2f6e54d21b78": "SwinTransformer/storage v1.0.3 mask_rcnn_swin_tiny_patch4_window7_1x.pth (not staged)",
+    "9ed16ad66c9ca031a67bbcfb4ae424fa069a29251de9aa6f38944823399a994b": "runtime.CONVERTED_SHA256: the served safetensors conversion of the manifest checkpoint",
 }
 _DIGEST = re.compile(r"(?<![0-9a-fA-F])[0-9a-f]{64}(?![0-9a-fA-F])")
 _GROUPED = r"(\d{1,3}(?:[,\u202f\u00a0 ]\d{3})+|\d+)"
