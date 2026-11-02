@@ -1,5 +1,5 @@
 # Qualified CPU runtime of the DIMER Swin-T Mask R-CNN task-inference package (README "Supported
-# installation contract"): CPython 3.10 only — pip cannot pin the interpreter, so the notebook states it in
+# installation contract"): CPython 3.11 only — pip cannot pin the interpreter, so the notebook states it in
 # Prerequisites and asserts sys.version_info in its first stage cell. Carried verbatim into the notebook's
 # inline PINS by tools/build_notebook.py (template key `pins_file`); index/find-links lines are passed to pip
 # in this order. torch/torchvision are the `+cpu` builds from the PyTorch CPU index (the only index that hosts
@@ -16,5 +16,5 @@ mmdet==3.3.0
 pycocotools==2.0.11
 numpy==1.26.4
 opencv-python==4.10.0.84
-pillow==11.3.0
+pillow==13.0.0
 safetensors==0.8.0

@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Install notebook executor
         run: |
           python -m pip install --disable-pip-version-check "nbconvert==7.16.6" "nbformat==5.10.4" "ipykernel==6.29.5"
@@ -76,6 +76,6 @@ jobs:
           assert len(result['sample']['licences'])==50 and {e['licence'] for e in result['sample']['licences']} <= {'CC BY 2.0','CC BY-SA 2.0','No known copyright restrictions','United States Government Work'}
           assert not list(root.glob('*_exploratory_*')) and not list(root.glob('*.part')), sorted(p.name for p in root.iterdir())
           assert result['checkpoint_sha256']=='9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291'
-          assert result['runtime']['mmdet']=='3.3.0' and result['runtime']['python'].startswith('3.10.')
+          assert result['runtime']['mmdet']=='3.3.0' and result['runtime']['python'].startswith('3.11.')
           print(json.dumps({'notebook_source':result['notebook_source'],'runtime':result['runtime'],'verdict':report['verdict'],'metrics':report.get('metrics'),'baselines':report.get('baselines'),'n_detections':len(result['detections'])}, indent=2))
           PY

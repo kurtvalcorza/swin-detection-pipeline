@@ -43,13 +43,13 @@ def _markdown(notebook: dict) -> str:
     return "\n".join(c["source"] for c in notebook["cells"] if c["cell_type"] == "markdown")
 
 
-# ---- SWD-M1 / SWD-m3: an isolated, uv-managed CPython 3.10; no kernel install, no restart ------------------------
+# ---- SWD-M1 / SWD-m3: an isolated, uv-managed CPython 3.11; no kernel install, no restart ------------------------
 
 
 def test_swd_M1_first_code_cell_provisions_and_checks_python_310_before_any_install(notebook: dict) -> None:
     first = _code(notebook)[0]
     assert first.startswith("# @title Infrastructure: install the locked runtime into an isolated environment")
-    assert "MANAGED_PYTHON = '3.10.18'" in first
+    assert "MANAGED_PYTHON = '3.11.16'" in first
     assert first.index("isolated_version != MANAGED_PYTHON") < first.index('"pip", "install"'), "the interpreter is checked before anything is installed"
     install = next(line for line in first.splitlines() if '"pip", "install"' in line)
     assert '"--managed-python"' in first and '"--require-hashes", "--only-binary", ":all:"' in install
@@ -63,7 +63,7 @@ def test_swd_m3_no_kernel_install_and_no_restart_instruction(notebook: dict) -> 
     sources = _code(notebook)
     assert not any("[sys.executable, '-m', 'pip'" in s for s in sources)
     assert sum("# dimer: kernel cell" in s for s in sources) == 2
-    runtime_check = next(s for s in sources if "if sys.version_info[:2] != (3, 10):" in s)
+    runtime_check = next(s for s in sources if "if sys.version_info[:2] != (3, 11):" in s)
     assert "Run the Section 1 cells first" in runtime_check
 
 

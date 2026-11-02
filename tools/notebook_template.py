@@ -390,13 +390,13 @@ TEMPLATE = {
     "profile": "TASK-INFERENCE",
     "mode": "GUIDED",
     "kind": "TUTORIAL",
-    # SWD-M1/m3 (NOTEBOOK_SPEC 2.2 §5): the qualified OpenMMLab stack needs CPython 3.10, which pip cannot provide. The
-    # notebook therefore builds an isolated uv environment with a uv-managed CPython 3.10.18, installs the hash lock
+    # SWD-M1/m3 (NOTEBOOK_SPEC 2.2 §5): the qualified OpenMMLab stack needs CPython 3.11, which pip cannot provide. The
+    # notebook therefore builds an isolated uv environment with a uv-managed CPython 3.11.16, installs the hash lock
     # compiled from tools/pins.txt there (--require-hashes --only-binary :all:, with the PyTorch CPU index and the OpenMMLab
     # find-links page the pins name), and routes every later cell to a persistent worker in it. The kernel's own Python does not matter.
     "isolated_runtime": True,
     "infrastructure_labels": True,
-    "managed_python": "3.10.18",
+    "managed_python": "3.11.16",
     "uv": {
         "version": "0.12.15",
         "url": "https://files.pythonhosted.org/packages/1e/fd/432451d732917c49152a291de3ef171aa6b0f1a22d39780fb2c1f085ca4c/uv-0.12.15-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
@@ -408,7 +408,7 @@ TEMPLATE = {
     "data_host": f"this repository's GitHub release `{RELEASE_TAG}` (the {N_IMAGES} sample images, ~{SAMPLE_MB:.1f} MB, each SHA-256-verified)",
     "run_all": (
         "Selecting **Run all** in a fresh Linux x86_64 runtime (Google Colab, Kaggle or a Linux Jupyter kernel; see Prerequisites for "
-        "the recorded runs) builds an isolated environment with a uv-managed CPython 3.10.18 and the hash-locked pins of "
+        "the recorded runs) builds an isolated environment with a uv-managed CPython 3.11.16 and the hash-locked pins of "
         "`tools/pins.txt` (the kernel's own Python and packages are left alone, so no restart is needed), stages and digest-verifies "
         f"the pinned OpenMMLab checkpoint, downloads the {N_IMAGES} pinned COCO val2017 images ({N_BOXES} ground-truth boxes, "
         f"{N_CATEGORIES} categories) from this repository's release mirror and checks each one's SHA-256, validates them into an input "
@@ -457,8 +457,8 @@ TEMPLATE = {
             "https://github.com/kurtvalcorza/swin-detection-pipeline/blob/main/docs/release-verification.md",
         ),
         (
-            "Isolated Python 3.10",
-            "https://img.shields.io/badge/Python-3.10%20(isolated%2C%20uv--managed)-3776ab?style=flat&logo=python&logoColor=white",
+            "Isolated Python 3.11",
+            "https://img.shields.io/badge/Python-3.11%20(isolated%2C%20uv--managed)-3776ab?style=flat&logo=python&logoColor=white",
             "https://github.com/kurtvalcorza/swin-detection-pipeline/blob/main/README.md",
         ),
         (
@@ -503,7 +503,7 @@ TEMPLATE = {
         "nothing can be measured."
     ),
     "learning_objectives": (
-        "install the pinned Python 3.10 OpenMMLab CPU runtime into an isolated environment, read what the carried package "
+        "install the pinned Python 3.11 OpenMMLab CPU runtime into an isolated environment, read what the carried package "
         "guarantees, resolve and digest-verify the immutable OpenMMLab checkpoint, fetch the pinned labelled COCO val2017 sample "
         "and validate it into an input manifest, state whether the scored "
         "images overlap the checkpoint's training data, run detection through the public API, read uncalibrated class scores "
@@ -535,11 +535,11 @@ TEMPLATE = {
             "prior experience with MMDetection or Swin Transformers is assumed: each term is explained where it is first needed and "
             "again in the glossary below. No GPU is needed. The **Prerequisites** give the details.\n\n"
             "**Running it.** Choose *Run all* (in Colab: *Runtime → Run all*). The default path needs no edit, no upload, no account, "
-            "no token and no runtime restart. Section 1 builds the isolated Python 3.10 environment — the torch, MMCV and MMDetection "
+            "no token and no runtime restart. Section 1 builds the isolated Python 3.11 environment — the torch, MMCV and MMDetection "
             "wheels make it the slowest step — and a second Run all in the same runtime reuses it. You can also run one cell at a time "
             "with *Shift + Enter*.\n\n"
             "**Where the code runs.** The first two code cells run in the notebook kernel: they build the environment and start one "
-            "Python 3.10 process inside it. Every later cell is sent to that process, so the OpenMMLab stack runs on the interpreter "
+            "Python 3.11 process inside it. Every later cell is sent to that process, so the OpenMMLab stack runs on the interpreter "
             "its wheels were built for, whatever Python the kernel itself has. Printed output and errors come back to the notebook as "
             "usual, and variables persist from cell to cell.\n\n"
             "**Two kinds of cell.** *Infrastructure cells* (Sections 1–3: the isolated install and router, the carried package and "
@@ -566,7 +566,7 @@ TEMPLATE = {
             "## Roadmap\n\n"
             "| Section | Tag | What happens | What you read |\n"
             "|---|---|---|---|\n"
-            "| 1. Install the pinned runtime | [Engineering] | isolated Python 3.10 environment; later cells routed there | versions |\n"
+            "| 1. Install the pinned runtime | [Engineering] | isolated Python 3.11 environment; later cells routed there | versions |\n"
             "| 2. Package code | [Engineering] | the repository's package, carried verbatim | nothing to run by hand |\n"
             "| 3. Pin, stage and verify the model | [Engineering] | the checkpoint downloaded, digest-checked and converted to safetensors | the verified, converted file |\n"
             "| 4. Confirm the qualified runtime | [Engineering] | interpreter and library versions asserted | the versions |\n"
@@ -601,13 +601,13 @@ TEMPLATE = {
             "| **`.pth` trust boundary** | The upstream checkpoint is a PyTorch pickle, which can run code if loaded unrestricted; it is read once with `weights_only=True` and converted to safetensors (tensors only, no code), and the model is served from that file. The digest checks fix the bytes, not the author. |\n"
             "| **`not-measurable`** | The report's verdict when no ground truth exists, so no metric can be computed. |\n"
             "| **`sample-sanity`** | The verdict for a metric on a small tutorial sample: evidence the path works, not a benchmark. |\n"
-            "| **Isolated environment** | A separate Python 3.10 built from the hash-locked pins, in which every learner cell runs. |\n"
+            "| **Isolated environment** | A separate Python 3.11 built from the hash-locked pins, in which every learner cell runs. |\n"
             "| **BYOD** | Bring Your Own Data: the optional Section 11 switch that runs the same stages on your image. |\n\n"
             "</details>"
         ),
     ],
     "prerequisites": [
-        "- **Runtime:** a fresh **Linux x86_64** runtime; the kernel's own Python version does not matter. The qualified OpenMMLab stack — torch 2.1.2 (CPU build), MMCV 2.1.0, MMEngine 0.10.7, MMDetection 3.3.0, NumPy 1.26.4 — has prebuilt wheels for Python 3.10 only, so Section 1 has `uv` provision a managed **CPython 3.10.18**, installs the hash-locked pins there, and runs every later cell in that interpreter (Section 4 asserts it). Recorded runs: GitHub Actions (Python 3.10 Jupyter kernel) on every pull request, and hosted Colab CLI runs on fresh T4 VMs (CPU execution), each listed with the notebook blob it ran in `docs/release-verification.md`. A run of an earlier blob is history, not evidence for this one; check that file for a run of the blob you are reading. CPU is the default and only qualified path; no GPU is required. The pinned torch/mmcv wheels are the largest downloads of the run.",
+        "- **Runtime:** a fresh **Linux x86_64** runtime; the kernel's own Python version does not matter. The qualified OpenMMLab stack — torch 2.1.2 (CPU build), MMCV 2.1.0, MMEngine 0.10.7, MMDetection 3.3.0, NumPy 1.26.4 — has prebuilt wheels for Python 3.11 only, so Section 1 has `uv` provision a managed **CPython 3.11.16**, installs the hash-locked pins there, and runs every later cell in that interpreter (Section 4 asserts it). Recorded runs: GitHub Actions (Python 3.11 Jupyter kernel) on every pull request, and hosted Colab CLI runs on fresh T4 VMs (CPU execution), each listed with the notebook blob it ran in `docs/release-verification.md`. A run of an earlier blob is history, not evidence for this one; check that file for a run of the blob you are reading. CPU is the default and only qualified path; no GPU is required. The pinned torch/mmcv wheels are the largest downloads of the run.",
         f"- **External package indexes and data host:** the isolated install reads the PyTorch CPU index (`download.pytorch.org`) for the `+cpu` torch builds and the OpenMMLab wheel page (`download.openmmlab.com`) for MMCV, besides PyPI. The {N_IMAGES} sample images come from this repository's GitHub release `{RELEASE_TAG}` (`github.com`, which redirects to GitHub's release-asset storage).",
         "- **Knowledge:** basic Python and image handling; what a detection score and an IoU-based AP metric are.",
         f"- **Data:** the default sample is {N_IMAGES} COCO 2017 validation images ({N_BOXES} ground-truth boxes over {N_CATEGORIES} categories, ~{SAMPLE_MB:.1f} MB), each verified against its pinned SHA-256 before use, with the boxes carried inline in the sample cell and checked against their digest; it is evaluated with COCO box AP. **Licences and attribution:** COCO's annotations are CC BY 4.0 (COCO Consortium); every image keeps its own Flickr licence — {LICENCE_SUMMARY} — and the sample cell exports each image's licence, licence URL, Flickr source URL and original COCO URL in the result JSON. COCO's metadata does not name the photographers; the release's `ATTRIBUTION.md` lists every image with its licence, its author and Flickr photo page as read from Flickr on 2026-10-19 (8 of the 50 photo pages could not be read and are attributed by their Flickr source URL), and its COCO URL. The optional Section 10 activity (`RUN_ACTIVITY`, off by default) scores a deterministic 640×480 scene generated in code (no download, no ground truth). The optional Section 11 BYOD branch (`USE_BYOD`, off by default) takes one image file decodable by Pillow (PNG/JPEG/WebP and similar, at most 64 megapixels) from `BYOD_IMAGE_PATH`, or from the Colab upload dialog when that field is empty. Do not upload confidential or restricted data to a hosted notebook environment unless you are authorized to do so. Uploaded inputs remain in the notebook runtime; this pipeline does not send them to a third-party inference API.",
@@ -618,15 +618,15 @@ TEMPLATE = {
                 "## 4. Confirm the qualified runtime · [Engineering]\n\n"
                 "The carried package fails closed on version drift: `verify_runtime_versions` (called when the model "
                 "was constructed above) compares the installed `mmdet`, `mmcv` and `mmengine` distributions with the "
-                "versions pinned in `MODEL_SPEC`, and this cell additionally asserts the Python 3.10 interpreter the "
-                "OpenMMLab wheels were built for — the isolated environment's interpreter, not the kernel's. Look for a dictionary reporting Python 3.10.x, `torch` 2.1.2+cpu, "
+                "versions pinned in `MODEL_SPEC`, and this cell additionally asserts the Python 3.11 interpreter the "
+                "OpenMMLab wheels were built for — the isolated environment's interpreter, not the kernel's. Look for a dictionary reporting Python 3.11.x, `torch` 2.1.2+cpu, "
                 "MMDetection 3.3.0, MMCV 2.1.0, MMEngine 0.10.7, 80 classes, the converted `.safetensors` file name and the "
                 "`local-snapshot` source."
             ),
             "code": (
                 "import sys\n\n"
-                "if sys.version_info[:2] != (3, 10):\n"
-                "    raise RuntimeError(f'Python 3.10 is required by the qualified OpenMMLab runtime (see Prerequisites); this interpreter is {{sys.version.split()[0]}}. Run the Section 1 cells first: they provide a managed Python 3.10 whatever the kernel runs.')\n"
+                "if sys.version_info[:2] != (3, 11):\n"
+                "    raise RuntimeError(f'Python 3.11 is required by the qualified OpenMMLab runtime (see Prerequisites); this interpreter is {{sys.version.split()[0]}}. Run the Section 1 cells first: they provide a managed Python 3.11 whatever the kernel runs.')\n"
                 "print({{'python': platform.python_version(), 'torch': torch.__version__, 'numpy': numpy.__version__, **pipe.versions, 'classes': len(pipe.classes), 'checkpoint': pipe.checkpoint.name, 'source': pipe.source, 'device': pipe.device}})"
             ),
         },
@@ -781,7 +781,7 @@ TEMPLATE = {
                 "The package provides no segmentation, tracking, keypoint, classification, or training capability, and the digest "
                 "checks on the `.pth` source and its safetensors conversion fix the bytes, not the author.\n\n"
                 "Successful execution proves that the recorded repository revision's package, carried in this notebook, can "
-                "acquire and digest-verify the pinned OpenMMLab checkpoint, provision and assert the qualified Python 3.10 / "
+                "acquire and digest-verify the pinned OpenMMLab checkpoint, provision and assert the qualified Python 3.11 / "
                 "MMDetection 3.3.0 runtime in an isolated environment, validate the demonstrated input, execute the public detection path, and emit the shown machine-readable "
                 "outputs in the tested runtime — without the repository being reachable. It does **not** establish benchmark "
                 "superiority, reproduction of the upstream COCO result, score calibration, safety for high-consequence "
@@ -846,8 +846,8 @@ TEMPLATE = {
         "| Section 1 stops with `This notebook needs a Linux x86_64 runtime` | a Windows or macOS kernel, or an ARM machine | Use a Linux x86_64 Jupyter kernel or Google Colab; the pinned wheels are manylinux x86_64 builds. |\n"
         "| Section 1 fails while downloading `uv`, or `The pinned uv wheel failed its size/SHA-256 check` | a network failure, or an altered download | Run the Section 1 install cell again; never edit the digest. |\n"
         "| `CalledProcessError` from `uv pip install` in Section 1 (`No solution found`, HTTP errors) | the PyTorch CPU index, the OpenMMLab wheel page or PyPI was unreachable | Run the cell again later; all three hosts must be reachable. Never loosen a pin. |\n"
-        "| `holds Python …, not 3.10.18` in Section 1 | an older isolated-environment folder (`dimer_isolated_env/`, or the folder `DIMER_ISOLATED_ENV` names) | Delete that folder (or start a fresh runtime) and run the install cell again. |\n"
-        "| `Python 3.10 is required …` in Section 4 | the cell ran outside the isolated environment (Section 1 was skipped) | Run Sections 1–3 first, or choose *Run all*. |\n"
+        "| `holds Python …, not 3.11.16` in Section 1 | an older isolated-environment folder (`dimer_isolated_env/`, or the folder `DIMER_ISOLATED_ENV` names) | Delete that folder (or start a fresh runtime) and run the install cell again. |\n"
+        "| `Python 3.11 is required …` in Section 4 | the cell ran outside the isolated environment (Section 1 was skipped) | Run Sections 1–3 first, or choose *Run all*. |\n"
         "| The checkpoint download fails in Section 3, or `sha256 … != manifest` | `download.openmmlab.com` unreachable, or a changed file | Run the Section 3 cell again; a digest mismatch is never loaded or converted — do not edit the manifest. |\n"
         "| `… .safetensors: sha256 … != pinned …` or `conversion … hashed to …` | a damaged or altered converted file in `weights/` | Delete the `.safetensors` file in `weights/swin-t-mask-rcnn-coco/` and run the Section 3 cell again; it re-converts the verified `.pth`. |\n"
         "| `RuntimeError` about `mmdet`, `mmcv` or `mmengine` versions | runtime-version drift (a different wheel was installed) | Delete `dimer_isolated_env/` and run Section 1 again; the pins must match `MODEL_SPEC`. |\n"
