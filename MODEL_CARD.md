@@ -29,7 +29,7 @@ task_inference_surface: spec/task-inference-surface.json
 [![Checkpoint](https://img.shields.io/badge/Checkpoint-mask__rcnn__swin--t--p4--w7__fpn__1x__coco-ffcc4d?style=flat)](spec/task-inference-surface.json)
 [![Model released](https://img.shields.io/badge/Model%20released-2021--05--11-6f42c1?style=flat)](https://github.com/SwinTransformer/storage/releases/tag/v1.0.3)
 [![Sample eval](https://img.shields.io/badge/Sample%20eval-COCO%20val2017%2050%20images%2C%20AP%200.538%20(hosted%20T4)-lightgrey?style=flat)](tutorials/README.md)
-[![Python 3.10 required](https://img.shields.io/badge/Python-3.10%20required-3776ab?style=flat&logo=python&logoColor=white)](README.md)
+[![Python 3.11 required](https://img.shields.io/badge/Python-3.11%20required-3776ab?style=flat&logo=python&logoColor=white)](README.md)
 
 > [!WARNING]
 > ⚠️ **Provided for research, training, and evaluation purposes only.** Model weights are redistributed unmodified under their upstream license, which controls your use, including any commercial use or redistribution; the accompanying code and notebooks are released under this repository's license. All of it is supplied **"as is"**, without warranty of any kind, and has not been validated for production, clinical, or safety-critical use. Running the notebooks downloads third-party weights and datasets governed by their own licenses and consumes compute on your own Colab/Kaggle account. To the maximum extent permitted by law, the maintainers of this repository and the DIMER platform accept no liability for any damages arising from their use. Hosting implies no affiliation with or endorsement by the original authors.
@@ -45,7 +45,7 @@ This pipeline provides a ready-to-run interactive Google Colab notebook for pret
   *Pretrained COCO object detection with the pinned `mask_rcnn_swin-t-p4-w7_fpn_1x_coco` checkpoint through `DimerSwinDetector`: verify the checkpoint, run detection on sample or your own images, and export boxes, classes, scores, and the sample evaluation.*
 
 > [!NOTE]
-> Runs on the default CPU runtime; the shipped OpenMMLab runtime is CPU-only and requires Python 3.10.
+> Runs on the default CPU runtime; the shipped OpenMMLab runtime is CPU-only and requires Python 3.11.
 
 ---
 
@@ -55,7 +55,7 @@ This repository has **two deliberately separate capability surfaces**. First, it
 
 #### Intended Use and Limitations
 
-The supported capability today is pretrained inference with the frozen 80-class COCO label space. Users can run the repository-owned API or CLI in the qualified Python 3.10/OpenMMLab environment, or follow the release-grade notebook, to obtain detections from RGB images and to reproduce the small labelled tutorial evaluation. The repository does **not** currently support user-supplied fine-tuning, an adapted artifact, or a production serving composition. The checkpoint format is code-capable PyTorch serialization; the runtime reduces substitution risk by verifying exact bytes before MMDetection loads the file, but a digest does not establish publisher authenticity. Detection scores are uncalibrated and no deployment threshold is prescribed. The tutorial sample is intentionally small and its AP values are educational sanity evidence, not an upstream benchmark reproduction or a claim of fitness for a deployment domain. The separate adaptation-lineage checkpoint is MIT-licensed and cleared for hosting; the adaptation capability itself remains scaffolded because it is not implemented in this release.
+The supported capability today is pretrained inference with the frozen 80-class COCO label space. Users can run the repository-owned API or CLI in the qualified Python 3.11/OpenMMLab environment, or follow the release-grade notebook, to obtain detections from RGB images and to reproduce the small labelled tutorial evaluation. The repository does **not** currently support user-supplied fine-tuning, an adapted artifact, or a production serving composition. The checkpoint format is code-capable PyTorch serialization; the runtime reduces substitution risk by verifying exact bytes before MMDetection loads the file, but a digest does not establish publisher authenticity. Detection scores are uncalibrated and no deployment threshold is prescribed. The tutorial sample is intentionally small and its AP values are educational sanity evidence, not an upstream benchmark reproduction or a claim of fitness for a deployment domain. The separate adaptation-lineage checkpoint is MIT-licensed and cleared for hosting; the adaptation capability itself remains scaffolded because it is not implemented in this release.
 
 ###### Primary Intended Uses
 
@@ -83,7 +83,7 @@ The inference runtime accepts local image files and validates basic readability,
 
 ###### Environment
 
-The qualified public inference environment is CPython 3.10 with torch 2.1.2, MMDetection 3.3.0, MMCV 2.1.0, MMEngine 0.10.7, NumPy 1.26.4 and OpenCV 4.10.0.84. CPU inference is supported and is what the clean GitHub-hosted tutorial gate exercises. The API checks the OpenMMLab package versions and fails closed if they drift. Because MMCV and PyTorch depend on platform-specific binary wheels, `pip install .` is not presented as a complete environment bootstrap; the release notebook is the supported reproducible installation path. The runtime downloads the exact OpenMMLab checkpoint, verifies its 191,461,353-byte size and SHA-256 `9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291`, then permits MMDetection to deserialize it. The future gradient-adaptation environment is not qualified: GPU/VRAM requirements, container images, precision policy and deterministic behavior remain open.
+The qualified public inference environment is CPython 3.11 with torch 2.1.2, MMDetection 3.3.0, MMCV 2.1.0, MMEngine 0.10.7, NumPy 1.26.4 and OpenCV 4.10.0.84. CPU inference is supported and is what the clean GitHub-hosted tutorial gate exercises. The API checks the OpenMMLab package versions and fails closed if they drift. Because MMCV and PyTorch depend on platform-specific binary wheels, `pip install .` is not presented as a complete environment bootstrap; the release notebook is the supported reproducible installation path. The runtime downloads the exact OpenMMLab checkpoint, verifies its 191,461,353-byte size and SHA-256 `9d6b7cfaa4aad52ef559611bea454f01d6f1f17c82a1abfac0d71631a193a291`, then permits MMDetection to deserialize it. The future gradient-adaptation environment is not qualified: GPU/VRAM requirements, container images, precision policy and deterministic behavior remain open.
 
 #### Metrics
 

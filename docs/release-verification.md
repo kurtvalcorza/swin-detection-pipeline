@@ -12,7 +12,7 @@ under DIMER Notebook Specification 3.0. This file is the durable release-gate re
 `.github/workflows/ci.yml` runs `ruff`, the offline unit suite (`tests/test_snapshot.py`, `tests/test_role_helpers.py`,
 `tests/test_metrics.py`, `tests/test_notebook_parity.py`, `tests/test_review_fixes.py`, `tests/test_r86_review_fixes.py`,
 `tests/test_spec3_migration.py`, `tests/test_val2017_release_assets.py` — the last one downloads the 50 release-asset images and parses them; OpenMMLab and pycocotools stubbed, no weights, no model),
-`tools/validate_release_assets.py` and `tools/build_notebook.py --check` on Python 3.10. The validator checks:
+`tools/validate_release_assets.py` and `tools/build_notebook.py --check` on Python 3.11. The validator checks:
 
 - notebook JSON parses; every code cell compiles as plain Python (no `%`/`!` magics); no persisted outputs or
   execution counts; no unresolved placeholder markers; every code cell is preceded by an explanatory markdown cell;
@@ -30,7 +30,7 @@ under DIMER Notebook Specification 3.0. This file is the durable release-gate re
   identity string appears in `README.md`, `MODEL_CARD.md`, and `docs/WEIGHTS.md` with no stray revisions;
 - the profile-specific public-API calls (`stage_missing_files`, `verify_snapshot`,
   `DimerSwinDetector.from_pretrained(weights_dir=...)`, `validate_inputs`, `predict_many`, `evaluation_report`),
-  the Python 3.10 assertion, the ceiling print (`MAX_PIXELS`, request ceilings, class count), the pinned val2017 sample
+  the Python 3.11 assertion, the ceiling print (`MAX_PIXELS`, request ceilings, class count), the pinned val2017 sample
   (per-image SHA-256 fetch, ground-truth digest, `training_overlap`), atomic writes, the exports, the learner-facing statements (uncalibrated scores, no shipped threshold, score-ordered
   detections, the `.pth` trust boundary, `not-measurable` / `sample-sanity` verdicts), the gated-off `USE_BYOD` and
   `RUN_ACTIVITY` defaults listed in the validator, and the NOTEBOOK_SPEC 3.0 §7.2 section order (export, Interpretation and
@@ -47,7 +47,7 @@ lane gates has no OpenMMLab stack (`mmdet`, `mmcv`, `mmengine`, `pycocotools` ar
 package's real loader and metric paths are exercised only by a notebook execution.
 
 `.github/workflows/verify-task-tutorial.yml` executes the committed notebook with `nbconvert` on a GitHub-hosted
-Python 3.10 runner from a scratch directory that contains only the notebook (no repository checkout on the notebook's
+Python 3.11 runner from a scratch directory that contains only the notebook (no repository checkout on the notebook's
 path) and asserts the four exports. A green run there is a clean-runtime execution of the default path and is the
 promotion evidence to record below; a red run blocks release.
 
@@ -55,9 +55,9 @@ promotion evidence to record below; a red run blocks release.
 
 | Path | Runtime | Role |
 |---|---|---|
-| GitHub Actions `verify-task-tutorial` (supported clean-room path) | `ubuntu-latest`, `actions/setup-python` 3.10, CPU; `nbconvert` from a scratch directory | The qualified Python 3.10 CPU runtime; a green run is promotion evidence once recorded here with the notebook blob |
-| Jupyter on a CPython 3.10 kernel (user path) | Any Linux host with Python 3.10; CPU | The runtime the tutorial is written for; the notebook asserts the interpreter version |
-| Google Colab (Colab CLI fresh VM, or a browser Run all) | Linux x86_64 VM; any kernel Python | Supported through the isolated uv-managed CPython 3.10.18 environment (Section 1); a Colab CLI T4 run is the hosted run of record for a revision (one is recorded below for blob `ea6b456d`) |
+| GitHub Actions `verify-task-tutorial` (supported clean-room path) | `ubuntu-latest`, `actions/setup-python` 3.11, CPU; `nbconvert` from a scratch directory | The qualified Python 3.11 CPU runtime; a green run is promotion evidence once recorded here with the notebook blob |
+| Jupyter on a CPython 3.11 kernel (user path) | Any Linux host with Python 3.11; CPU | The runtime the tutorial is written for; the notebook asserts the interpreter version |
+| Google Colab (Colab CLI fresh VM, or a browser Run all) | Linux x86_64 VM; any kernel Python | Supported through the isolated uv-managed CPython 3.11.16 environment (Section 1); a Colab CLI T4 run is the hosted run of record for a revision (one is recorded below for blob `ea6b456d`) |
 | Kaggle kernel | Linux x86_64; any kernel Python | Expected to work through the same isolated environment; no run recorded |
 
 ## Supported release verification procedure
@@ -82,7 +82,7 @@ Before changing the registry status from `Candidate` to `Release-grade`:
      and written to `weights/swin-t-mask-rcnn-coco/`, `stage_missing_files(WEIGHTS_DIR, allow_download=True)` reports
      the one manifest entry on a clean runtime, `verify_snapshot` returns the manifest dict, and
      `from_pretrained(weights_dir=WEIGHTS_DIR)` reports `source == 'local-snapshot'`;
-   - Section 4 asserts Python 3.10 and prints `mmdet 3.3.0`, `mmcv 2.1.0`, `mmengine 0.10.7`, 80 classes;
+   - Section 4 asserts Python 3.11 and prints `mmdet 3.3.0`, `mmcv 2.1.0`, `mmengine 0.10.7`, 80 classes;
    - the 50 COCO val2017 images are downloaded from release `data-coco-val2017-50-v1` and each matches its pinned size and SHA-256;
      the inline ground truth matches its digest (279 boxes over 59 categories); the sample print shows
      `COCO-val2017-50`, 33 CC BY 2.0 / 17 CC BY-SA 2.0 and `eval_data_in_training: False`;
