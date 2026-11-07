@@ -1,6 +1,8 @@
 # Release verification
 
-**Current status (2026-10-24): Candidate.** On 2026-10-24 the notebook `tutorials/swin_detection_task_inference.ipynb` was regenerated from code `2863aa7` (blob `a3725c8b7422`, commit `f300b25`) so that the detector is built from the packaged config with no checkpoint and served from the pinned safetensors conversion `mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.safetensors` (SHA-256 `9ed16ad66c9c…`, loaded with `load_state_dict(strict=True)`) instead of MMEngine's pickle load of the `.pth`. Two hosted Colab T4 runs of that exact blob on 2026-10-24 cover the default path and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); both passed in one pass with 0 errors (rows `f300b25` below). The remaining gates are REL12 (the BYOD review) and REL2 (the browser run of the interactive journeys). The runs of earlier blobs recorded below are history (REL14), not evidence for this one.
+**Current status: Candidate.** The current blob `b4711eae` (`main` at `776e749`, after the 2026-11 lock upgrades) passed its default path on a hosted Colab Tesla T4 on 2026-11-03 (14 code cells, one pass, no restart, exit 0, 0 errors; box AP@[0.50:0.95] 0.538; Colab CLI `colab exec -f`, not a browser `Run all`; REL14 for the default path of this blob). The DAT20 refusal path is not yet evidenced on this blob: in the scripted refusal run, cell `swin_detection_task_inference-33` caught `SampleRefused` and printed a `Refused: …` line without raising, so Run all did not stop at that cell (an open finding for a later fix cycle). The optional Section 10 activity has not been run on this blob. The hosted runs of earlier blobs, including `a3725c8b`, are history for it (REL14). Remaining gates for this blob: the DAT20 refusal path, the optional Section 10 activity, REL12 (BYOD review) and REL2 (browser run of the interactive journeys).
+
+**Status on 2026-10-24 (history since the 2026-11 lock upgrades): Candidate.** On 2026-10-24 the notebook `tutorials/swin_detection_task_inference.ipynb` was regenerated from code `2863aa7` (blob `a3725c8b7422`, commit `f300b25`) so that the detector is built from the packaged config with no checkpoint and served from the pinned safetensors conversion `mask_rcnn_swin-t-p4-w7_fpn_1x_coco_20210902_120937-9d6b7cfa.safetensors` (SHA-256 `9ed16ad66c9c…`, loaded with `load_state_dict(strict=True)`) instead of MMEngine's pickle load of the `.pth`. Two hosted Colab T4 runs of that exact blob on 2026-10-24 cover the default path and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); both passed in one pass with 0 errors (rows `f300b25` below). The remaining gates then were REL12 (the BYOD review) and REL2 (the browser run of the interactive journeys). The runs of earlier blobs recorded below are history (REL14), not evidence for this one.
 
 `tutorials/swin_detection_task_inference.ipynb` (`TASK-INFERENCE`, standalone) is a **release candidate** until
 the exact notebook revision has executed top-to-bottom in a clean supported runtime. Unit tests, JSON validation,
@@ -184,7 +186,7 @@ committed beside the evidence as `run_copy.ipynb`. Captured → committed SHA-25
 | `run_summary.json` | `a61a53618922481c0971a0b1552f45add121808517ecb6c6404b2246ecaf1cff` | unchanged (no local path) |
 | `run_copy.ipynb` | `720018227138a65fb7a93c7c84ae145d8f25974ba6752233ed773be47163068d` | unchanged (no local path) |
 
-The 2026-10-24 `f300b25` rows are the default-path run and the optional-activity run of blob `a3725c8b`, the current blob. The activity
+The 2026-10-24 `f300b25` rows are the default-path run and the optional-activity run of blob `a3725c8b` (the current blob on 2026-10-24; history since the 2026-11 lock upgrades). The activity
 run copy is committed beside its evidence as `run_copy.ipynb`. Captured → committed SHA-256 (local run directory redacted to
 `<local-run-dir>`, byte-wise):
 
@@ -200,6 +202,36 @@ run copy is committed beside its evidence as `run_copy.ipynb`. Captured → comm
 | `exec.log` | `60e546a980efdd30e14926b0b0dc29678fd83f939d47c939f7ebeedc85c6b1bc` | `a06505b87c3c24555241591f3d1f44bf40dc41f209d319f7790c7e087364e35f` (2 replacements) |
 | `run_summary.json` | `96dd7bcea800adcf44e72d556ced328f3022a08e69aebf886b8109bebe2e081c` | unchanged (no local path) |
 | `run_copy.ipynb` | `c1b9d802763335bcaa4e432aad1e4c10d76c98605a7c9eaf754d5b381f9b55fc` | unchanged (no local path) |
+
+### Hosted Colab T4 run of blob `b4711eae` (2026-11-03)
+
+This run executed `main` at `776e74967a2820f8d024c466ed43971bc55b7bc8`, notebook `tutorials/swin_detection_task_inference.ipynb` blob `b4711eaef8f390c154185be134ce2f64ecafa6c8`, fetched at the 40-character SHA and Git-blob verified, with the Colab CLI (`colab exec -f`) on a fresh Colab Tesla T4 session: sequential CLI execution, not a browser `Run all` (the Colab CLI version is not recorded in `exec.log` or `run_summary.json`). Its `run_summary.json` records `verdict` `PASS`, `exec_exit_code` 0, `input_unchanged` true and `stop_verified` true (the VM was released), and the SHA-256 of the executed notebook equals the summary's `executed_sha256`.
+
+**One pass, no restart, 0 errors** (default path, 2026-11-03 09:24:37 UTC start). Default settings, no overrides; session `suite-swin-776e749-65d6`; wall 524 s (`wall_s`); `code_cells` 14, all logged in order by `exec.log` (`executed_cells` 12: the cells that printed output); 0 errors. Retained evidence: [`execution-evidence/2026-11-03-776e749/`](execution-evidence/2026-11-03-776e749/).
+
+Printed by the default run (verbatim lines from the executed outputs):
+
+```text
+{'n_detections': 1252, 'images_with_detections': 50, 'images': 50, 'most_per_image': 100, 'images_over_the_100_scored_by_coco_ap': [], 'score_threshold': 0.0, 'max_detections': 300}
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.538
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.801
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.584
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.414
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.439
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.647
+```
+
+**DAT20 refusal path: not yet evidenced on this blob.** A scripted DAT20 refusal run of this blob was made but is not recorded as a pass: the refusing cell `swin_detection_task_inference-33` catches `SampleRefused` and prints a `Refused: …` line without raising, so the run did not stop at that cell. That is an open finding for a later fix cycle; no refusal evidence is committed here.
+
+**Local-path redaction.** Local paths were replaced byte-wise by `<local-run-dir>` (and the Colab CLI install path by `<colab-cli-tool-dir>/`, where present) before the first commit; the executed notebook was checked against its `run_summary.json` before any edit.
+
+| File (under `docs/execution-evidence/2026-11-03-776e749/`) | Captured SHA-256 | Committed SHA-256 |
+|---|---|---|
+| `swin_detection_task_inference_776e749_colab-cli-t4_default.ipynb` | `963436a910e1d7d260783fc3fe245fc37570d11ac1554978810eaba084a4250f` | `963436a910e1d7d260783fc3fe245fc37570d11ac1554978810eaba084a4250f` (unchanged, no local path) |
+| `exec.log` | `12cd721f4c7ea665f5ace1d3a7414ba2690516c86f14985dd286c4d1936b897b` | `77d8b1acd1d53bf3b7515a152261b7f562abed613fee28965367135a6637929b` (2 local-path replacements) |
+| `run_summary.json` | `67eba9e9e4704038b9ffb1edfc231ff8c5556b29185e89a1272ceeb9fe55b556` | `67eba9e9e4704038b9ffb1edfc231ff8c5556b29185e89a1272ceeb9fe55b556` (unchanged, no local path) |
+
+Not exercised by this run: the DAT20 refusal path (above), the optional Section 10 activity, an accepted BYOD input (REL12), a browser `Run all` of the interactive journeys (REL2), and every other open gate named in this file; this run closes none of them.
 
 ### CPU development runs of the 2026-10-18 revision (not the run of record)
 
@@ -232,7 +264,9 @@ carrier and for the OpenMMLab inference path, not for the standalone notebook ab
 
 ## Current status
 
-The registry status is **Candidate under Notebook Specification 3.0**. The current blob is `a3725c8b` at commit `f300b25` (the 2026-10-24 safetensors regeneration at the top of this file), and two hosted Colab T4 runs of it (2026-10-24, both PASS) cover the default path (box AP@[0.50:0.95] 0.538, image-bootstrap 95 % interval [0.5018, 0.5992]) and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); promotion is pending only REL12 (BYOD review) and REL2 (browser run of the interactive journeys). Earlier blobs' runs are history (REL14). Before it, the 2026-10-23 refusal-display fix (branch `fix/refusal-display`: a refused BYOD input is shown as one `Refused: <file name>: <rule>` line with no traceback, and the BYOD image must decode as PNG, JPEG or WebP) changed the notebook blob from `ea2ff3b3` to `0dd698fc`, so under REL14 the `faf8edb` default-path run and the `9de0f7e` activity run are history for blob `ea2ff3b3`, not evidence for `0dd698fc`. The previous blob is `0dd698fc` at commit `88a939c`, and two hosted Colab T4 runs of it (Colab CLI 0.7.5, 2026-10-23, both PASS) cover the default path (box AP@[0.50:0.95] 0.538, image-bootstrap 95 % interval [0.5018, 0.5992]) and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); both are recorded in `docs/release-verification.md`. Promotion is pending only (1) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime) and (2) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches).
+The current blob `b4711eae` (`main` at `776e749`, after the 2026-11 lock upgrades) passed its default path on a hosted Colab Tesla T4 on 2026-11-03 (14 code cells, one pass, no restart, exit 0, 0 errors; box AP@[0.50:0.95] 0.538; Colab CLI `colab exec -f`, not a browser `Run all`; REL14 for the default path of this blob). The DAT20 refusal path is not yet evidenced on this blob: in the scripted refusal run, cell `swin_detection_task_inference-33` caught `SampleRefused` and printed a `Refused: …` line without raising, so Run all did not stop at that cell (an open finding for a later fix cycle). The optional Section 10 activity has not been run on this blob. The hosted runs of earlier blobs, including `a3725c8b`, are history for it (REL14). Remaining gates for this blob: the DAT20 refusal path, the optional Section 10 activity, REL12 (BYOD review) and REL2 (browser run of the interactive journeys).
+
+The registry status is **Candidate under Notebook Specification 3.0**. History (REL14): the then-current blob was `a3725c8b` at commit `f300b25` (the current blob on 2026-10-24; history since the 2026-11 lock upgrades) (the 2026-10-24 safetensors regeneration at the top of this file), and two hosted Colab T4 runs of it (2026-10-24, both PASS) cover the default path (box AP@[0.50:0.95] 0.538, image-bootstrap 95 % interval [0.5018, 0.5992]) and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); promotion was then pending only REL12 (BYOD review) and REL2 (browser run of the interactive journeys). Earlier blobs' runs are history (REL14). Before it, the 2026-10-23 refusal-display fix (branch `fix/refusal-display`: a refused BYOD input is shown as one `Refused: <file name>: <rule>` line with no traceback, and the BYOD image must decode as PNG, JPEG or WebP) changed the notebook blob from `ea2ff3b3` to `0dd698fc`, so under REL14 the `faf8edb` default-path run and the `9de0f7e` activity run are history for blob `ea2ff3b3`, not evidence for `0dd698fc`. The previous blob is `0dd698fc` at commit `88a939c`, and two hosted Colab T4 runs of it (Colab CLI 0.7.5, 2026-10-23, both PASS) cover the default path (box AP@[0.50:0.95] 0.538, image-bootstrap 95 % interval [0.5018, 0.5992]) and the optional Section 10 activity (`RUN_ACTIVITY = True` run copy); both are recorded in `docs/release-verification.md`. Promotion was pending only (1) the REL12 BYOD review (one representative image accepted through the Section 6–9 stages and one incompatible input refused, in the hosted runtime) and (2) the REL2 browser run of the interactive journeys (the upload dialog and the `RUN_ACTIVITY` / `USE_BYOD` switches).
 
 History, for blob `ea2ff3b3`: the 2026-10-22 migration (branch `spec3/migrate`)
 declares `notebook_spec` 3.0 and moves the optional activity (Section 10, `RUN_ACTIVITY`, off by default) and BYOD (Section 11,
